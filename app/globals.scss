@@ -89,3 +89,28 @@ textarea:not([rows]) {
 :target {
   scroll-margin-block: 5ex;
 }
+
+:root {
+  --clr-primary: hsl(83, 100%, 32%);
+  --clr-error: hsl(0, 100%, 39%);
+
+  --bg-main: hsl(83, 5%, 21%);
+  --bg-contrast-100: hsl(81, 7%, 18%);
+  --bg-contrast-200: hsl(78, 6%, 13%);
+
+  --text-primary: hsl(80, 27%, 94%);
+  --text-contrast-100: hsl(83, 11%, 76%);
+
+  --fs-400: 1rem;
+  --fs-500: 1.25rem;
+  --fs-600: 1.5rem;
+  --fs-700: 2rem;
+  --fs-800: 3rem;
+  --fs-900: 5rem;
+
+  --br: 8px;
+}
+
+* {
+  color: var(--text-primary);
+}

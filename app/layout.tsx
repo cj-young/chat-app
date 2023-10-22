@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals.scss";
+import { DM_Sans } from "next/font/google";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "Chat App",
@@ -12,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={dmSans.className}>
       <body>{children}</body>
     </html>
   );
