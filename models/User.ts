@@ -1,7 +1,22 @@
-import mongoose, { InferSchemaType, Schema, model, models } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = new Schema(
+export interface IUser extends Document {
+  username: string;
+  displayName: string;
+  password?: string;
+  email: string;
+  googleId?: string;
+  friends: mongoose.Types.ObjectId[];
+  friendRequests: mongoose.Types.ObjectId[];
+  servers: mongoose.Types.ObjectId[];
+  imageURL?: string;
+  checkPassword(): Promise<boolean>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>(
   {
     username: {
       type: String,
@@ -65,6 +80,4 @@ userSchema.methods.checkPassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-type User = InferSchemaType<typeof userSchema>;
-
-export default models.User || model<User>("User", userSchema);
+export default models.User || model<IUser>("User", userSchema);

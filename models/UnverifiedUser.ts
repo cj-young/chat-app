@@ -1,7 +1,16 @@
-import mongoose, { InferSchemaType, Schema, model, models } from "mongoose";
+import mongoose, { Schema, model, models, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
-const unverifiedUserSchema = new Schema(
+export interface IUnverifiedUser extends Document {
+  password?: string;
+  email: string;
+  googleId?: string;
+  checkPassword(): Promise<boolean>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUnverifiedUser>(
   {
     password: {
       type: String
@@ -19,11 +28,8 @@ const unverifiedUserSchema = new Schema(
   { timestamps: true }
 );
 
-unverifiedUserSchema.methods.checkPassword = async function (password: string) {
+userSchema.methods.checkPassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-type User = InferSchemaType<typeof unverifiedUserSchema>;
-
-export default models.UnverifiedUser ||
-  model<User>("UnverifiedUser", unverifiedUserSchema);
+export default models.User || model<IUnverifiedUser>("User", userSchema);
