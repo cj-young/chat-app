@@ -11,7 +11,7 @@ export interface IUser extends Document {
   friendRequests: mongoose.Types.ObjectId[];
   servers: mongoose.Types.ObjectId[];
   imageURL?: string;
-  checkPassword(): Promise<boolean>;
+  checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
 }

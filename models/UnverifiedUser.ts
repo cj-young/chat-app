@@ -5,7 +5,7 @@ export interface IUnverifiedUser extends Document {
   password?: string;
   email: string;
   googleId?: string;
-  checkPassword(): Promise<boolean>;
+  checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
 }
