@@ -4,13 +4,22 @@ import Link from "next/link";
 import styles from "./styles.module.scss";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { signUp } from "./actions";
 
 export default function SignUpForm() {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const response = await signUp({ email, password, confirmPassword });
+    if (response.error) {
+      setError(response.error);
+    }
+  }
 
   function checkMatchingPasswords() {
     if (password !== confirmPassword) {
@@ -21,7 +30,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <form className={styles["sign-up-form"]}>
+    <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Email"
