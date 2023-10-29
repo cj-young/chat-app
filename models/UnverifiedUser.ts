@@ -25,4 +25,5 @@ unverifiedUserSchema.methods.checkPassword = async function (password: string) {
 
 type User = InferSchemaType<typeof unverifiedUserSchema>;
 
-export default models.user || model<User>("User", unverifiedUserSchema);
+export default models.UnverifiedUser ||
+  model<User>("UnverifiedUser", unverifiedUserSchema);

@@ -67,4 +67,4 @@ userSchema.methods.checkPassword = async function (password: string) {
 
 type User = InferSchemaType<typeof userSchema>;
 
-export default models.user || model<User>("User", userSchema);
+export default models.User || model<User>("User", userSchema);
