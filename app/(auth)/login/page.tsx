@@ -26,6 +26,14 @@ export default function Login() {
       redirect: false
     });
 
+    if (!res?.ok) {
+      setError(
+        res?.status === 401
+          ? "Invalid credentials"
+          : "An error occurred, please try again"
+      );
+    }
+
     console.log(res);
   }
 
