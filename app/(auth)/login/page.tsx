@@ -1,25 +1,44 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import Link from "next/link";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Login() {
   const [error, setError] = useState("");
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    console.log(session?.user);
+  }, [session]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const res = await signIn("credentials", {
+      identifier,
+      password,
+      redirect: false
+    });
+
+    console.log(res);
+  }
 
   return (
     <div className={styles.login}>
       <h1>Log In</h1>
 
-      <form className={styles["login-form"]}>
+      <form className={styles["login-form"]} onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Username or email"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
         />
         <input
           type="password"
