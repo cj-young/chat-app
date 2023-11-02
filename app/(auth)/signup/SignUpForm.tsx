@@ -6,6 +6,7 @@ import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { useState } from "react";
 import { signUp } from "./actions";
+import { signIn } from "next-auth/react";
 
 export default function SignUpForm() {
   const [error, setError] = useState("");
@@ -16,8 +17,19 @@ export default function SignUpForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const response = await signUp({ email, password, confirmPassword });
+
     if (response.error) {
-      setError(response.error);
+      return setError(response.error);
+    }
+
+    const loginRes = await signIn("credentials", {
+      identifier: email,
+      password,
+      redirect: false
+    });
+
+    if (!loginRes?.ok) {
+      return setError("An error occurred, please try again");
     }
   }
 
