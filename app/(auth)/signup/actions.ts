@@ -36,7 +36,7 @@ export async function signUp({ email, password, confirmPassword }: Info) {
       { upsert: true }
     );
 
-    return {};
+    return { error: null };
   } catch (error) {
     console.error(error);
     return { error: "An error occurred, please try again" };
