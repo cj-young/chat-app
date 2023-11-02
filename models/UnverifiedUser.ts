@@ -22,7 +22,8 @@ const userSchema = new Schema<IUnverifiedUser>(
     },
     googleId: {
       type: String,
-      unique: true
+      unique: true,
+      sparse: true
     }
   },
   { timestamps: true }

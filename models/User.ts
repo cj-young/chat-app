@@ -37,7 +37,8 @@ const userSchema = new Schema<IUser>(
     },
     googleId: {
       type: String,
-      unique: true
+      unique: true,
+      sparse: true
     },
     friends: {
       type: [
