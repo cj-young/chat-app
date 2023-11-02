@@ -5,6 +5,7 @@ import Link from "next/link";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { signIn, useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function Login() {
   const [error, setError] = useState("");
@@ -12,6 +13,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const { data: session } = useSession();
+
+  if (session?.user.verified) {
+    redirect("/");
+  }
 
   useEffect(() => {
     console.log(session?.user);
