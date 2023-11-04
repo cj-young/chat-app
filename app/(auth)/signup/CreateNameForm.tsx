@@ -31,7 +31,7 @@ export default function CreateNameForm() {
         onChange={(e) => setDisplayName(e.target.value)}
       />
       <input
-        type="password"
+        type="text"
         placeholder="Username (unique)"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
