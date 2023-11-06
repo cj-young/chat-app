@@ -2,8 +2,9 @@
 import styles from "./styles.module.scss";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
+import { createName } from "./actions";
 
 export default function CreateNameForm() {
   const [error, setError] = useState("");
@@ -14,8 +15,15 @@ export default function CreateNameForm() {
     await signOut({ redirect: false });
   }
 
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    const res = await createName({ displayName, username });
+    console.log(res);
+  }
+
   return (
-    <form className={styles["sign-up-form"]}>
+    <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
       <button
         aria-label="back"
         type="button"
