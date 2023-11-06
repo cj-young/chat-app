@@ -12,15 +12,11 @@ export default function Login() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   if (session?.user.verified) {
     redirect("/");
   }
-
-  useEffect(() => {
-    console.log(session?.user);
-  }, [session]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,6 +36,10 @@ export default function Login() {
     }
 
     console.log(res);
+  }
+
+  if (status === "loading") {
+    return <div className={styles.login}></div>;
   }
 
   return (
