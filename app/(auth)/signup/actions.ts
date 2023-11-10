@@ -75,7 +75,7 @@ export async function createName({ displayName, username }: NameInfo) {
       password: oldUser.password,
       email: oldUser.email,
       googleId: oldUser.googleId,
-      imageURL: "placeholder" // Replace with link to default profile picture image
+      imageUrl: "placeholder" // Replace with link to default profile picture image
     });
 
     return { error: null };

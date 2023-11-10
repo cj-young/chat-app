@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
                   username: user.username,
                   displayName: user.displayName,
                   email: user.email,
-                  imageURL: user.imageURL,
+                  imageUrl: user.imageUrl,
                   id: user.id,
                   verified: true
                 }

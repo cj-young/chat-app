@@ -5,7 +5,7 @@ interface VerifiedUser {
   username: string;
   displayName: string;
   email: string;
-  imageURL: string;
+  imageUrl: string;
   id: string;
   verified: boolean;
 }
@@ -20,7 +20,7 @@ interface test {
   username?: string;
   displayName?: string;
   email: string;
-  imageURL?: string;
+  imageUrl?: string;
   id: string;
   verified: boolean;
 }
@@ -31,7 +31,7 @@ declare module "next-auth" {
       username?: string;
       displayName?: string;
       email: string;
-      imageURL?: string;
+      imageUrl?: string;
       id: string;
       verified: boolean;
     } & DefaultSession["user"];
@@ -41,7 +41,7 @@ declare module "next-auth" {
     username?: string;
     displayName?: string;
     email: string;
-    imageURL?: string;
+    imageUrl?: string;
     id: string;
     verified: boolean;
   }
@@ -53,7 +53,7 @@ declare module "next-auth/jwt" {
       username?: string;
       displayName?: string;
       email: string;
-      imageURL?: string;
+      imageUrl?: string;
       id: string;
       verified: boolean;
     };

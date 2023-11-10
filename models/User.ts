@@ -10,7 +10,7 @@ export interface IUser extends Document {
   friends: mongoose.Types.ObjectId[];
   friendRequests: mongoose.Types.ObjectId[];
   servers: mongoose.Types.ObjectId[];
-  imageURL?: string;
+  imageUrl?: string;
   checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -70,7 +70,7 @@ const userSchema = new Schema<IUser>(
       ],
       default: []
     },
-    imageURL: {
+    imageUrl: {
       type: String
     }
   },
