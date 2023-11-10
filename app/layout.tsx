@@ -3,6 +3,7 @@ import "./globals.scss";
 import { DM_Sans } from "next/font/google";
 import Provider from "./Provider";
 import { ReactNode } from "react";
+import AuthContextProvider from "@/contexts/AuthContext";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,9 +18,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={dmSans.className}>
-      <Provider>
-        <body>{children}</body>
-      </Provider>
+      <AuthContextProvider>
+        <Provider>
+          <body>{children}</body>
+        </Provider>
+      </AuthContextProvider>
     </html>
   );
 }
