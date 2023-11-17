@@ -7,7 +7,7 @@ export interface ISignupSession extends Document {
   updatedAt: Date;
 }
 
-const sessionSchema = new Schema<ISignupSession>(
+const signupSessionSchema = new Schema<ISignupSession>(
   {
     expiresAt: {
       type: Date,
@@ -22,5 +22,5 @@ const sessionSchema = new Schema<ISignupSession>(
   { timestamps: true }
 );
 
-export default models.Session ||
-  model<ISignupSession>("UnverifiedUser", sessionSchema);
+export default models.SignupSession ||
+  model<ISignupSession>("SignupSession", signupSessionSchema);
