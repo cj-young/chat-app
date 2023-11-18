@@ -1,10 +1,8 @@
 "use server";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UnverifiedUser from "@/models/UnverifiedUser";
 import User, { IUser } from "@/models/User";
 import bcrypt from "bcrypt";
-import { getServerSession } from "next-auth";
 
 interface Info {
   email: string;
@@ -50,37 +48,5 @@ interface NameInfo {
 }
 
 export async function createName({ displayName, username }: NameInfo) {
-  try {
-    console.log({ displayName, username });
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return { error: "Invalid session" };
-    }
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return { error: "That username is taken" };
-    }
-
-    const oldUser = (await UnverifiedUser.findByIdAndDelete(
-      session.user.id
-    )) as IUser;
-
-    console.log(session.user.id);
-
-    await User.create({
-      username,
-      displayName,
-      password: oldUser.password,
-      email: oldUser.email,
-      googleId: oldUser.googleId,
-      imageUrl: "placeholder" // Replace with link to default profile picture image
-    });
-
-    return { error: null };
-  } catch (error) {
-    console.error(error);
-    return { error: "An error occurred, please try again" };
-  }
+  return { error: "Placeholder" };
 }

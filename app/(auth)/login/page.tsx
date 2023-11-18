@@ -1,46 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import Link from "next/link";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
-import { signIn, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
 export default function Login() {
   const [error, setError] = useState("");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
-  const { data: session, status } = useSession();
-
-  if (session?.user.verified) {
-    redirect("/");
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const res = await signIn("credentials", {
-      identifier,
-      password,
-      redirect: false
-    });
-
-    if (!res?.ok) {
-      setError(
-        res?.status === 401
-          ? "Invalid credentials"
-          : "An error occurred, please try again"
-      );
-    }
-
-    console.log(res);
-  }
-
-  if (status === "loading") {
-    return <div className={styles.login}></div>;
-  }
+  async function handleSubmit(e: React.FormEvent) {}
 
   return (
     <div className={styles.login}>
