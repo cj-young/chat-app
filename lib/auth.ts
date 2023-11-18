@@ -4,17 +4,13 @@ import dbConnect from "./dbConnect";
 import { IUnverifiedUser } from "@/models/UnverifiedUser";
 import SignupSession from "@/models/SignupSession";
 
-const EXPIRY_TIME = 1000 * 60 * 60 * 24 * 5; // 5 days
 const SIGNUP_EXPIRY_TIME = 1000 * 60 * 60; // 1 hour
 
 export async function createSession(user: IUser) {
   await dbConnect();
 
-  const expiresAt = new Date(Date.now() + EXPIRY_TIME);
-
   const session = await Session.create({
-    user: user.id,
-    expiresAt
+    user: user.id
   });
 
   return session;

@@ -1,7 +1,8 @@
 import mongoose, { Schema, model, models, Document } from "mongoose";
 
+export const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 5; // 5 days
+
 export interface ISession extends Document {
-  expiresAt: Date;
   user: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -9,10 +10,6 @@ export interface ISession extends Document {
 
 const sessionSchema = new Schema<ISession>(
   {
-    expiresAt: {
-      type: Date,
-      required: true
-    },
     user: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -20,6 +17,11 @@ const sessionSchema = new Schema<ISession>(
     }
   },
   { timestamps: true }
+);
+
+sessionSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: SESSION_EXPIRY_SECONDS }
 );
 
 export default models.Session || model<ISession>("Session", sessionSchema);
