@@ -1,25 +1,32 @@
 import mongoose, { Schema, model, models, Document } from "mongoose";
 
+export const SESSION_EXPIRY_SECONDS = 60 * 30; // 30 minutes
+
 export interface ISignupSession extends Document {
-  expiresAt: Date;
   user: mongoose.Types.ObjectId;
+  password: string;
+  email: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const signupSessionSchema = new Schema<ISignupSession>(
   {
-    expiresAt: {
-      type: Date,
+    email: {
+      type: String,
       required: true
     },
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "UnverifiedUser"
+    password: {
+      type: String,
+      required: true
     }
   },
   { timestamps: true }
+);
+
+signupSessionSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: SESSION_EXPIRY_SECONDS }
 );
 
 export default models.SignupSession ||

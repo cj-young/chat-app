@@ -1,7 +1,7 @@
 "use server";
 import dbConnect from "@/lib/dbConnect";
-import UnverifiedUser from "@/models/UnverifiedUser";
-import User, { IUser } from "@/models/User";
+import SignupSession from "@/models/SignupSession";
+import User from "@/models/User";
 import bcrypt from "bcrypt";
 
 interface Info {
@@ -26,7 +26,7 @@ export async function signUp({ email, password, confirmPassword }: Info) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await UnverifiedUser.findOneAndUpdate(
+    const user = await SignupSession.findOneAndUpdate(
       { email },
       {
         email,
