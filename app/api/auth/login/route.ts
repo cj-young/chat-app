@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
       name: "session",
       value: "1" + session.id, // Prefix verified user session with "1"
       httpOnly: true,
-      expires: new Date(Date.now() + 1000 * SESSION_EXPIRY_SECONDS)
+      expires: new Date(Date.now() + 1000 * SESSION_EXPIRY_SECONDS),
+      sameSite: "lax"
     });
 
     return res;
