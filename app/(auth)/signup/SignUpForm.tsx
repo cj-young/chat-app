@@ -5,7 +5,7 @@ import styles from "./styles.module.scss";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { useState } from "react";
-import { signUp } from "./actions";
+import { apiFetch } from "@/lib/api";
 
 export default function SignUpForm() {
   const [error, setError] = useState("");
@@ -14,11 +14,23 @@ export default function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const response = await signUp({ email, password, confirmPassword });
+    try {
+      e.preventDefault();
+      const response = await apiFetch("/auth/signup", "POST", {
+        password,
+        confirmPassword,
+        email
+      });
 
-    if (response.error) {
-      return setError(response.error);
+      const data = await response.json();
+
+      if (!response.ok && data.message) {
+        return setError(data.message);
+      }
+
+      console.log(data);
+    } catch (error) {
+      setError("An error occurred while signing up");
     }
   }
 
