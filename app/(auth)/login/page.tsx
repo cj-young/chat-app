@@ -11,7 +11,24 @@ export default function Login() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {}
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const res = await apiFetch("/auth/login", "POST", { identifier, password });
+
+    if (!res.ok) {
+      try {
+        const data = await res.json();
+        setError(data.message);
+      } catch (error) {
+        setError("An error occurred, please try again");
+      } finally {
+        return;
+      }
+    }
+
+    const data = await res.json();
+  }
 
   return (
     <div className={styles.login}>
