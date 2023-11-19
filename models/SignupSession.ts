@@ -6,6 +6,7 @@ export interface ISignupSession extends Document {
   user: mongoose.Types.ObjectId;
   password: string;
   email: string;
+  isExpired(): boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +29,10 @@ signupSessionSchema.index(
   { createdAt: 1 },
   { expireAfterSeconds: SESSION_EXPIRY_SECONDS }
 );
+
+signupSessionSchema.methods.isExpired = function () {
+  return this.createdAt.getTime() + SESSION_EXPIRY_SECONDS < Date.now();
+};
 
 export default models.SignupSession ||
   model<ISignupSession>("SignupSession", signupSessionSchema);
