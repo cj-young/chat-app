@@ -8,3 +8,5 @@ interface SignUpCredentials {
   password: string;
   confirmPassword: string;
 }
+
+type AuthStatus = "unauthenticated" | "signingUp" | "authenticated";
