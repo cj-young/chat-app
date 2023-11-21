@@ -5,6 +5,8 @@ const unauthRoutes = new Set(["/login", "/signup"]);
 const authRoutes = new Set(["/"]);
 
 export default async function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith("/_next")) return NextResponse.next();
+
   let authStatus: AuthStatus;
   try {
     const response = await fetch(
