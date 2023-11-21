@@ -31,7 +31,7 @@ signupSessionSchema.index(
 );
 
 signupSessionSchema.methods.isExpired = function () {
-  return this.createdAt.getTime() + SESSION_EXPIRY_SECONDS < Date.now();
+  return this.createdAt.getTime() + SESSION_EXPIRY_SECONDS * 1000 < Date.now();
 };
 
 export default models.SignupSession ||
