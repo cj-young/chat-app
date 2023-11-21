@@ -1,17 +1,33 @@
 "use client";
-import { apiFetch } from "@/lib/api";
-import { ReactNode, createContext, useContext } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 
-interface IAuthContext {}
+interface IAuthContext {
+  profile: IProfile | null;
+}
+
+interface IProfile {
+  email: string;
+  displayName: string;
+  username: string;
+  imageUrl: string;
+}
 
 interface Props {
   children: ReactNode;
+  initialProfile: IProfile;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
-export default function AuthContextProvider({ children }: Props) {
-  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
+export default function AuthContextProvider({
+  children,
+  initialProfile
+}: Props) {
+  const [profile, setProfile] = useState<IProfile>(initialProfile);
+
+  return (
+    <AuthContext.Provider value={{ profile }}>{children}</AuthContext.Provider>
+  );
 }
 
 export function useAuthContext() {
