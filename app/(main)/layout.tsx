@@ -7,16 +7,6 @@ import { getSessionUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  display: "swap"
-});
-
-export const metadata: Metadata = {
-  title: "Chat App",
-  description: "An app that lets you chat"
-};
-
 export default async function RootLayout({
   children
 }: {
@@ -43,11 +33,9 @@ export default async function RootLayout({
     };
 
     return (
-      <html lang="en" className={dmSans.className}>
-        <AuthContextProvider initialProfile={profile}>
-          <body>{children}</body>
-        </AuthContextProvider>
-      </html>
+      <AuthContextProvider initialProfile={profile}>
+        {children}
+      </AuthContextProvider>
     );
   } catch (error) {
     redirect("/login");
