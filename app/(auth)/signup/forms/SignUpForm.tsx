@@ -1,7 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { useState } from "react";

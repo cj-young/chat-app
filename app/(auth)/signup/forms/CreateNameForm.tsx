@@ -1,19 +1,16 @@
 "use client";
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
-import { signOut } from "next-auth/react";
 import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
-import { createName } from "./actions";
+import { createName } from "../actions";
 
 export default function CreateNameForm() {
   const [error, setError] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
 
-  async function goBack() {
-    await signOut({ redirect: false });
-  }
+  async function goBack() {}
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
