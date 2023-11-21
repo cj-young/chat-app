@@ -6,7 +6,6 @@ import dbConnect from "@/lib/dbConnect";
 
 export async function GET(req: NextRequest) {
   await dbConnect();
-  4;
 
   const sessionParam = req.url.slice(req.url.lastIndexOf("/") + 1);
 
