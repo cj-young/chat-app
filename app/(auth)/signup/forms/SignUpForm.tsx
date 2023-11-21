@@ -6,7 +6,11 @@ import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 
-export default function SignUpForm() {
+interface Props {
+  goToSecondStage(): void;
+}
+
+export default function SignUpForm({ goToSecondStage }: Props) {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +19,9 @@ export default function SignUpForm() {
   async function handleSubmit(e: React.FormEvent) {
     try {
       e.preventDefault();
+
+      setError("");
+
       const response = await apiFetch("/auth/signup", "POST", {
         password,
         confirmPassword,
@@ -27,7 +34,7 @@ export default function SignUpForm() {
         return setError(data.message);
       }
 
-      console.log(data);
+      goToSecondStage();
     } catch (error) {
       setError("An error occurred while signing up");
     }
