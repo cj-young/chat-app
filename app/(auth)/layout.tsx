@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.scss";
+import "../globals.scss";
 import { DM_Sans } from "next/font/google";
 import { ReactNode } from "react";
-import AuthContextProvider from "@/contexts/AuthContext";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,9 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={dmSans.className}>
-      <AuthContextProvider>
-        <body>{children}</body>
-      </AuthContextProvider>
+      <body>{children}</body>
     </html>
   );
 }
