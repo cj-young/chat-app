@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
 import { createName } from "../actions";
 import { apiFetch } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 interface Props {
   goToFirstStage(): void;
@@ -14,6 +15,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
   const [error, setError] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
+  const router = useRouter();
 
   async function goBack() {
     goToFirstStage();
@@ -33,7 +35,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
         setError(data.message ?? "An error occurred, please try again");
       }
 
-      console.log(data);
+      router.push("/");
     } catch (error) {
       setError("An error occurred, please try again");
     }
