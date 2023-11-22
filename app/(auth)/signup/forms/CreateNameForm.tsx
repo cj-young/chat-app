@@ -22,8 +22,21 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    try {
+      const res = await apiFetch("/auth/create-name", "POST", {
+        displayName,
+        username
+      });
+      const data = await res.json();
 
-    const res = await createName({ displayName, username });
+      if (!res.ok) {
+        setError(data.message ?? "An error occurred, please try again");
+      }
+
+      console.log(data);
+    } catch (error) {
+      setError("An error occurred, please try again");
+    }
   }
 
   return (
