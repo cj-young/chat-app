@@ -6,6 +6,7 @@ export interface ISignupSession extends Document {
   user: mongoose.Types.ObjectId;
   password: string;
   email: string;
+  googleId: string;
   isExpired(): boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -20,6 +21,9 @@ const signupSessionSchema = new Schema<ISignupSession>(
     password: {
       type: String,
       required: true
+    },
+    googleId: {
+      type: String
     }
   },
   { timestamps: true }
