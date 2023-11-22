@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
 import "../globals.scss";
-import { DM_Sans } from "next/font/google";
 import { ReactNode } from "react";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import dbConnect from "@/lib/dbConnect";
 
 export default async function RootLayout({
   children
@@ -18,6 +17,8 @@ export default async function RootLayout({
     if (!sessionId || sessionId[0] !== "1") {
       redirect("/login");
     }
+
+    await dbConnect();
 
     const user = await getSessionUser(sessionId.slice(1));
 
