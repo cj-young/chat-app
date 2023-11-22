@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AuthStatus } from "./types/auth";
 export const runtime = "nodejs";
 
 const unauthRoutes = new Set(["/login", "/signup"]);
