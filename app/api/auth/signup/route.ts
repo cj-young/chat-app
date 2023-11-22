@@ -6,6 +6,7 @@ import SignupSession, {
   ISignupSession,
   SESSION_EXPIRY_SECONDS
 } from "@/models/SignupSession";
+import { SignUpCredentials } from "@/types/auth";
 
 export async function POST(req: NextRequest) {
   try {
