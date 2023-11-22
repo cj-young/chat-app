@@ -4,19 +4,26 @@ import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
 import { createName } from "../actions";
+import { apiFetch } from "@/lib/api";
 
-export default function CreateNameForm() {
+interface Props {
+  goToFirstStage(): void;
+}
+
+export default function CreateNameForm({ goToFirstStage }: Props) {
   const [error, setError] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
 
-  async function goBack() {}
+  async function goBack() {
+    goToFirstStage();
+    apiFetch("/auth/sign-out", "POST");
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     const res = await createName({ displayName, username });
-    console.log(res);
   }
 
   return (

@@ -14,8 +14,12 @@ export default function FormWrapper({ authStatus }: Props) {
     setHasSignedUp(true);
   }
 
+  function goToFirstStage() {
+    setHasSignedUp(false);
+  }
+
   return hasSignedUp ? (
-    <CreateNameForm />
+    <CreateNameForm goToFirstStage={goToFirstStage} />
   ) : (
     <SignUpForm goToSecondStage={goToSecondStage} />
   );
