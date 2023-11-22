@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/dbConnect";
 import Session from "@/models/Session";
 import SignupSession from "@/models/SignupSession";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,6 +12,8 @@ export async function POST(req: NextRequest) {
     }
 
     const sessionTag = sessionId[0];
+
+    await dbConnect();
 
     if (sessionTag === "0") {
       await SignupSession.findByIdAndDelete(sessionId.slice(1));
