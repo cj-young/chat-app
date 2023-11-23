@@ -1,4 +1,3 @@
-import "../globals.scss";
 import { ReactNode } from "react";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser } from "@/lib/auth";
