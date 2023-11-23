@@ -19,8 +19,7 @@ const signupSessionSchema = new Schema<ISignupSession>(
       required: true
     },
     password: {
-      type: String,
-      required: true
+      type: String
     },
     googleId: {
       type: String

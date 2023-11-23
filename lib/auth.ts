@@ -3,7 +3,7 @@ import { IUser } from "@/models/User";
 import dbConnect from "./dbConnect";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
 
-export async function createSession(user: IUser) {
+export async function createSession(user: IUser): Promise<ISession> {
   await dbConnect();
 
   const session = await Session.create({

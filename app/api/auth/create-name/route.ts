@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
       username,
       displayName,
       password: session.password,
-      email: session.email
+      email: session.email,
+      googleId: session.googleId
     });
 
     const newSession = await createSession(user);

@@ -6,6 +6,7 @@ import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { getGoogleOAuthUrl } from "@/lib/googleAuth";
 
 export default function Login() {
   const [error, setError] = useState("");
@@ -26,7 +27,6 @@ export default function Login() {
           const data = await res.json();
           setError(data.message);
         } catch (error) {
-          console.log("asdasdsadasd");
           setError("An error occurred, please try again");
         } finally {
           return false;
@@ -48,6 +48,10 @@ export default function Login() {
     if (loginSuccess) {
       router.push("/");
     }
+  }
+
+  async function logInWithGoogle() {
+    router.push(getGoogleOAuthUrl());
   }
 
   return (
@@ -75,7 +79,11 @@ export default function Login() {
         )}
         <button type="submit">Log In</button>
         <div className={styles.divider}></div>
-        <button className={styles.google} type="button">
+        <button
+          className={styles.google}
+          type="button"
+          onClick={logInWithGoogle}
+        >
           <GoogleLogo alt="Google Logo" />
           <span>Log in with Google</span>
         </button>

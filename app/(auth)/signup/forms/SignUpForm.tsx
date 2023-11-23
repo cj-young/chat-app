@@ -5,6 +5,8 @@ import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { getGoogleOAuthUrl } from "@/lib/googleAuth";
 
 interface Props {
   goToSecondStage(): void;
@@ -15,6 +17,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     try {
@@ -48,6 +51,10 @@ export default function SignUpForm({ goToSecondStage }: Props) {
     }
   }
 
+  async function signUpWithGoogle() {
+    router.push(getGoogleOAuthUrl());
+  }
+
   return (
     <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
       <input
@@ -78,7 +85,11 @@ export default function SignUpForm({ goToSecondStage }: Props) {
       )}
       <button type="submit">Create Account</button>
       <div className={styles.divider}></div>
-      <button className={styles.google} type="button">
+      <button
+        className={styles.google}
+        type="button"
+        onClick={signUpWithGoogle}
+      >
         <GoogleLogo alt="Google Logo" />
         <span>Continue with Google</span>
       </button>
