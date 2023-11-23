@@ -3,7 +3,6 @@ import styles from "../styles.module.scss";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
-import { createName } from "../actions";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
