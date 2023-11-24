@@ -6,6 +6,9 @@ import BackArrow from "@/public/left-long-solid.svg";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Input from "@/components/Input";
+import { CreateNameInfo, createNameSchema } from "@/lib/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 interface Props {
   goToFirstStage(): void;
@@ -13,17 +16,25 @@ interface Props {
 
 export default function CreateNameForm({ goToFirstStage }: Props) {
   const [error, setError] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [username, setUsername] = useState("");
   const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<CreateNameInfo>({
+    resolver: zodResolver(createNameSchema)
+  });
+
+  const usernameRegister = register("username");
+  const displayNameRegister = register("displayName");
 
   async function goBack() {
     goToFirstStage();
-    apiFetch("/auth/sign-out", "POST");
+    await apiFetch("/auth/sign-out", "POST");
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  async function submitData({ displayName, username }: CreateNameInfo) {
     try {
       const res = await apiFetch("/auth/create-name", "POST", {
         displayName,
@@ -42,7 +53,10 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
   }
 
   return (
-    <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
+    <form
+      className={styles["sign-up-form"]}
+      onSubmit={handleSubmit(submitData)}
+    >
       <button
         aria-label="back"
         type="button"
@@ -54,14 +68,21 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
       <Input
         type="text"
         placeholder="Display name"
-        value={displayName}
-        onChange={(e) => setDisplayName(e.target.value)}
+        name={displayNameRegister.name}
+        onChange={displayNameRegister.onChange}
+        onBlur={displayNameRegister.onBlur}
+        inputRef={displayNameRegister.ref}
+        error={errors.displayName?.message}
+        className={styles["first-input"]}
       />
       <Input
         type="text"
         placeholder="Username (unique)"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        name={usernameRegister.name}
+        onChange={usernameRegister.onChange}
+        onBlur={usernameRegister.onBlur}
+        inputRef={usernameRegister.ref}
+        error={errors.username?.message}
       />
       {error && (
         <div className={styles.error}>
@@ -69,7 +90,9 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
           <span>{error}</span>
         </div>
       )}
-      <button type="submit">Sumbit</button>
+      <button type="submit" className={styles["submit-button"]}>
+        Sumbit
+      </button>
     </form>
   );
 }

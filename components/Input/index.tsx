@@ -1,4 +1,5 @@
 import { InputHTMLAttributes, HTMLInputTypeAttribute, useState } from "react";
+import { RefCallBack } from "react-hook-form";
 import styles from "./styles.module.scss";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import EyeSlash from "@/public/eye-slash-solid.svg";
@@ -7,9 +8,16 @@ import Eye from "@/public/eye-solid.svg";
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   type: HTMLInputTypeAttribute;
   error?: string;
+  inputRef?: RefCallBack;
 }
 
-export default function index({ type, className, error, ...rest }: Props) {
+export default function index({
+  type,
+  className,
+  inputRef,
+  error,
+  ...rest
+}: Props) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   function togglePasswordVisibility() {
@@ -27,6 +35,7 @@ export default function index({ type, className, error, ...rest }: Props) {
         <input
           type={type === "password" && passwordVisible ? "text" : type}
           className={styles["input"]}
+          ref={inputRef}
           {...rest}
         />
         {type === "password" && (

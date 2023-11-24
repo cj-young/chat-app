@@ -20,19 +20,25 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
 
-  .back {
-    display: flex;
-    padding: 0;
-    background-color: transparent;
-    align-self: flex-start;
-    margin: 0;
-    gap: 0.5rem;
+.first-input {
+  margin-top: 1rem;
+}
 
-    svg {
-      width: 1.5rem;
-      fill: var(--text-primary);
-    }
+.back {
+  display: flex;
+  padding: 0;
+  background-color: transparent;
+  align-self: flex-start;
+  margin: 0;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    width: 1.5rem;
+    fill: var(--text-primary);
   }
 }
 

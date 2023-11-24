@@ -8,15 +8,26 @@ import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getGoogleOAuthUrl } from "@/lib/googleAuth";
 import Input from "@/components/Input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginCredentials, loginSchema } from "@/lib/schema";
 
 export default function Login() {
   const [error, setError] = useState("");
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<LoginCredentials>({
+    resolver: zodResolver(loginSchema)
+  });
+  const identifierRegister = register("identifier");
+  const passwordRegister = register("password");
 
   const router = useRouter();
 
-  async function logIn() {
+  async function logIn({ identifier, password }: LoginCredentials) {
     try {
       const res = await apiFetch("/auth/login", "POST", {
         identifier,
@@ -42,10 +53,9 @@ export default function Login() {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const loginSuccess = await logIn();
+  async function submitData(data: LoginCredentials) {
+    console.log(data);
+    const loginSuccess = await logIn(data);
     if (loginSuccess) {
       router.push("/");
     }
@@ -59,18 +69,27 @@ export default function Login() {
     <div className={styles.login}>
       <h1>Log In</h1>
 
-      <form className={styles["login-form"]} onSubmit={handleSubmit}>
+      <form
+        className={styles["login-form"]}
+        onSubmit={handleSubmit(submitData)}
+      >
         <Input
           type="text"
           placeholder="Username or email"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
+          name={identifierRegister.name}
+          onChange={identifierRegister.onChange}
+          onBlur={identifierRegister.onBlur}
+          inputRef={identifierRegister.ref}
+          error={errors.identifier?.message}
         />
         <Input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name={passwordRegister.name}
+          onChange={passwordRegister.onChange}
+          onBlur={passwordRegister.onBlur}
+          inputRef={passwordRegister.ref}
+          error={errors.password?.message}
         />
         {error && (
           <div className={styles.error}>

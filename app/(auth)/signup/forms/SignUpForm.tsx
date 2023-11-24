@@ -8,6 +8,9 @@ import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getGoogleOAuthUrl } from "@/lib/googleAuth";
 import Input from "@/components/Input";
+import { useForm } from "react-hook-form";
+import { SignupCredentials, signupSchema } from "@/lib/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
   goToSecondStage(): void;
@@ -15,15 +18,28 @@ interface Props {
 
 export default function SignUpForm({ goToSecondStage }: Props) {
   const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    try {
-      e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<SignupCredentials>({
+    resolver: zodResolver(signupSchema)
+  });
 
+  const emailRegister = register("email");
+  const passwordRegister = register("password", {
+    deps: ["confirmPassword"]
+  });
+  const confirmPasswordRegister = register("confirmPassword");
+
+  async function submitData({
+    password,
+    confirmPassword,
+    email
+  }: SignupCredentials) {
+    try {
       setError("");
 
       const response = await apiFetch("/auth/signup", "POST", {
@@ -43,40 +59,41 @@ export default function SignUpForm({ goToSecondStage }: Props) {
       setError("An error occurred while signing up");
     }
   }
-
-  function checkMatchingPasswords() {
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-    } else {
-      setError("");
-    }
-  }
-
   async function signUpWithGoogle() {
     router.push(getGoogleOAuthUrl());
   }
 
   return (
-    <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
+    <form
+      className={styles["sign-up-form"]}
+      onSubmit={handleSubmit(submitData)}
+    >
       <Input
         type="text"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        name={emailRegister.name}
+        onChange={emailRegister.onChange}
+        onBlur={emailRegister.onBlur}
+        inputRef={emailRegister.ref}
+        error={errors.email?.message}
       />
       <Input
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        onBlur={checkMatchingPasswords}
+        name={passwordRegister.name}
+        onChange={passwordRegister.onChange}
+        onBlur={passwordRegister.onBlur}
+        inputRef={passwordRegister.ref}
+        error={errors.password?.message}
       />
       <Input
         type="password"
         placeholder="Confirm password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        onBlur={checkMatchingPasswords}
+        name={confirmPasswordRegister.name}
+        onChange={confirmPasswordRegister.onChange}
+        onBlur={confirmPasswordRegister.onBlur}
+        inputRef={confirmPasswordRegister.ref}
+        error={errors.confirmPassword?.message}
       />
       {error && (
         <div className={styles.error}>
