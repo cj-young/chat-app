@@ -21,13 +21,16 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setError: setFieldError
   } = useForm<CreateNameInfo>({
     resolver: zodResolver(createNameSchema)
   });
 
   const usernameRegister = register("username");
   const displayNameRegister = register("displayName");
+
+  const fieldNames = new Set(["username", "displayName"]);
 
   async function goBack() {
     goToFirstStage();
@@ -43,7 +46,16 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message ?? "An error occurred, please try again");
+        if (data.field && fieldNames.has(data.field)) {
+          return setFieldError(data.field, {
+            type: "custom",
+            message: data.message
+          });
+        } else if (data.message) {
+          return setError(data.message);
+        } else {
+          return setError("An error occurred while signing up");
+        }
       }
 
       router.push("/");

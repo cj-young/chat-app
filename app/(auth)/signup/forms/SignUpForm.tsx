@@ -23,7 +23,8 @@ export default function SignUpForm({ goToSecondStage }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setError: setFieldError
   } = useForm<SignupCredentials>({
     resolver: zodResolver(signupSchema)
   });
@@ -33,6 +34,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
     deps: ["confirmPassword"]
   });
   const confirmPasswordRegister = register("confirmPassword");
+  const fieldNames = new Set(["email", "password", "confirmPassword"]);
 
   async function submitData({
     password,
@@ -42,16 +44,25 @@ export default function SignUpForm({ goToSecondStage }: Props) {
     try {
       setError("");
 
-      const response = await apiFetch("/auth/signup", "POST", {
+      const res = await apiFetch("/auth/signup", "POST", {
         password,
         confirmPassword,
         email
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok && data.message) {
-        return setError(data.message);
+      if (!res.ok) {
+        if (data.field && fieldNames.has(data.field)) {
+          return setFieldError(data.field, {
+            type: "custom",
+            message: data.message
+          });
+        } else if (data.message) {
+          return setError(data.message);
+        } else {
+          return setError("An error occurred while signing up");
+        }
       }
 
       goToSecondStage();

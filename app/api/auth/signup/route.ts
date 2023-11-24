@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     if (password !== confirmPassword) {
       return NextResponse.json(
-        { message: "Passwords do not match" },
+        { message: "Passwords do not match", field: "confirmPassword" },
         { status: 401 }
       );
     }
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { message: "Email already in use" },
+        { message: "Email already in use", field: "email" },
         { status: 401 }
       );
     }

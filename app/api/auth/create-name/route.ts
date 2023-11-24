@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "That username is taken" },
+        { message: "That username is taken", field: "username" },
         { status: 409 }
       );
     }

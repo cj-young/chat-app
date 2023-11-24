@@ -18,12 +18,15 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setError: setFieldError
   } = useForm<LoginCredentials>({
     resolver: zodResolver(loginSchema)
   });
   const identifierRegister = register("identifier");
   const passwordRegister = register("password");
+
+  const fieldNames = new Set(["identifier", "password"]);
 
   const router = useRouter();
 
@@ -34,18 +37,21 @@ export default function Login() {
         password
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        try {
-          const data = await res.json();
-          setError(data.message);
-        } catch (error) {
-          setError("An error occurred, please try again");
-        } finally {
-          return false;
+        if (data.field && fieldNames.has(data.field)) {
+          return setFieldError(data.field, {
+            type: "custom",
+            message: data.message
+          });
+        } else if (data.message) {
+          return setError(data.message);
+        } else {
+          return setError("An error occurred while signing up");
         }
       }
 
-      const data = await res.json();
       return true;
     } catch (error) {
       setError("An error occurred, please try again");
