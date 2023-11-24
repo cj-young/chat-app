@@ -9,6 +9,7 @@ import Input from "@/components/Input";
 import { CreateNameInfo, createNameSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import LoaderButton from "@/components/LoaderButton";
 
 interface Props {
   goToFirstStage(): void;
@@ -16,6 +17,7 @@ interface Props {
 
 export default function CreateNameForm({ goToFirstStage }: Props) {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -39,6 +41,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
 
   async function submitData({ displayName, username }: CreateNameInfo) {
     try {
+      setLoading(true);
       const res = await apiFetch("/auth/create-name", "POST", {
         displayName,
         username
@@ -46,6 +49,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         if (data.field && fieldNames.has(data.field)) {
           return setFieldError(data.field, {
             type: "custom",
@@ -102,9 +106,13 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
           <span>{error}</span>
         </div>
       )}
-      <button type="submit" className={styles["submit-button"]}>
+      <LoaderButton
+        type="submit"
+        className={styles["submit-button"]}
+        loading={loading}
+      >
         Sumbit
-      </button>
+      </LoaderButton>
     </form>
   );
 }

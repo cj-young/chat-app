@@ -11,6 +11,7 @@ import Input from "@/components/Input";
 import { useForm } from "react-hook-form";
 import { SignupCredentials, signupSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LoaderButton from "@/components/LoaderButton";
 
 interface Props {
   goToSecondStage(): void;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function SignUpForm({ goToSecondStage }: Props) {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -42,6 +44,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
     email
   }: SignupCredentials) {
     try {
+      setLoading(true);
       setError("");
 
       const res = await apiFetch("/auth/signup", "POST", {
@@ -53,6 +56,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         if (data.field && fieldNames.has(data.field)) {
           return setFieldError(data.field, {
             type: "custom",
@@ -112,9 +116,13 @@ export default function SignUpForm({ goToSecondStage }: Props) {
           <span>{error}</span>
         </div>
       )}
-      <button type="submit" className={styles["submit-button"]}>
+      <LoaderButton
+        type="submit"
+        className={styles["submit-button"]}
+        loading={loading}
+      >
         Create Account
-      </button>
+      </LoaderButton>
       <div className={styles.divider}></div>
       <button
         className={styles.google}

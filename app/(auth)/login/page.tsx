@@ -11,9 +11,11 @@ import Input from "@/components/Input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginCredentials, loginSchema } from "@/lib/schema";
+import LoaderButton from "@/components/LoaderButton";
 
 export default function Login() {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -60,10 +62,12 @@ export default function Login() {
   }
 
   async function submitData(data: LoginCredentials) {
-    console.log(data);
+    setLoading(true);
     const loginSuccess = await logIn(data);
     if (loginSuccess) {
       router.push("/");
+    } else {
+      setLoading(false);
     }
   }
 
@@ -78,6 +82,7 @@ export default function Login() {
       <form
         className={styles["login-form"]}
         onSubmit={handleSubmit(submitData)}
+        aria-disabled={loading}
       >
         <Input
           type="text"
@@ -103,9 +108,14 @@ export default function Login() {
             <span>{error}</span>
           </div>
         )}
-        <button type="submit" className={styles["submit-button"]}>
+        <LoaderButton
+          loading={loading}
+          type="submit"
+          className={styles["submit-button"]}
+          disabled={loading}
+        >
           Log In
-        </button>
+        </LoaderButton>
         <div className={styles.divider}></div>
         <button
           className={styles.google}
