@@ -7,6 +7,7 @@ import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getGoogleOAuthUrl } from "@/lib/googleAuth";
+import Input from "@/components/Input";
 
 export default function Login() {
   const [error, setError] = useState("");
@@ -59,13 +60,13 @@ export default function Login() {
       <h1>Log In</h1>
 
       <form className={styles["login-form"]} onSubmit={handleSubmit}>
-        <input
+        <Input
           type="text"
           placeholder="Username or email"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
         />
-        <input
+        <Input
           type="password"
           placeholder="Password"
           value={password}
@@ -77,7 +78,9 @@ export default function Login() {
             <span>{error}</span>
           </div>
         )}
-        <button type="submit">Log In</button>
+        <button type="submit" className={styles["submit-button"]}>
+          Log In
+        </button>
         <div className={styles.divider}></div>
         <button
           className={styles.google}

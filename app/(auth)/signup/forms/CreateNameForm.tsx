@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import BackArrow from "@/public/left-long-solid.svg";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import Input from "@/components/Input";
 
 interface Props {
   goToFirstStage(): void;
@@ -50,13 +51,13 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
       >
         <BackArrow alt="Go back" /> Back
       </button>
-      <input
+      <Input
         type="text"
         placeholder="Display name"
         value={displayName}
         onChange={(e) => setDisplayName(e.target.value)}
       />
-      <input
+      <Input
         type="text"
         placeholder="Username (unique)"
         value={username}

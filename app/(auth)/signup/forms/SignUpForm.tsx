@@ -7,6 +7,7 @@ import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { getGoogleOAuthUrl } from "@/lib/googleAuth";
+import Input from "@/components/Input";
 
 interface Props {
   goToSecondStage(): void;
@@ -57,20 +58,20 @@ export default function SignUpForm({ goToSecondStage }: Props) {
 
   return (
     <form className={styles["sign-up-form"]} onSubmit={handleSubmit}>
-      <input
+      <Input
         type="text"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <input
+      <Input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         onBlur={checkMatchingPasswords}
       />
-      <input
+      <Input
         type="password"
         placeholder="Confirm password"
         value={confirmPassword}
@@ -83,7 +84,9 @@ export default function SignUpForm({ goToSecondStage }: Props) {
           <span>{error}</span>
         </div>
       )}
-      <button type="submit">Create Account</button>
+      <button type="submit" className={styles["submit-button"]}>
+        Create Account
+      </button>
       <div className={styles.divider}></div>
       <button
         className={styles.google}
