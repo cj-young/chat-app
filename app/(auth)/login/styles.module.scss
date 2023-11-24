@@ -72,6 +72,27 @@
   }
 }
 
+.error {
+  display: flex;
+  padding: 0.25rem 0.75rem;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  background-color: var(--clr-error);
+  border-radius: var(--br);
+
+  span {
+    color: var(--text-primary);
+  }
+
+  svg {
+    height: 1rem;
+    fill: var(--text-primary);
+  }
+}
+
 .sign-up {
   margin-top: 1.5rem;
 
