@@ -20,62 +20,35 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
-  input {
-    background-color: var(--bg-contrast-100);
-    border: none;
-    border-radius: var(--br);
-    padding: 0.75rem 1rem;
-    outline: none;
-    width: 100%;
-  }
-
-  input + input {
-    margin-top: 0.75rem;
-  }
-
-  button {
-    background-color: var(--clr-primary);
-    width: 100%;
-    border-radius: var(--br);
-    border: none;
-    font-weight: bold;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-
-  .google {
-    width: 100%;
-    margin-top: 1.5rem;
-    background-color: #eee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-
-    span {
-      color: #111;
-    }
-  }
 }
 
-.error {
-  --color: var(--clr-error);
-  margin-top: 0.5rem;
-  align-self: flex-start;
+.submit-button {
+  background-color: var(--clr-primary);
+  width: 100%;
+  border-radius: var(--br);
+  border: none;
+  font-weight: bold;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.google {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-radius: var(--br);
+  border: none;
+  padding: 0.75rem 1rem;
+  background-color: #eee;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  width: 100%;
-
-  svg {
-    height: 1rem;
-    fill: var(--color);
-  }
+  cursor: pointer;
+  font-weight: bold;
 
   span {
-    color: var(--color);
+    color: #111;
   }
 }
 
