@@ -1,8 +1,8 @@
 import { createSession } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
+import { LoginCredentials } from "@/lib/schema";
 import { ISession, SESSION_EXPIRY_SECONDS } from "@/models/Session";
 import User, { IUser } from "@/models/User";
-import { LoginCredentials } from "@/types/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

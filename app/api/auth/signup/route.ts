@@ -6,12 +6,12 @@ import SignupSession, {
   ISignupSession,
   SESSION_EXPIRY_SECONDS
 } from "@/models/SignupSession";
-import { SignUpCredentials } from "@/types/auth";
+import { SignupCredentials } from "@/lib/schema";
 
 export async function POST(req: NextRequest) {
   try {
     const { password, confirmPassword, email } =
-      (await req.json()) as SignUpCredentials;
+      (await req.json()) as SignupCredentials;
 
     if (!password || !confirmPassword || !email) {
       return NextResponse.json(
