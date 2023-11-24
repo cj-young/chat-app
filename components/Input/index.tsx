@@ -11,7 +11,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   inputRef?: RefCallBack;
 }
 
-export default function index({
+export default function Input({
   type,
   className,
   inputRef,
