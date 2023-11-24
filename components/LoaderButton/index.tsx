@@ -19,7 +19,11 @@ export default function LoaderButton({
       {...rest}
     >
       {children}
-      {loading && <Loader className={styles["loader"]} />}
+      {loading && (
+        <div className={styles["loader-wrapper"]}>
+          <Loader className={styles["loader"]} />
+        </div>
+      )}
     </button>
   );
 }

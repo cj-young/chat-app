@@ -11,19 +11,18 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: hidden;
 
   &:disabled {
     background-color: var(--bg-contrast-100);
     cursor: default;
-
-    & > * {
-      opacity: 0;
-    }
-
-    & > *:last-child {
-      opacity: 1;
-    }
   }
+}
+
+.loader-wrapper {
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-contrast-100);
 }
 
 .loader {
