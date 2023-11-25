@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from "react";
-import styles from "./styles.module.scss";
 import Loader from "../Loader";
+import styles from "./styles.module.scss";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading: boolean;

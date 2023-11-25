@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.scss";
 import { DM_Sans } from "next/font/google";
 import { ReactNode } from "react";
+import "./globals.scss";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],

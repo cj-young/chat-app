@@ -1,12 +1,14 @@
+import { createSession } from "@/lib/auth";
+import dbConnect from "@/lib/dbConnect";
+import { SESSION_EXPIRY_SECONDS } from "@/models/Session";
+import SignupSession, {
+  ISignupSession,
+  SESSION_EXPIRY_SECONDS as SIGNUP_SESSION_EXPIRY_SECONDS
+} from "@/models/SignupSession";
+import User from "@/models/User";
+import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import User from "@/models/User";
-import { createSession } from "@/lib/auth";
-import { SESSION_EXPIRY_SECONDS } from "@/models/Session";
-import SignupSession, { ISignupSession } from "@/models/SignupSession";
-import { SESSION_EXPIRY_SECONDS as SIGNUP_SESSION_EXPIRY_SECONDS } from "@/models/SignupSession";
-import dbConnect from "@/lib/dbConnect";
 
 interface IGoogleUser {
   iss: string;

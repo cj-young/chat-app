@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import dbConnect from "@/lib/dbConnect";
 import Session, { ISession } from "@/models/Session";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
-import dbConnect from "@/lib/dbConnect";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {

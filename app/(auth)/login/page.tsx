@@ -1,17 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import styles from "./styles.module.scss";
-import Link from "next/link";
+import Input from "@/components/Input";
+import LoaderButton from "@/components/LoaderButton";
+import { apiFetch } from "@/lib/api";
+import { getGoogleOAuthUrl } from "@/lib/googleAuth";
+import { LoginCredentials, loginSchema } from "@/lib/schema";
 import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
-import { apiFetch } from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { getGoogleOAuthUrl } from "@/lib/googleAuth";
-import Input from "@/components/Input";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginCredentials, loginSchema } from "@/lib/schema";
-import LoaderButton from "@/components/LoaderButton";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import styles from "./styles.module.scss";
 
 export default function Login() {
   const [error, setError] = useState("");

@@ -1,9 +1,9 @@
-import { InputHTMLAttributes, HTMLInputTypeAttribute, useState } from "react";
-import { RefCallBack } from "react-hook-form";
-import styles from "./styles.module.scss";
-import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import EyeSlash from "@/public/eye-slash-solid.svg";
 import Eye from "@/public/eye-solid.svg";
+import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
+import { HTMLInputTypeAttribute, InputHTMLAttributes, useState } from "react";
+import { RefCallBack } from "react-hook-form";
+import styles from "./styles.module.scss";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   type: HTMLInputTypeAttribute;

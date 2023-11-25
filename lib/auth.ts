@@ -1,7 +1,7 @@
 import Session, { ISession } from "@/models/Session";
+import SignupSession, { ISignupSession } from "@/models/SignupSession";
 import { IUser } from "@/models/User";
 import dbConnect from "./dbConnect";
-import SignupSession, { ISignupSession } from "@/models/SignupSession";
 
 export async function createSession(user: IUser): Promise<ISession> {
   await dbConnect();

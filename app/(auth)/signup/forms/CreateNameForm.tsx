@@ -1,15 +1,15 @@
 "use client";
-import styles from "../styles.module.scss";
-import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
-import { FormEvent, useState } from "react";
-import BackArrow from "@/public/left-long-solid.svg";
-import { apiFetch } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import Input from "@/components/Input";
-import { CreateNameInfo, createNameSchema } from "@/lib/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import LoaderButton from "@/components/LoaderButton";
+import { apiFetch } from "@/lib/api";
+import { CreateNameInfo, createNameSchema } from "@/lib/schema";
+import BackArrow from "@/public/left-long-solid.svg";
+import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import styles from "../styles.module.scss";
 
 interface Props {
   goToFirstStage(): void;

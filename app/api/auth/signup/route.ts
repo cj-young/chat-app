@@ -1,12 +1,12 @@
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
-import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import { SignupCredentials } from "@/lib/schema";
 import SignupSession, {
   ISignupSession,
   SESSION_EXPIRY_SECONDS
 } from "@/models/SignupSession";
-import { SignupCredentials } from "@/lib/schema";
+import User from "@/models/User";
+import bcrypt from "bcrypt";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {

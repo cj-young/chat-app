@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser } from "@/lib/auth";
+import dbConnect from "@/lib/dbConnect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import dbConnect from "@/lib/dbConnect";
+import { ReactNode } from "react";
 
 export default async function RootLayout({
   children

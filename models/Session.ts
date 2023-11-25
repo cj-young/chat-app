@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models, Document } from "mongoose";
+import mongoose, { Document, Schema, model, models } from "mongoose";
 
 export const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 5; // 5 days
 
