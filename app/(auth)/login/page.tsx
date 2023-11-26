@@ -48,9 +48,11 @@ export default function Login() {
             message: data.message
           });
         } else if (data.message) {
-          return setError(data.message);
+          setError(data.message);
+          return false;
         } else {
-          return setError("An error occurred while signing up");
+          setError("An error occurred while signing up");
+          return false;
         }
       }
 
