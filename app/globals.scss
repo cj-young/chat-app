@@ -36,7 +36,6 @@ ol[role="list"] {
 
 /* Set core body defaults */
 body {
-  min-height: 100vh;
   line-height: 1.5;
 }
 
@@ -90,6 +89,8 @@ textarea:not([rows]) {
   scroll-margin-block: 5ex;
 }
 
+// ===== Main Styles ===== //
+
 :root {
   --clr-primary: hsl(83, 100%, 32%);
   --clr-error: hsl(10, 85%, 45%);
@@ -113,4 +114,12 @@ textarea:not([rows]) {
 
 * {
   color: var(--text-primary);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
 }

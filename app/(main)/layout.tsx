@@ -1,9 +1,12 @@
+import MainNavbar from "@/app/(main)/components/MainNavbar";
+import Sidebar from "@/app/(main)/components/Sidebar";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import styles from "./layout.module.scss";
 
 export default async function RootLayout({
   children
@@ -16,7 +19,6 @@ export default async function RootLayout({
     if (!sessionId || sessionId[0] !== "1") {
       redirect("/login");
     }
-
     await dbConnect();
 
     const user = await getSessionUser(sessionId.slice(1));
@@ -34,7 +36,11 @@ export default async function RootLayout({
 
     return (
       <AuthContextProvider initialProfile={profile}>
-        {children}
+        <div className={styles["app-container"]}>
+          <MainNavbar />
+          <Sidebar />
+          {children}
+        </div>
       </AuthContextProvider>
     );
   } catch (error) {

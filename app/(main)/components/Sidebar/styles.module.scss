@@ -1,8 +1,12 @@
 @import "@/styles/mixins";
 
-.main {
-  background-color: hsl(335, 100%, 61%);
+.sidebar {
+  background-color: hsl(146, 82%, 54%);
   flex: 1;
+
+  @include large-screen {
+    flex: 0 0 15rem;
+  }
 }
 
 .hidden {
