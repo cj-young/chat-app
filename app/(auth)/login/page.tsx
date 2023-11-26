@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import styles from "./styles.module.scss";
+import styles from "./page.module.scss";
 
 export default function Login() {
   const [error, setError] = useState("");

@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import styles from "../styles.module.scss";
+import styles from "../page.module.scss";
 
 interface Props {
   goToFirstStage(): void;

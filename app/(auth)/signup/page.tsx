@@ -2,7 +2,7 @@ import { getSignupSession } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
 import { cookies } from "next/headers";
 import FormWrapper from "./forms/FormWrapper";
-import styles from "./styles.module.scss";
+import styles from "./page.module.scss";
 
 export default async function SignUp() {
   let authStatus: "unauthenticated" | "signingUp";
