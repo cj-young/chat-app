@@ -1,4 +1,8 @@
+import Session from "@/models/Session";
+import SignupSession from "@/models/SignupSession";
+import User from "@/models/User";
 import mongoose from "mongoose";
+
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -31,6 +35,18 @@ async function dbConnect() {
   }
   try {
     cached.conn = await cached.promise;
+
+    if (!cached.conn.models.User) {
+      cached.conn.model("User", User);
+    }
+
+    if (!cached.conn.models.Session) {
+      cached.conn.model("Session", Session);
+    }
+
+    if (!cached.conn.models.SignupSession) {
+      cached.conn.model("SignupSession", SignupSession);
+    }
   } catch (e) {
     cached.promise = null;
     throw e;
