@@ -1,7 +1,7 @@
 @import "@/styles/mixins";
 
 .sidebar {
-  background-color: hsl(146, 82%, 54%);
+  background-color: var(--bg-contrast-100);
   flex: 1;
 
   @include large-screen {

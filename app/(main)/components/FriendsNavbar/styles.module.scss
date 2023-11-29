@@ -1,0 +1,52 @@
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.title {
+  font-size: var(--fs-600);
+  font-weight: bold;
+}
+
+.nav-items {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.nav-link {
+  list-style: none;
+  font-size: var(--fs-400);
+
+  button {
+    background-color: transparent;
+    padding: 0.0625rem 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--br);
+
+    &:hover {
+      background-color: var(--clr-hover);
+    }
+  }
+
+  .add-friend {
+    background-color: var(--clr-primary);
+    display: flex;
+    font-weight: bold;
+    gap: 0.25rem;
+
+    &:hover {
+      background-color: var(--clr-primary);
+    }
+
+    svg {
+      width: 0.75rem;
+      fill: var(--text-primary);
+    }
+  }
+}

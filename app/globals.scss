@@ -92,16 +92,23 @@ textarea:not([rows]) {
 // ===== Main Styles ===== //
 
 :root {
-  --clr-primary: hsl(83, 100%, 32%);
+  --clr-primary: hsl(83 100% 25%);
   --clr-error: hsl(10, 85%, 45%);
 
-  --bg-main: hsl(83, 5%, 21%);
-  --bg-contrast-100: hsl(81, 7%, 18%);
-  --bg-contrast-200: hsl(78, 6%, 13%);
+  --bg-main: hsl(80, 6%, 19%);
+  --bg-contrast-100: hsl(75, 5%, 17%);
+  --bg-contrast-200: hsl(80, 5%, 12%);
 
   --text-primary: hsl(80, 27%, 94%);
   --text-contrast-100: hsl(83, 11%, 76%);
+  --text-contrast-200: hsl(86, 9%, 64%);
 
+  --clr-hover: hsl(83, 5%, 25%);
+  --clr-select: hsl(83, 5%, 35%);
+
+  --fs-100: 0.5rem;
+  --fs-200: 0.75rem;
+  --fs-300: 0.875rem;
   --fs-400: 1rem;
   --fs-500: 1.25rem;
   --fs-600: 1.5rem;
@@ -118,8 +125,10 @@ textarea:not([rows]) {
 
 html {
   height: 100%;
+  width: 100%;
 }
 
 body {
   height: 100%;
+  width: 100%;
 }

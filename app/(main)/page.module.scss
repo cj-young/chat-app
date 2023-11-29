@@ -1,8 +1,10 @@
 @import "@/styles/mixins";
 
 .main {
-  background-color: hsl(335, 100%, 61%);
+  background-color: var(--bg-main);
   flex: 1;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .hidden {

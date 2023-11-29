@@ -1,5 +1,16 @@
+"use client";
+import { useUiContext } from "@/contexts/UiContext";
 import styles from "./styles.module.scss";
 
 export default function MainNavbar() {
-  return <nav className={[styles["nav"], styles["hidden"]].join(" ")}></nav>;
+  const { mobileNavExpanded } = useUiContext();
+
+  return (
+    <nav
+      className={[
+        styles["nav"],
+        mobileNavExpanded ? "" : styles["hidden"]
+      ].join(" ")}
+    ></nav>
+  );
 }

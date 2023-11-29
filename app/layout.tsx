@@ -1,3 +1,4 @@
+import UiContextProvider from "@/contexts/UiContext";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { ReactNode } from "react";
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={dmSans.className}>
-      <body>{children}</body>
+      <UiContextProvider>
+        <body>{children}</body>
+      </UiContextProvider>
     </html>
   );
 }
