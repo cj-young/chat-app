@@ -92,19 +92,19 @@ textarea:not([rows]) {
 // ===== Main Styles ===== //
 
 :root {
-  --clr-primary: hsl(83 100% 25%);
-  --clr-error: hsl(10, 85%, 45%);
+  --clr-primary: hsl(143 100% 26%);
+  --clr-error: hsl(357, 85%, 45%);
 
-  --bg-main: hsl(80, 6%, 19%);
-  --bg-contrast-100: hsl(75, 5%, 17%);
-  --bg-contrast-200: hsl(80, 5%, 12%);
+  --bg-main: hsl(147, 6%, 19%);
+  --bg-contrast-100: hsl(144, 5%, 16%);
+  --bg-contrast-200: hsl(147, 5%, 12%);
 
-  --text-primary: hsl(80, 27%, 94%);
-  --text-contrast-100: hsl(83, 11%, 76%);
-  --text-contrast-200: hsl(86, 9%, 64%);
+  --text-primary: hsl(140, 27%, 94%);
+  --text-contrast-100: hsl(143, 11%, 76%);
+  --text-contrast-200: hsl(146, 9%, 64%);
 
-  --clr-hover: hsl(83, 5%, 25%);
-  --clr-select: hsl(83, 5%, 35%);
+  --clr-hover: hsl(143, 5%, 25%);
+  --clr-select: hsl(143, 5%, 35%);
 
   --fs-100: 0.5rem;
   --fs-200: 0.75rem;
