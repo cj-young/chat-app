@@ -91,6 +91,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
         onBlur={emailRegister.onBlur}
         inputRef={emailRegister.ref}
         error={errors.email?.message}
+        className={styles["input"]}
       />
       <Input
         type="password"
@@ -100,6 +101,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
         onBlur={passwordRegister.onBlur}
         inputRef={passwordRegister.ref}
         error={errors.password?.message}
+        className={styles["input"]}
       />
       <Input
         type="password"
@@ -109,6 +111,7 @@ export default function SignUpForm({ goToSecondStage }: Props) {
         onBlur={confirmPasswordRegister.onBlur}
         inputRef={confirmPasswordRegister.ref}
         error={errors.confirmPassword?.message}
+        className={styles["input"]}
       />
       {error && (
         <div className={styles.error}>

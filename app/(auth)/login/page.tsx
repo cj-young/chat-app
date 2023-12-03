@@ -94,6 +94,7 @@ export default function Login() {
           onBlur={identifierRegister.onBlur}
           inputRef={identifierRegister.ref}
           error={errors.identifier?.message}
+          className={styles["input"]}
         />
         <Input
           type="password"
@@ -103,6 +104,7 @@ export default function Login() {
           onBlur={passwordRegister.onBlur}
           inputRef={passwordRegister.ref}
           error={errors.password?.message}
+          className={styles["input"]}
         />
         {error && (
           <div className={styles.error}>

@@ -89,7 +89,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
         onBlur={displayNameRegister.onBlur}
         inputRef={displayNameRegister.ref}
         error={errors.displayName?.message}
-        className={styles["first-input"]}
+        className={[styles["first-input"], styles["input"]].join(" ")}
       />
       <Input
         type="text"
@@ -99,6 +99,7 @@ export default function CreateNameForm({ goToFirstStage }: Props) {
         onBlur={usernameRegister.onBlur}
         inputRef={usernameRegister.ref}
         error={errors.username?.message}
+        className={styles["input"]}
       />
       {error && (
         <div className={styles.error}>
