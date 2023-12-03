@@ -1,0 +1,19 @@
+.add-friend {
+  padding: 1.5rem;
+  width: 75%;
+}
+
+.title {
+  font-size: var(--fs-500);
+}
+
+.input {
+  flex-grow: 1;
+}
+
+.form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
