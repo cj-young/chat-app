@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose, { Document, Schema, model, models } from "mongoose";
+import defaultProfilePictures from "./defaultProfilePictures";
 
 export interface IUser extends Document {
   username: string;
@@ -73,7 +74,10 @@ const userSchema = new Schema<IUser>(
     imageUrl: {
       type: String,
       required: true,
-      default: "placeholder"
+      default: () =>
+        defaultProfilePictures[
+          Math.floor(Math.random() * defaultProfilePictures.length)
+        ]
     }
   },
   { timestamps: true }
