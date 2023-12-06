@@ -1,0 +1,61 @@
+.friend-request {
+  height: 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--bg-contrast-100);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.display-name {
+  font-weight: bold;
+  line-height: 1;
+}
+
+.username {
+  line-height: 1;
+  color: var(--text-contrast-200);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button {
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--bg-contrast-200);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  transition: background-color 100ms ease;
+
+  svg {
+    width: 1.5rem;
+    fill: var(--text-primary);
+  }
+}
+
+.accept:hover {
+  background-color: var(--clr-primary);
+}
+
+.decline:hover {
+  background-color: var(--clr-error);
+}
