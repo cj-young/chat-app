@@ -1,4 +1,6 @@
 "use client";
+import NumberBadge from "@/components/NumberBadge";
+import { useAuthContext } from "@/contexts/AuthContext";
 import Plus from "@/public/plus-solid.svg";
 import { FriendPage } from "@/types/friends";
 import { Dispatch, SetStateAction } from "react";
@@ -9,6 +11,8 @@ interface Props {
 }
 
 export default function FriendsNavbar({ setPage }: Props) {
+  const { friendRequests } = useAuthContext();
+
   return (
     <div className={styles["nav-container"]}>
       <h1 className={styles["title"]}>Friends</h1>
@@ -21,7 +25,9 @@ export default function FriendsNavbar({ setPage }: Props) {
             <button onClick={() => setPage("all")}>All</button>
           </li>
           <li className={styles["nav-link"]}>
-            <button onClick={() => setPage("pending")}>Pending</button>
+            <button onClick={() => setPage("pending")}>
+              Pending <NumberBadge number={friendRequests.length} />
+            </button>
           </li>
           <li className={styles["nav-link"]}>
             <button onClick={() => setPage("blocked")}>Blocked</button>

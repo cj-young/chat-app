@@ -28,6 +28,9 @@
     border: none;
     cursor: pointer;
     border-radius: var(--br);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
     &:hover {
       background-color: var(--clr-hover);
