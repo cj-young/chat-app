@@ -4,6 +4,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { FriendPage } from "@/types/friends";
 import { useState } from "react";
 import AddFriend from "./components/AddFriend";
+import FriendRequests from "./components/FriendRequests";
 import FriendsNavbar from "./components/FriendsNavbar";
 import styles from "./page.module.scss";
 
@@ -20,7 +21,13 @@ export default function Home() {
       ].join(" ")}
     >
       <FriendsNavbar setPage={setFriendPage} />
-      {friendPage === "add" ? <AddFriend /> : ""}
+      {friendPage === "add" ? (
+        <AddFriend />
+      ) : friendPage === "pending" ? (
+        <FriendRequests />
+      ) : (
+        ""
+      )}
     </main>
   );
 }
