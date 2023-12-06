@@ -1,7 +1,7 @@
 import MainNavbar from "@/app/(main)/components/MainNavbar";
 import Sidebar from "@/app/(main)/components/Sidebar";
 import AuthContextProvider from "@/contexts/AuthContext";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -27,15 +27,16 @@ export default async function RootLayout({
       redirect("/login");
     }
 
-    const profile = {
-      email: user.email,
-      username: user.username,
-      displayName: user.displayName,
-      imageUrl: user.imageUrl
-    };
+    const profile = getUserProfile(user);
+    const friendRequests = user.friendRequests.map((requester) =>
+      getUserProfile(requester)
+    );
 
     return (
-      <AuthContextProvider initialProfile={profile}>
+      <AuthContextProvider
+        initialProfile={profile}
+        initialFriendRequests={friendRequests}
+      >
         <div className={styles["app-container"]}>
           <MainNavbar />
           <Sidebar />
