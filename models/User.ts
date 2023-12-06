@@ -12,6 +12,7 @@ export interface IUser extends Document {
   friendRequests: mongoose.Types.ObjectId[];
   servers: mongoose.Types.ObjectId[];
   imageUrl: string;
+  onlineStatus: "online" | "offline" | "idle" | "doNotDisturb";
   checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -78,6 +79,11 @@ const userSchema = new Schema<IUser>(
         defaultProfilePictures[
           Math.floor(Math.random() * defaultProfilePictures.length)
         ]
+    },
+    onlineStatus: {
+      type: String,
+      enum: ["online", "offline", "idle", "doNotDisturb"],
+      default: "offline"
     }
   },
   { timestamps: true }
