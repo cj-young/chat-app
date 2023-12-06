@@ -1,17 +1,43 @@
 "use client";
 import Input from "@/components/Input";
 import LoaderButton from "@/components/LoaderButton";
+import { apiFetch } from "@/lib/api";
+import { FormEvent, useState } from "react";
 import styles from "./styles.module.scss";
 
 export default function AddFriend() {
+  const [receiver, setReceiver] = useState("");
+  const [formError, setFormError] = useState("");
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setFormError("");
+    try {
+      const res = await apiFetch("/friends/add", "POST", {
+        receiverUsername: receiver
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFormError(data.message ?? "An error occurred, please try again");
+      }
+    } catch (error) {
+      setFormError("An error occurred, please try again");
+    }
+  }
+
   return (
     <div className={styles["add-friend"]}>
       <h2 className={styles["title"]}>Add Friend</h2>
-      <form className={styles["form"]}>
+      <form className={styles["form"]} onSubmit={handleSubmit}>
         <Input
           type="text"
           className={styles["input"]}
           placeholder="Add friend by username"
+          value={receiver}
+          onChange={(e) => setReceiver(e.target.value)}
+          error={formError}
         />
         <LoaderButton loading={false}>Add Friend</LoaderButton>
       </form>
