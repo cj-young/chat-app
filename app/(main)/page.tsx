@@ -1,12 +1,11 @@
 "use client";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { FriendPage } from "@/types/friends";
 import { useState } from "react";
 import AddFriend from "./components/AddFriend";
 import FriendsNavbar from "./components/FriendsNavbar";
 import styles from "./page.module.scss";
-
-type FriendPage = "online" | "all" | "pending" | "blocked" | "add";
 
 export default function Home() {
   const { profile } = useAuthContext();
@@ -20,7 +19,7 @@ export default function Home() {
         mobileNavExpanded ? styles["hidden"] : ""
       ].join(" ")}
     >
-      <FriendsNavbar />
+      <FriendsNavbar setPage={setFriendPage} />
       {friendPage === "add" ? <AddFriend /> : ""}
     </main>
   );
