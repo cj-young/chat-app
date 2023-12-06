@@ -1,6 +1,7 @@
 import Session, { ISession } from "@/models/Session";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
 import User, { IUser } from "@/models/User";
+import { IProfile } from "@/types/user";
 import dbConnect from "./dbConnect";
 
 export async function createSession(user: IUser): Promise<ISession> {
@@ -38,7 +39,7 @@ export async function getSignupSession(sessionId: string) {
 
 export function getUserProfile(
   user: Pick<IUser, "email" | "username" | "displayName" | "imageUrl">
-) {
+): IProfile {
   return {
     email: user.email,
     username: user.username,
