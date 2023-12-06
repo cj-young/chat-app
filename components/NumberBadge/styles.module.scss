@@ -1,0 +1,27 @@
+.badge {
+  height: 1rem;
+  background-color: var(--clr-accent);
+  font-size: var(--fs-200);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--br);
+  padding: 0.25rem;
+}
+
+.length-1 {
+  width: 1rem;
+}
+
+.length-2 {
+  width: 1.5rem;
+}
+
+.length-3 {
+  width: 2rem;
+}
+
+.length-4 {
+  width: 2.5rem;
+}
