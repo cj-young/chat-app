@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import Session, { ISession } from "@/models/Session";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
+import { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -13,9 +14,13 @@ export async function GET(req: NextRequest) {
     const sessionTag = sessionParam[0];
 
     if (sessionTag === "1") {
-      const session = (await Session.findById(sessionId)) as ISession;
-      if (session && !session.isExpired()) {
+      const session = await Session.findById<ISession>(
+        sessionId
+      ).populate<IUser>("user");
+      if (session && !session.isExpired() && session.user) {
         return NextResponse.json({ authStatus: "authenticated" });
+      } else {
+        return NextResponse.json({ authStatus: "unauthenticated" });
       }
     } else if (sessionTag === "0") {
       const session = (await SignupSession.findById(
