@@ -9,11 +9,17 @@ export default function FriendRequests() {
   return (
     <div className={styles["friend-requests"]}>
       <h2 className={styles["title"]}>Friend Requests</h2>
-      <ul className={styles["requests-list"]}>
-        {friendRequests.map((request) => (
-          <FriendRequest user={request} key={request.username} />
-        ))}
-      </ul>
+      {friendRequests.length > 0 ? (
+        <ul className={styles["requests-list"]}>
+          {friendRequests.map((request) => (
+            <FriendRequest user={request} key={request.username} />
+          ))}
+        </ul>
+      ) : (
+        <p className={styles["no-pending-requests"]}>
+          Pending friend requests will appear here
+        </p>
+      )}
     </div>
   );
 }
