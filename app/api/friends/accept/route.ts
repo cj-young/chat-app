@@ -13,11 +13,17 @@ export async function POST(req: NextRequest) {
     const { query, userType } = getSession(sessionId);
     if (userType !== "verified") return invalidSession();
 
-    const session = await query.populate<IUser>("user");
+    const session = await query.populate<{ user: IUser }>("user");
     if (!session?.user) return invalidSession();
     const { user } = session;
 
     const { receiverId } = (await req.json()) as { receiverId: string };
+
+    if (user.id === receiverId) {
+      return NextResponse.json({
+        message: "You cannot add yourself as a friend"
+      });
+    }
 
     const [receiver, _sender] = await Promise.all([
       User.findByIdAndUpdate<IUser>(receiverId, {
