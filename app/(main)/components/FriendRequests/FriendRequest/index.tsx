@@ -23,6 +23,18 @@ export default function FriendRequest({ user }: Props) {
     }
   }
 
+  async function handleDecline() {
+    try {
+      const res = await apiFetch("/friends/decline", "POST", {
+        receiverId: user.id
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles["friend-request"]}>
       <div className={styles["left"]}>
@@ -43,6 +55,7 @@ export default function FriendRequest({ user }: Props) {
         <button
           className={[styles["button"], styles["decline"]].join(" ")}
           aria-label="Decline friend request"
+          onClick={handleDecline}
         >
           <XIcon />
         </button>
