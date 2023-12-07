@@ -1,3 +1,4 @@
+import CheckIcon from "@/public/check-solid.svg";
 import EyeSlash from "@/public/eye-slash-solid.svg";
 import Eye from "@/public/eye-solid.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
@@ -9,6 +10,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   type: HTMLInputTypeAttribute;
   error?: string;
   inputRef?: RefCallBack;
+  successMessage?: string;
 }
 
 export default function Input({
@@ -16,6 +18,7 @@ export default function Input({
   className,
   inputRef,
   error,
+  successMessage,
   ...rest
 }: Props) {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -29,7 +32,11 @@ export default function Input({
       <div
         className={[
           styles["input-wrapper"],
-          error ? styles["input-error"] : ""
+          error
+            ? styles["input-error"]
+            : successMessage
+            ? styles["input-success"]
+            : ""
         ].join(" ")}
       >
         <input
@@ -49,11 +56,18 @@ export default function Input({
           </button>
         )}
       </div>
-      {error && (
+      {error ? (
         <div className={styles["error"]}>
           <ErrorSymbol />
           <span>{error}</span>
         </div>
+      ) : successMessage ? (
+        <div className={styles["success-message"]}>
+          <CheckIcon />
+          <span>{successMessage}</span>
+        </div>
+      ) : (
+        <></>
       )}
     </div>
   );
