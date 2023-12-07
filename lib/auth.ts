@@ -2,6 +2,7 @@ import Session, { ISession } from "@/models/Session";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
 import User, { IUser } from "@/models/User";
 import { IProfile } from "@/types/user";
+import { NextResponse } from "next/server";
 import dbConnect from "./dbConnect";
 
 export async function createSession(user: IUser): Promise<ISession> {
@@ -33,17 +34,40 @@ export async function getSessionUser(sessionId: string) {
 
 export async function getSignupSession(sessionId: string) {
   await dbConnect();
-  const session = await SignupSession.findById<ISignupSession>(sessionId);
+  const session = await SignupSession.findById<ISignupSession>(
+    sessionId
+  ).populate<IUser>("user");
   return !session || session.isExpired() ? null : session;
 }
 
 export function getUserProfile(
-  user: Pick<IUser, "email" | "username" | "displayName" | "imageUrl">
+  user: Pick<IUser, "email" | "username" | "displayName" | "imageUrl" | "id">
 ): IProfile {
   return {
     email: user.email,
     username: user.username,
     displayName: user.displayName,
-    imageUrl: user.imageUrl
+    imageUrl: user.imageUrl,
+    id: user.id
   };
+}
+
+export function getSession(sessionId: string) {
+  if (sessionId[0] === "0") {
+    return {
+      query: SignupSession.findById<ISignupSession>(sessionId.slice(1)),
+      userType: "signingUp"
+    };
+  } else if (sessionId[0] === "1") {
+    return {
+      query: Session.findById<ISession>(sessionId.slice(1)),
+      userType: "verified"
+    };
+  } else {
+    throw new Error("Invalid session ID: prefix of '1' or '0' not provided");
+  }
+}
+
+export function invalidSession() {
+  return NextResponse.json({ message: "Invalid session" }, { status: 401 });
 }
