@@ -8,6 +8,7 @@ import styles from "./styles.module.scss";
 export default function AddFriend() {
   const [receiver, setReceiver] = useState("");
   const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -22,6 +23,8 @@ export default function AddFriend() {
       if (!res.ok) {
         setFormError(data.message ?? "An error occurred, please try again");
       }
+
+      setSuccessMessage(data.message);
     } catch (error) {
       setFormError("An error occurred, please try again");
     }
@@ -38,6 +41,7 @@ export default function AddFriend() {
           value={receiver}
           onChange={(e) => setReceiver(e.target.value)}
           error={formError}
+          successMessage={successMessage}
         />
         <LoaderButton loading={false}>Add Friend</LoaderButton>
       </form>
