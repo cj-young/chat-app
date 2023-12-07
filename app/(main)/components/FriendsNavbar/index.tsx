@@ -26,7 +26,10 @@ export default function FriendsNavbar({ setPage }: Props) {
           </li>
           <li className={styles["nav-link"]}>
             <button onClick={() => setPage("pending")}>
-              Pending <NumberBadge number={friendRequests.length} />
+              Pending{" "}
+              {friendRequests.length > 0 && (
+                <NumberBadge number={friendRequests.length} />
+              )}
             </button>
           </li>
           <li className={styles["nav-link"]}>
