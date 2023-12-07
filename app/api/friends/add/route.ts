@@ -1,5 +1,5 @@
+import { getSession, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
-import Session, { ISession } from "@/models/Session";
 import User, { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,14 +17,13 @@ export async function POST(req: NextRequest) {
     }
 
     const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId || sessionId[0] !== "1") {
-      return NextResponse.json({ message: "Invalid session" }, { status: 401 });
-    }
+    if (!sessionId) return invalidSession();
 
-    const session = await Session.findById<ISession>(sessionId.slice(1));
-    if (!session) {
-      return NextResponse.json({ message: "Invalid session" }, { status: 401 });
-    }
+    const { query, userType } = getSession(sessionId);
+    if (userType !== "verified") return invalidSession();
+
+    const session = await query;
+    if (!session?.user) return invalidSession();
 
     const receiver = await User.findOneAndUpdate<IUser>(
       { username: receiverUsername },
