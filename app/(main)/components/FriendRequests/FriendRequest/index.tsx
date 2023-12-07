@@ -1,4 +1,6 @@
+"use client";
 import ProfilePicture from "@/components/ProfilePicture";
+import { apiFetch } from "@/lib/api";
 import CheckIcon from "@/public/check-solid.svg";
 import XIcon from "@/public/xmark-solid.svg";
 import { IProfile } from "@/types/user";
@@ -9,6 +11,18 @@ interface Props {
 }
 
 export default function FriendRequest({ user }: Props) {
+  async function handleAccept() {
+    try {
+      const res = await apiFetch("/friends/accept", "POST", {
+        receiverId: user.id
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles["friend-request"]}>
       <div className={styles["left"]}>
@@ -22,6 +36,7 @@ export default function FriendRequest({ user }: Props) {
         <button
           className={[styles["button"], styles["accept"]].join(" ")}
           aria-label="Accept friend request"
+          onClick={handleAccept}
         >
           <CheckIcon />
         </button>
