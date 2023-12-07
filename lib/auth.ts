@@ -41,14 +41,18 @@ export async function getSignupSession(sessionId: string) {
 }
 
 export function getUserProfile(
-  user: Pick<IUser, "email" | "username" | "displayName" | "imageUrl" | "id">
+  user: Pick<
+    IUser,
+    "email" | "username" | "displayName" | "imageUrl" | "id" | "onlineStatus"
+  >
 ): IProfile {
   return {
     email: user.email,
     username: user.username,
     displayName: user.displayName,
     imageUrl: user.imageUrl,
-    id: user.id
+    id: user.id,
+    onlineStatus: user.onlineStatus
   };
 }
 

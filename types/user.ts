@@ -4,4 +4,5 @@ export interface IProfile {
   displayName: string;
   imageUrl: string;
   id: string;
+  onlineStatus: string;
 }
