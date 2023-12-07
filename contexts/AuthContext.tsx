@@ -1,16 +1,10 @@
 "use client";
+import { IProfile } from "@/types/user";
 import { ReactNode, createContext, useContext, useState } from "react";
 
 interface IAuthContext {
   profile: IProfile | null;
   friendRequests: IProfile[];
-}
-
-interface IProfile {
-  email: string;
-  displayName: string;
-  username: string;
-  imageUrl: string;
 }
 
 interface Props {
