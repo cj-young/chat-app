@@ -9,10 +9,12 @@ export default function AddFriend() {
   const [receiver, setReceiver] = useState("");
   const [formError, setFormError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setFormError("");
+    setIsLoading(true);
     try {
       const res = await apiFetch("/friends/add", "POST", {
         receiverUsername: receiver
@@ -27,6 +29,8 @@ export default function AddFriend() {
       setSuccessMessage(data.message);
     } catch (error) {
       setFormError("An error occurred, please try again");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -43,7 +47,7 @@ export default function AddFriend() {
           error={formError}
           successMessage={successMessage}
         />
-        <LoaderButton loading={false}>Add Friend</LoaderButton>
+        <LoaderButton loading={isLoading}>Add Friend</LoaderButton>
       </form>
     </div>
   );
