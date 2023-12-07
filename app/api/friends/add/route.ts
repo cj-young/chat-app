@@ -22,8 +22,29 @@ export async function POST(req: NextRequest) {
     const { query, userType } = getSession(sessionId);
     if (userType !== "verified") return invalidSession();
 
-    const session = await query.populate<{ user: IUser }>("user");
+    const session = await query.populate<{
+      user: Omit<IUser, "friends"> & {
+        friends: IUser[];
+      };
+    }>({
+      path: "user",
+      model: User,
+      populate: "friends"
+    });
     if (!session?.user) return invalidSession();
+
+    if (
+      session.user.friends.some(
+        (friend) => friend.username === receiverUsername
+      )
+    ) {
+      return NextResponse.json(
+        {
+          message: `You are already friends with ${receiverUsername}`
+        },
+        { status: 400 }
+      );
+    }
 
     if (session.user.username === receiverUsername) {
       return NextResponse.json(
