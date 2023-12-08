@@ -13,7 +13,7 @@ import styles from "./page.module.scss";
 export default function Home() {
   const { profile } = useAuthContext();
   const { mobileNavExpanded } = useUiContext();
-  const [friendPage, setFriendPage] = useState<FriendPage>("add");
+  const [friendPage, setFriendPage] = useState<FriendPage>("online");
 
   return (
     <main
