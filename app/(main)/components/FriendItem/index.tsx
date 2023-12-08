@@ -1,5 +1,7 @@
 import ProfilePicture from "@/components/ProfilePicture";
 import { formatOnlineStatus } from "@/lib/user";
+import EllipsisIcon from "@/public/ellipsis-solid.svg";
+import ChatIcon from "@/public/message-solid.svg";
 import { IProfile } from "@/types/user";
 import styles from "./styles.module.scss";
 
@@ -18,6 +20,14 @@ export default function FriendItem({ user }: Props) {
             {formatOnlineStatus(user.onlineStatus)}
           </span>
         </div>
+      </div>
+      <div className={styles["right"]}>
+        <button className={styles["button"]}>
+          <ChatIcon />
+        </button>
+        <button className={styles["button"]}>
+          <EllipsisIcon />
+        </button>
       </div>
     </div>
   );

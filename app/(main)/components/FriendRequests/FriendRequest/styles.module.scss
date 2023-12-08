@@ -4,28 +4,38 @@
   justify-content: space-between;
   align-items: center;
   border-top: 2px solid var(--bg-contrast-100);
+  max-width: 100%;
+  gap: 1.5rem;
 }
 
 .left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .names {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-width: 0;
 }
 
 .display-name {
   font-weight: bold;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .username {
   line-height: 1;
   color: var(--text-contrast-200);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .right {
