@@ -65,7 +65,7 @@ export default function AuthContextProvider({
 
   async function signOut() {
     try {
-      await apiFetch("/auth/sign-out", "POST");
+      router.push("/api/auth/sign-out");
     } catch (error) {
       console.error(error);
     }

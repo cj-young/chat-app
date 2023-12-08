@@ -3,7 +3,7 @@ import Session from "@/models/Session";
 import SignupSession from "@/models/SignupSession";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const sessionId = req.cookies.get("session")?.value;
 
@@ -29,9 +29,8 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     console.error(error);
-    const res = NextResponse.json({
-      message: "An error occurred while signing out"
-    });
+    const res = NextResponse.redirect("/login");
     res.cookies.delete("session");
+    return res;
   }
 }
