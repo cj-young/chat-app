@@ -4,7 +4,7 @@ export interface IProfile {
   displayName: string;
   imageUrl: string;
   id: string;
-  onlineStatus: string;
+  onlineStatus: TOnlineStatus;
 }
 
 export type TOnlineStatus = "online" | "offline" | "idle" | "doNotDisturb";
