@@ -1,0 +1,29 @@
+.friend-item {
+  height: 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--bg-contrast-100);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.display-name {
+  font-weight: bold;
+  line-height: 1;
+}
+
+.online-status {
+  line-height: 1;
+  color: var(--text-contrast-200);
+}
