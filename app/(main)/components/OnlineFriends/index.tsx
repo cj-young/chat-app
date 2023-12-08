@@ -13,9 +13,7 @@ export default function OnlineFriends() {
           {friends.map((friend) =>
             friend.onlineStatus === "online" ? (
               <FriendItem user={friend} key={friend.username} />
-            ) : (
-              <></>
-            )
+            ) : null
           )}
         </ul>
       ) : (
