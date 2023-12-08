@@ -1,3 +1,4 @@
+import { TOnlineStatus } from "@/types/user";
 import bcrypt from "bcrypt";
 import mongoose, { Document, Schema, model, models } from "mongoose";
 import defaultProfilePictures from "./defaultProfilePictures";
@@ -12,7 +13,7 @@ export interface IUser extends Document {
   friendRequests: mongoose.Types.ObjectId[];
   servers: mongoose.Types.ObjectId[];
   imageUrl: string;
-  onlineStatus: "online" | "offline" | "idle" | "doNotDisturb";
+  onlineStatus: TOnlineStatus;
   checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;

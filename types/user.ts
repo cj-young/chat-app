@@ -6,3 +6,5 @@ export interface IProfile {
   id: string;
   onlineStatus: string;
 }
+
+export type TOnlineStatus = "online" | "offline" | "idle" | "doNotDisturb";
