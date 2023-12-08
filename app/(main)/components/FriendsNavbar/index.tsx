@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function FriendsNavbar({ setPage, page }: Props) {
-  const { friendRequests } = useAuthContext();
+  const { friendRequests, signOut } = useAuthContext();
 
   return (
     <div className={styles["nav-container"]}>
@@ -64,6 +64,9 @@ export default function FriendsNavbar({ setPage, page }: Props) {
           </li>
         </ul>
       </nav>
+      <button onClick={signOut} className={styles["sign-out-button"]}>
+        Sign Out
+      </button>
     </div>
   );
 }

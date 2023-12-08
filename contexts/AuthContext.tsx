@@ -1,6 +1,7 @@
 "use client";
 import { apiFetch } from "@/lib/api";
 import { IProfile } from "@/types/user";
+import { useRouter } from "next/navigation";
 import { ReactNode, createContext, useContext, useState } from "react";
 
 interface IAuthContext {
@@ -11,6 +12,7 @@ interface IAuthContext {
     method: "accept" | "decline"
   ): Promise<void>;
   friends: IProfile[];
+  signOut(): Promise<void>;
 }
 
 interface Props {
@@ -33,6 +35,7 @@ export default function AuthContextProvider({
     initialFriendRequests
   );
   const [friends, setFriends] = useState<IProfile[]>(initialFriends);
+  const router = useRouter();
 
   async function fulfillFriendRequest(
     userId: string,
@@ -60,9 +63,23 @@ export default function AuthContextProvider({
     }
   }
 
+  async function signOut() {
+    try {
+      await apiFetch("/auth/sign-out", "POST");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ profile, friendRequests, fulfillFriendRequest, friends }}
+      value={{
+        profile,
+        friendRequests,
+        fulfillFriendRequest,
+        friends,
+        signOut
+      }}
     >
       {children}
     </AuthContext.Provider>

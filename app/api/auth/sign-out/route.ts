@@ -21,8 +21,11 @@ export async function POST(req: NextRequest) {
       await Session.findByIdAndDelete(sessionId.slice(1));
     }
 
-    const res = NextResponse.json({ message: "Successfully signed out" });
+    const res = NextResponse.redirect(
+      new URL("/login", process.env.BASE_URL as string)
+    );
     res.cookies.delete("session");
+
     return res;
   } catch (error) {
     console.error(error);
