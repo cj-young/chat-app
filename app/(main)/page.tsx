@@ -4,6 +4,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { FriendPage } from "@/types/friends";
 import { useState } from "react";
 import AddFriend from "./components/AddFriend";
+import AllFriends from "./components/AllFriends";
 import FriendRequests from "./components/FriendRequests";
 import FriendsNavbar from "./components/FriendsNavbar";
 import styles from "./page.module.scss";
@@ -25,6 +26,8 @@ export default function Home() {
         <AddFriend />
       ) : friendPage === "pending" ? (
         <FriendRequests />
+      ) : friendPage === "all" ? (
+        <AllFriends />
       ) : (
         ""
       )}
