@@ -31,11 +31,13 @@ export default async function RootLayout({
     const friendRequests = user.friendRequests.map((requester) =>
       getUserProfile(requester)
     );
+    const friends = user.friends.map((friend) => getUserProfile(friend));
 
     return (
       <AuthContextProvider
         initialProfile={profile}
         initialFriendRequests={friendRequests}
+        initialFriends={friends}
       >
         <div className={styles["app-container"]}>
           <MainNavbar />

@@ -10,12 +10,14 @@ interface IAuthContext {
     userId: string,
     method: "accept" | "decline"
   ): Promise<void>;
+  friends: IProfile[];
 }
 
 interface Props {
   children: ReactNode;
   initialProfile: IProfile;
   initialFriendRequests: IProfile[];
+  initialFriends: IProfile[];
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -23,12 +25,14 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 export default function AuthContextProvider({
   children,
   initialProfile,
-  initialFriendRequests
+  initialFriendRequests,
+  initialFriends
 }: Props) {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [friendRequests, setFriendRequests] = useState<IProfile[]>(
     initialFriendRequests
   );
+  const [friends, setFriends] = useState<IProfile[]>(initialFriends);
 
   async function fulfillFriendRequest(
     userId: string,
@@ -58,7 +62,7 @@ export default function AuthContextProvider({
 
   return (
     <AuthContext.Provider
-      value={{ profile, friendRequests, fulfillFriendRequest }}
+      value={{ profile, friendRequests, fulfillFriendRequest, friends }}
     >
       {children}
     </AuthContext.Provider>
