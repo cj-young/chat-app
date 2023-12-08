@@ -1,6 +1,12 @@
 .online-friends {
   padding: 1.5rem;
   width: 75%;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
@@ -9,6 +15,8 @@
 
 .friends-list {
   margin-top: 1rem;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .no-friends {
