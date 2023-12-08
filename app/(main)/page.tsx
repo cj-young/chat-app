@@ -7,6 +7,7 @@ import AddFriend from "./components/AddFriend";
 import AllFriends from "./components/AllFriends";
 import FriendRequests from "./components/FriendRequests";
 import FriendsNavbar from "./components/FriendsNavbar";
+import OnlineFriends from "./components/OnlineFriends";
 import styles from "./page.module.scss";
 
 export default function Home() {
@@ -28,6 +29,8 @@ export default function Home() {
         <FriendRequests />
       ) : friendPage === "all" ? (
         <AllFriends />
+      ) : friendPage === "online" ? (
+        <OnlineFriends />
       ) : (
         ""
       )}
