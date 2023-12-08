@@ -8,9 +8,10 @@ import styles from "./styles.module.scss";
 
 interface Props {
   setPage: Dispatch<SetStateAction<FriendPage>>;
+  page: FriendPage;
 }
 
-export default function FriendsNavbar({ setPage }: Props) {
+export default function FriendsNavbar({ setPage, page }: Props) {
   const { friendRequests } = useAuthContext();
 
   return (
@@ -19,13 +20,26 @@ export default function FriendsNavbar({ setPage }: Props) {
       <nav>
         <ul className={styles["nav-items"]}>
           <li className={styles["nav-link"]}>
-            <button onClick={() => setPage("online")}>Online</button>
+            <button
+              onClick={() => setPage("online")}
+              className={page === "online" ? styles["selected"] : ""}
+            >
+              Online
+            </button>
           </li>
           <li className={styles["nav-link"]}>
-            <button onClick={() => setPage("all")}>All</button>
+            <button
+              onClick={() => setPage("all")}
+              className={page === "all" ? styles["selected"] : ""}
+            >
+              All
+            </button>
           </li>
           <li className={styles["nav-link"]}>
-            <button onClick={() => setPage("pending")}>
+            <button
+              onClick={() => setPage("pending")}
+              className={page === "pending" ? styles["selected"] : ""}
+            >
               Pending{" "}
               {friendRequests.length > 0 && (
                 <NumberBadge number={friendRequests.length} />
@@ -33,7 +47,12 @@ export default function FriendsNavbar({ setPage }: Props) {
             </button>
           </li>
           <li className={styles["nav-link"]}>
-            <button onClick={() => setPage("blocked")}>Blocked</button>
+            <button
+              onClick={() => setPage("blocked")}
+              className={page === "blocked" ? styles["selected"] : ""}
+            >
+              Blocked
+            </button>
           </li>
           <li className={styles["nav-link"]}>
             <button

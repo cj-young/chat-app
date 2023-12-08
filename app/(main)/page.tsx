@@ -22,7 +22,7 @@ export default function Home() {
         mobileNavExpanded ? styles["hidden"] : ""
       ].join(" ")}
     >
-      <FriendsNavbar setPage={setFriendPage} />
+      <FriendsNavbar setPage={setFriendPage} page={friendPage} />
       {friendPage === "add" ? (
         <AddFriend />
       ) : friendPage === "pending" ? (
