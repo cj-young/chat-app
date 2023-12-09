@@ -133,3 +133,26 @@ body {
   height: 100%;
   width: 100%;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bg-contrast-100);
+  margin-block: 8px;
+  margin-inline: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--bg-contrast-200);
+  border-radius: 1000vmax;
+}
+
+@supports (scrollbar-color: red blue) {
+  * {
+    scrollbar-color: var(--bg-contrast-200) var(--bg-contrast-100);
+    scrollbar-width: thin;
+  }
+}
