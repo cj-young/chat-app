@@ -1,4 +1,5 @@
 "use client";
+import MobileNavToggle from "@/components/MobileNavToggle";
 import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
 import Plus from "@/public/plus-solid.svg";
@@ -16,6 +17,7 @@ export default function FriendsNavbar({ setPage, page }: Props) {
 
   return (
     <div className={styles["nav-container"]}>
+      <MobileNavToggle />
       <h1 className={styles["title"]}>Friends</h1>
       <nav>
         <ul className={styles["nav-items"]}>
