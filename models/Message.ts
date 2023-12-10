@@ -5,7 +5,7 @@ import "server-only";
 export interface IMessage extends Document {
   content: string;
   sender: Types.ObjectId;
-  chatRef: string;
+  chatRef: "DirectMessage";
   chat: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
