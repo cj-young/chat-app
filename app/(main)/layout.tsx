@@ -3,6 +3,7 @@ import Sidebar from "@/app/(main)/components/Sidebar";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
+import { sterilizeClientDm } from "@/lib/directMessages";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -32,6 +33,12 @@ export default async function RootLayout({
       getUserProfile(requester)
     );
     const friends = user.friends.map((friend) => getUserProfile(friend));
+    const directMessages = user.directMessages.map((dm) =>
+      sterilizeClientDm(dm, user.id)
+    );
+
+    console.log(user.directMessages);
+    console.log(directMessages);
 
     return (
       <AuthContextProvider

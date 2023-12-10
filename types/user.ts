@@ -8,3 +8,9 @@ export interface IProfile {
 }
 
 export type TOnlineStatus = "online" | "offline" | "idle" | "doNotDisturb";
+
+export interface IClientDm {
+  user: IProfile;
+  unreadMessages: number;
+  chatId: string;
+}
