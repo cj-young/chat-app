@@ -1,5 +1,7 @@
 import { Document, Schema, Types, model, models } from "mongoose";
 
+import "server-only";
+
 export interface IDirectMessage extends Document {
   name: string;
   user1: Types.ObjectId;

@@ -6,6 +6,8 @@ import { IProfile } from "@/types/user";
 import { NextResponse } from "next/server";
 import dbConnect from "./dbConnect";
 
+import "server-only";
+
 export async function createSession(user: IUser): Promise<ISession> {
   await dbConnect();
 

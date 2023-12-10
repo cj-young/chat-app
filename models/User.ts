@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import mongoose, { Document, Schema, model, models } from "mongoose";
 import defaultProfilePictures from "./defaultProfilePictures";
 
+import "server-only";
+
 export interface IUser extends Document {
   username: string;
   displayName: string;

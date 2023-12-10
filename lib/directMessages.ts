@@ -3,6 +3,8 @@ import { IUser } from "@/models/User";
 import { IClientDm } from "@/types/user";
 import { getUserProfile } from "./auth";
 
+import "server-only";
+
 export function sterilizeClientDm(
   serverDm: Omit<IDirectMessage, "user1" | "user2"> & {
     user1: IUser;

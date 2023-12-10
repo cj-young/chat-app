@@ -3,6 +3,8 @@ import SignupSession from "@/models/SignupSession";
 import User from "@/models/User";
 import mongoose from "mongoose";
 
+import "server-only";
+
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }

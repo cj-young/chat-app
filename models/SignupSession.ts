@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema, model, models } from "mongoose";
 
+import "server-only";
+
 export const SESSION_EXPIRY_SECONDS = 60 * 30; // 30 minutes
 
 export interface ISignupSession extends Document {

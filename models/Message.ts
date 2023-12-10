@@ -1,5 +1,7 @@
 import { Document, Schema, Types, model, models } from "mongoose";
 
+import "server-only";
+
 export interface IMessage extends Document {
   content: string;
   sender: Types.ObjectId;
