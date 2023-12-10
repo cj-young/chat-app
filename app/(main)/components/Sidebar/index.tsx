@@ -33,9 +33,7 @@ export default function Sidebar() {
         <h2 className={styles["conversations-header"]}>Conversations</h2>
         <ul className={styles["conversations-list"]}>
           {directMessages.map((dm) => (
-            <>
-              <DirectMessageItem directMessage={dm} key={dm.chatId} />
-            </>
+            <DirectMessageItem directMessage={dm} key={dm.chatId} />
           ))}
         </ul>
       </nav>
