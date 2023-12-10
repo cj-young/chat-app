@@ -5,20 +5,22 @@ import styles from "./styles.module.scss";
 export default function OnlineFriends() {
   const { friends } = useAuthContext();
 
+  const onlineFriends = friends.filter(
+    (friend) => friend.onlineStatus === "online"
+  );
+
   return (
     <div className={styles["online-friends"]}>
       <h2 className={styles["title"]}>Online Friends</h2>
-      {friends.length > 0 ? (
+      {onlineFriends.length > 0 ? (
         <ul className={styles["friends-list"]}>
-          {friends.map((friend) =>
-            friend.onlineStatus === "online" ? (
-              <FriendItem user={friend} key={friend.username} />
-            ) : null
-          )}
+          {onlineFriends.map((friend) => (
+            <FriendItem user={friend} key={friend.username} />
+          ))}
         </ul>
       ) : (
         <p className={styles["no-friends"]}>
-          Your online friends will appear here
+          You have no friends online right now
         </p>
       )}
     </div>
