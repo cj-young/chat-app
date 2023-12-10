@@ -6,8 +6,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { chatId, content } = (await req.json()) as {
-      chatId: string;
+    const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
+
+    const { content } = (await req.json()) as {
       content: string;
     };
 
