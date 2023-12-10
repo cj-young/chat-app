@@ -37,14 +37,12 @@ export default async function RootLayout({
       sterilizeClientDm(dm, user.id)
     );
 
-    console.log(user.directMessages);
-    console.log(directMessages);
-
     return (
       <AuthContextProvider
         initialProfile={profile}
         initialFriendRequests={friendRequests}
         initialFriends={friends}
+        initialDirectMessages={directMessages}
       >
         <div className={styles["app-container"]}>
           <MainNavbar />

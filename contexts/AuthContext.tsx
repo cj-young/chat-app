@@ -1,6 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/api";
-import { IProfile } from "@/types/user";
+import { IClientDm, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { ReactNode, createContext, useContext, useState } from "react";
 
@@ -12,6 +12,7 @@ interface IAuthContext {
     method: "accept" | "decline"
   ): Promise<void>;
   friends: IProfile[];
+  directMessages: IClientDm[];
   signOut(): Promise<void>;
 }
 
@@ -20,6 +21,7 @@ interface Props {
   initialProfile: IProfile;
   initialFriendRequests: IProfile[];
   initialFriends: IProfile[];
+  initialDirectMessages: IClientDm[];
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -28,13 +30,17 @@ export default function AuthContextProvider({
   children,
   initialProfile,
   initialFriendRequests,
-  initialFriends
+  initialFriends,
+  initialDirectMessages
 }: Props) {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [friendRequests, setFriendRequests] = useState<IProfile[]>(
     initialFriendRequests
   );
   const [friends, setFriends] = useState<IProfile[]>(initialFriends);
+  const [directMessages, setDirectMessages] = useState<IClientDm[]>(
+    initialDirectMessages
+  );
   const router = useRouter();
 
   async function fulfillFriendRequest(
@@ -78,6 +84,7 @@ export default function AuthContextProvider({
         friendRequests,
         fulfillFriendRequest,
         friends,
+        directMessages,
         signOut
       }}
     >
