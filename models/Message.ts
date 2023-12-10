@@ -1,6 +1,13 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
 
-const messageSchema = new Schema(
+export interface IMessage {
+  content: string;
+  sender: Types.ObjectId;
+  chatRef: string;
+  chat: Types.ObjectId;
+}
+
+const messageSchema = new Schema<IMessage>(
   {
     content: {
       type: String,
@@ -25,6 +32,4 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 
-export type TMessage = mongoose.InferSchemaType<typeof messageSchema>;
-
-export default models.Message || model<TMessage>("Message", messageSchema);
+export default models.Message || model<IMessage>("Message", messageSchema);

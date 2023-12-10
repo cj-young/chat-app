@@ -1,4 +1,12 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
+
+export interface IDirectMessage {
+  name: string;
+  user1: Types.ObjectId;
+  user2: Types.ObjectId;
+  user1Unread: number;
+  user2Unread: number;
+}
 
 const directMessageSchema = new Schema(
   {
@@ -30,9 +38,5 @@ const directMessageSchema = new Schema(
   { timestamps: true }
 );
 
-export type TDirectMessage = mongoose.InferSchemaType<
-  typeof directMessageSchema
->;
-
 export default models.DirectMessage ||
-  model<TDirectMessage>("DirectMessage", directMessageSchema);
+  model<IDirectMessage>("DirectMessage", directMessageSchema);
