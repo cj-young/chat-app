@@ -6,6 +6,7 @@
 
   @include large-screen {
     flex: 0 0 15rem;
+    width: 15rem;
   }
 }
 
@@ -15,4 +16,42 @@
   @include large-screen {
     display: unset;
   }
+}
+
+.nav {
+  padding: 0.5rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.friends {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  width: 100%;
+  border-radius: var(--br);
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--clr-hover);
+  }
+
+  & > :last-child {
+    margin-left: auto;
+  }
+
+  svg {
+    fill: var(--text-primary);
+  }
+}
+
+.conversations-header {
+  font-size: var(--fs-400);
+  margin-top: 1rem;
+  margin-left: 0.75rem;
+}
+
+.conversations-list {
+  margin-top: 0.5rem;
 }
