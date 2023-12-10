@@ -6,6 +6,7 @@ export interface IDirectMessage extends Document {
   user2: Types.ObjectId;
   user1Unread: number;
   user2Unread: number;
+  latestMessageAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +36,11 @@ const directMessageSchema = new Schema(
       type: Number,
       required: true,
       default: 0
+    },
+    latestMessageAt: {
+      type: Date,
+      required: true,
+      default: Date.now
     }
   },
   { timestamps: true }
