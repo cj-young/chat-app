@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
     const { content } = (await req.json()) as {
       content: string;
     };
-
     const taggedSessionId = req.cookies.get("session")?.value;
     if (!taggedSessionId) return invalidSession();
 
@@ -45,6 +44,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { message: "Message failed to send" },
       { status: 500 }
