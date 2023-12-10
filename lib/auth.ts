@@ -4,7 +4,7 @@ import SignupSession, { ISignupSession } from "@/models/SignupSession";
 import User, { IUser } from "@/models/User";
 import { IProfile } from "@/types/user";
 import { NextResponse } from "next/server";
-import dbConnect from "./dbConnect";
+import dbConnect from "./db";
 
 import "server-only";
 

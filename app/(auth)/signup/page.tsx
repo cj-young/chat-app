@@ -1,5 +1,5 @@
 import { getSignupSession } from "@/lib/auth";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import { cookies } from "next/headers";
 import FormWrapper from "./forms/FormWrapper";
 import styles from "./page.module.scss";

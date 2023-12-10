@@ -1,5 +1,5 @@
 import { createSession } from "@/lib/auth";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import { LoginCredentials } from "@/lib/schema";
 import { ISession, SESSION_EXPIRY_SECONDS } from "@/models/Session";
 import User, { IUser } from "@/models/User";

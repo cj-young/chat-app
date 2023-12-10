@@ -2,7 +2,7 @@ import MainNavbar from "@/app/(main)/components/MainNavbar";
 import Sidebar from "@/app/(main)/components/Sidebar";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";

@@ -1,5 +1,5 @@
 import { getSession, invalidSession } from "@/lib/auth";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
 import { NextRequest, NextResponse } from "next/server";

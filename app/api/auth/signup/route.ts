@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import { SignupCredentials } from "@/lib/schema";
 import SignupSession, {
   ISignupSession,

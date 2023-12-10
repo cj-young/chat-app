@@ -1,5 +1,5 @@
 import { getSession, invalidSession } from "@/lib/auth";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import User, { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 

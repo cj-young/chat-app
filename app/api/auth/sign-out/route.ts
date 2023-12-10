@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/db";
 import Session from "@/models/Session";
 import SignupSession from "@/models/SignupSession";
 import { NextRequest, NextResponse } from "next/server";
