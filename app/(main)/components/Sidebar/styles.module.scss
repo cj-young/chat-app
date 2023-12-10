@@ -37,13 +37,13 @@
     background-color: var(--clr-hover);
   }
 
-  & > :last-child {
-    margin-left: auto;
-  }
-
   svg {
     fill: var(--text-primary);
   }
+}
+
+.friends-notification-badge {
+  margin-left: auto;
 }
 
 .conversations-header {

@@ -24,7 +24,10 @@ export default function Sidebar() {
           <FriendsIcon />
           <span>Friends</span>
           {friendRequests.length > 0 && (
-            <NumberBadge number={friendRequests.length} />
+            <NumberBadge
+              number={friendRequests.length}
+              className={styles["friends-notification-badge"]}
+            />
           )}
         </Link>
         <h2 className={styles["conversations-header"]}>Conversations</h2>
