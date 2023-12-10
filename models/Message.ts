@@ -1,5 +1,4 @@
 import { Document, Schema, Types, model, models } from "mongoose";
-import { IDirectMessage } from "./DirectMessage";
 
 export interface IMessage extends Document {
   content: string;
@@ -34,7 +33,5 @@ const messageSchema = new Schema<IMessage>(
   },
   { timestamps: true }
 );
-
-let asdfasdf: IDirectMessage;
 
 export default models.Message || model<IMessage>("Message", messageSchema);
