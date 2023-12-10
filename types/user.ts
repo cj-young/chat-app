@@ -13,4 +13,5 @@ export interface IClientDm {
   user: IProfile;
   unreadMessages: number;
   chatId: string;
+  lastMessageAt: Date;
 }

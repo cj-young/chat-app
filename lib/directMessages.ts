@@ -19,6 +19,7 @@ export function sterilizeClientDm(
       ? getUserProfile(serverDm.user2)
       : getUserProfile(serverDm.user1),
     unreadMessages: clientIsUser1 ? serverDm.user1Unread : serverDm.user2Unread,
-    chatId: serverDm.id
+    chatId: serverDm.id,
+    lastMessageAt: serverDm.latestMessageAt
   };
 }
