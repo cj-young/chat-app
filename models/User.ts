@@ -12,6 +12,8 @@ export interface IUser extends Document {
   friends: mongoose.Types.ObjectId[];
   friendRequests: mongoose.Types.ObjectId[];
   servers: mongoose.Types.ObjectId[];
+  directMessages: mongoose.Types.ObjectId[];
+  groupChats: mongoose.Types.ObjectId[];
   imageUrl: string;
   onlineStatus: TOnlineStatus;
   checkPassword(password: string): Promise<boolean>;
@@ -68,6 +70,26 @@ const userSchema = new Schema<IUser>(
         {
           type: Schema.Types.ObjectId,
           ref: "Server",
+          required: true
+        }
+      ],
+      default: []
+    },
+    directMessages: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "DirectMessage",
+          required: true
+        }
+      ],
+      default: []
+    },
+    groupChats: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "GroupChat",
           required: true
         }
       ],
