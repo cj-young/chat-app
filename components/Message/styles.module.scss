@@ -1,0 +1,57 @@
+@import "@/styles/mixins";
+
+.message-item {
+  width: 100%;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  align-items: center;
+  place-content: center;
+  column-gap: 1rem;
+  border-radius: var(--br);
+  --time-visibility: hidden;
+
+  &:hover {
+    background-color: var(--clr-hover);
+    --time-visibility: block;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+
+  @include large-screen {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+}
+
+.sender-name {
+  font-weight: 500;
+  user-select: none;
+}
+
+.content {
+  color: var(--text-contrast-100);
+}
+
+.sent-at-first {
+  font-size: var(--fs-200);
+  color: var(--text-contrast-200);
+}
+
+.sent-at {
+  font-size: var(--fs-200);
+  color: var(--text-contrast-200);
+  justify-self: end;
+  visibility: var(--time-visibility);
+}
+
+.profile-picture {
+  width: 2.5rem;
+  height: 2.5rem;
+  justify-self: end;
+}
