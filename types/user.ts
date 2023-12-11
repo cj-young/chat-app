@@ -15,3 +15,10 @@ export interface IClientDm {
   chatId: string;
   lastMessageAt: Date;
 }
+
+export interface IClientMessage {
+  content: string;
+  sender: IProfile;
+  chatId: string;
+  timestamp: Date;
+}
