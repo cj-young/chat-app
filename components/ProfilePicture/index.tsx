@@ -19,17 +19,22 @@ export default function ProfilePicture({ user, status }: Props) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <mask id="profile-picture-mask" fill="white">
-          <circle cx="32" cy="32" r="32" fill="white" />
-          {status && (
+        {status ? (
+          <mask id="profile-picture-mask-status" fill="white">
+            <circle cx="32" cy="32" r="32" fill="white" />
+
             <circle
               cx={STATUS_X}
               cy={STATUS_Y}
               r={STATUS_OUTLINE_RADIUS}
               fill="black"
             />
-          )}
-        </mask>
+          </mask>
+        ) : (
+          <mask id="profile-picture-mask-no-status" fill="white">
+            <circle cx="32" cy="32" r="32" fill="white" />
+          </mask>
+        )}
       </defs>
       <image
         href={user.imageUrl}
@@ -37,7 +42,7 @@ export default function ProfilePicture({ user, status }: Props) {
         y="0"
         width="64"
         height="64"
-        mask="url(#profile-picture-mask)"
+        mask={`url(#profile-picture-mask-${status ? "status" : "no-status"})`}
       />
       {status === "online" ? (
         <StatusOnline />
