@@ -4,6 +4,7 @@ import styles from "./styles.module.scss";
 interface Props {
   user: IProfile;
   status?: TOnlineStatus;
+  className?: string;
 }
 
 const STATUS_X = 54;
@@ -11,10 +12,10 @@ const STATUS_Y = 54;
 const STATUS_OUTLINE_RADIUS = 16;
 const STATUS_RADIUS = 10;
 
-export default function ProfilePicture({ user, status }: Props) {
+export default function ProfilePicture({ user, status, className }: Props) {
   return (
     <svg
-      className={styles["profile-picture"]}
+      className={className ?? styles["profile-picture"]}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
