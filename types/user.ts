@@ -21,4 +21,5 @@ export interface IClientMessage {
   sender: IProfile;
   chatId: string;
   timestamp: Date;
+  id: string;
 }

@@ -20,11 +20,7 @@ export default function Chat({ initialMessages }: Props) {
         }
 
         return (
-          <Message
-            message={message}
-            isFirst={!isInGroup}
-            key={message.timestamp.toString()}
-          />
+          <Message message={message} isFirst={!isInGroup} key={message.id} />
         );
       })}
     </ul>

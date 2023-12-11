@@ -61,7 +61,8 @@ export default async function DmChat({ params }: Props) {
       content: message.content,
       sender: getUserProfile(message.sender),
       chatId: message.chat.toString(),
-      timestamp: message.createdAt
+      timestamp: message.createdAt,
+      id: message.id
     }));
 
     return (
