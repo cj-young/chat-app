@@ -4,12 +4,24 @@ import dbConnect from "./db";
 
 const MESSAGE_COUNT = 40;
 
-export async function getInitialMessages(chatId: string, chatRef: string) {
+export async function getMessages(
+  chatId: string,
+  chatRef: string,
+  lastMessage?: IMessage
+) {
   await dbConnect();
-  return await Message.find<IMessage>({
+
+  const query: any = {
     chatRef,
     chat: chatId
-  })
+  };
+
+  if (lastMessage) {
+    query.createdAt = { $lte: lastMessage.createdAt };
+    query._id = { $lt: lastMessage.id };
+  }
+
+  return await Message.find<IMessage>(query)
     .populate<{ sender: IUser }>("sender")
     // Sort by ID in case multiple documents have the same timestamp
     .sort([

@@ -2,7 +2,7 @@ import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
-import { getInitialMessages } from "@/lib/message";
+import { getMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
@@ -45,10 +45,7 @@ export default async function DmChat({ params }: Props) {
       redirect("/");
     }
 
-    const messages = await getInitialMessages(
-      directMessage.id,
-      "DirectMessage"
-    );
+    const messages = await getMessages(directMessage.id, "DirectMessage");
 
     const clientMessages: IClientMessage[] = messages.map((message) => ({
       content: message.content,
