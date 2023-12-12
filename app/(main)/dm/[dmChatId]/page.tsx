@@ -2,8 +2,8 @@ import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { getInitialMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
-import Message, { IMessage } from "@/models/Message";
 import { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
@@ -45,17 +45,10 @@ export default async function DmChat({ params }: Props) {
       redirect("/");
     }
 
-    const messages = await Message.find<IMessage>({
-      chatRef: "DirectMessage",
-      chat: directMessage.id
-    })
-      .populate<{ sender: IUser }>("sender")
-      // Sort by ID in case multiple documents have the same timestamp
-      .sort([
-        ["createdAt", "desc"],
-        ["_id", "desc"]
-      ])
-      .limit(40);
+    const messages = await getInitialMessages(
+      directMessage.id,
+      "DirectMessage"
+    );
 
     const clientMessages: IClientMessage[] = messages.map((message) => ({
       content: message.content,
