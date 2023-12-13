@@ -1,15 +1,17 @@
 "use client";
 import Message from "@/components/Message";
 import { apiFetch } from "@/lib/api";
-import { IClientMessage } from "@/types/user";
+import { IClientDm, IClientMessage } from "@/types/user";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Loader from "../Loader";
+import DirectMessageBanner from "./banners/DirectMessageBanner";
 import styles from "./styles.module.scss";
 
 interface Props {
   initialMessages: IClientMessage[];
   chatId: string;
   initialAllLoaded: boolean;
+  directMessageChat?: IClientDm;
 }
 
 const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
@@ -17,7 +19,8 @@ const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
 export default function Chat({
   initialMessages,
   chatId,
-  initialAllLoaded
+  initialAllLoaded,
+  directMessageChat
 }: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
@@ -70,6 +73,9 @@ export default function Chat({
   return (
     <div className={styles["chat-container"]} ref={chatRef}>
       <div className={styles["messages-container"]}>
+        {allLoaded && directMessageChat && (
+          <DirectMessageBanner directMessageChat={directMessageChat} />
+        )}
         {!allLoaded && <Loader className={styles["message-loader"]} />}
         <ul className={styles["chat-list"]}>
           {messages.map((message, i) => {

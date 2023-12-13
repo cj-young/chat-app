@@ -2,6 +2,7 @@ import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { sterilizeClientDm } from "@/lib/directMessages";
 import { MESSAGE_COUNT, getMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import { IUser } from "@/models/User";
@@ -59,6 +60,10 @@ export default async function DmChat({ params }: Props) {
           initialMessages={clientMessages}
           chatId={params.dmChatId}
           initialAllLoaded={clientMessages.length < MESSAGE_COUNT}
+          directMessageChat={sterilizeClientDm(
+            directMessage,
+            isUser1 ? directMessage.user1.id : directMessage.user2.id
+          )}
         />
         <ChatInput
           chatName={
