@@ -10,6 +10,7 @@ import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import DmNavbar from "./components/DmNavbar";
 import styles from "./page.module.scss";
 
 interface Props {
@@ -56,6 +57,12 @@ export default async function DmChat({ params }: Props) {
 
     return (
       <div className={styles["chat-page-container"]}>
+        <DmNavbar
+          directMessageChat={sterilizeClientDm(
+            directMessage,
+            isUser1 ? directMessage.user1.id : directMessage.user2.id
+          )}
+        />
         <Chat
           initialMessages={clientMessages}
           chatId={params.dmChatId}
