@@ -17,8 +17,10 @@ export async function getMessages(
   };
 
   if (lastMessage) {
-    query.createdAt = { $lte: lastMessage.createdAt };
-    query._id = { $lt: lastMessage.id };
+    query.$or = [
+      { createdAt: { $lt: lastMessage.createdAt } },
+      { createdAt: lastMessage.createdAt, _id: { $lt: lastMessage.id } }
+    ];
   }
 
   return await Message.find<IMessage>(query)
