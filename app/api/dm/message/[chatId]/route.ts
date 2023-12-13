@@ -1,7 +1,10 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { getMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
+import { IClientMessage } from "@/types/user";
+import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -50,4 +53,36 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function GET(req: NextRequest) {
+  const url = new URL(req.url);
+  const lastMessageId = url.searchParams.get("lastMessage");
+  const chatId = url.pathname.slice(url.pathname.lastIndexOf("/") + 1);
+
+  console.log(lastMessageId);
+  if (!isValidObjectId(chatId))
+    return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
+  if (!isValidObjectId(lastMessageId))
+    return NextResponse.json(
+      { message: "Invalid message ID" },
+      { status: 400 }
+    );
+
+  await dbConnect();
+  const lastMessage = await Message.findById(lastMessageId);
+  if (!lastMessage)
+    return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
+
+  const messages = await getMessages(chatId, "DirectMessage", lastMessage);
+
+  const clientMessages: IClientMessage[] = messages.map((message) => ({
+    content: message.content,
+    sender: getUserProfile(message.sender),
+    chatId: message.chat.toString(),
+    timestamp: message.createdAt,
+    id: message.id
+  }));
+
+  return NextResponse.json({ messages: clientMessages });
 }
