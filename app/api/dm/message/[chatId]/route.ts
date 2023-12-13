@@ -1,6 +1,6 @@
 import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
-import { getMessages } from "@/lib/message";
+import { MESSAGE_COUNT, getMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
 import { IClientMessage } from "@/types/user";
@@ -60,7 +60,6 @@ export async function GET(req: NextRequest) {
   const lastMessageId = url.searchParams.get("lastMessage");
   const chatId = url.pathname.slice(url.pathname.lastIndexOf("/") + 1);
 
-  console.log(lastMessageId);
   if (!isValidObjectId(chatId))
     return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
   if (!isValidObjectId(lastMessageId))
@@ -84,5 +83,8 @@ export async function GET(req: NextRequest) {
     id: message.id
   }));
 
-  return NextResponse.json({ messages: clientMessages });
+  return NextResponse.json({
+    messages: clientMessages,
+    noMoreMessages: clientMessages.length < MESSAGE_COUNT
+  });
 }

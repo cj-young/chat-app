@@ -9,17 +9,19 @@ import styles from "./styles.module.scss";
 interface Props {
   initialMessages: IClientMessage[];
   chatId: string;
+  initialAllLoaded: boolean;
 }
 
-const MESSAGE_COUNT = 40;
 const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
 
-export default function Chat({ initialMessages, chatId }: Props) {
+export default function Chat({
+  initialMessages,
+  chatId,
+  initialAllLoaded
+}: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
-  const [allLoaded, setAllLoaded] = useState(
-    initialMessages.length > MESSAGE_COUNT
-  );
+  const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
   const chatRef = useRef<HTMLDivElement>(null);
   const scrollDummyRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +40,9 @@ export default function Chat({ initialMessages, chatId }: Props) {
         return console.error(data.message ?? "An error occurred");
       }
       const newMessages = data.messages;
-      if (newMessages.length === 0) return setAllLoaded(true);
+      if (data.noMoreMessages || newMessages.length === 0) {
+        setAllLoaded(true);
+      }
       for (let newMessage of newMessages) {
         newMessage.timestamp = new Date(newMessage.timestamp);
       }

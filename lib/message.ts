@@ -2,7 +2,7 @@ import Message, { IMessage } from "@/models/Message";
 import { IUser } from "@/models/User";
 import dbConnect from "./db";
 
-const MESSAGE_COUNT = 40;
+export const MESSAGE_COUNT = 40;
 
 export async function getMessages(
   chatId: string,
