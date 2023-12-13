@@ -17,8 +17,6 @@ interface Props {
   };
 }
 
-const a = 1;
-
 export default async function DmChat({ params }: Props) {
   try {
     const sessionId = cookies().get("session")?.value;
@@ -57,7 +55,7 @@ export default async function DmChat({ params }: Props) {
 
     return (
       <div className={styles["chat-page-container"]}>
-        <Chat initialMessages={clientMessages} />
+        <Chat initialMessages={clientMessages} chatId={params.dmChatId} />
         <ChatInput
           chatName={
             isUser1
