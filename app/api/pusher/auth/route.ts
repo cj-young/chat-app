@@ -55,6 +55,6 @@ async function isDmAuthorized(
   if (!dmChat) return false;
 
   return (
-    userId !== dmChat.user1.toString() || userId !== dmChat.user2.toString()
+    userId === dmChat.user1.toString() || userId === dmChat.user2.toString()
   );
 }
