@@ -1,5 +1,3 @@
-import Chat from "@/components/Chat";
-import ChatInput from "@/components/ChatInput";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
@@ -10,8 +8,7 @@ import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import DmNavbar from "./components/DmNavbar";
-import styles from "./page.module.scss";
+import DmChatContainer from "./components/DmChatContainer";
 
 interface Props {
   params: {
@@ -56,31 +53,14 @@ export default async function DmChat({ params }: Props) {
     }));
 
     return (
-      <div className={styles["chat-page-container"]}>
-        <DmNavbar
-          directMessageChat={sterilizeClientDm(
-            directMessage,
-            isUser1 ? directMessage.user1.id : directMessage.user2.id
-          )}
-        />
-        <Chat
-          initialMessages={clientMessages}
-          chatId={params.dmChatId}
-          initialAllLoaded={clientMessages.length < MESSAGE_COUNT}
-          directMessageChat={sterilizeClientDm(
-            directMessage,
-            isUser1 ? directMessage.user1.id : directMessage.user2.id
-          )}
-        />
-        <ChatInput
-          chatName={
-            isUser1
-              ? directMessage.user2.displayName
-              : directMessage.user1.displayName
-          }
-          submitRoute={`/dm/message/${params.dmChatId}`}
-        />
-      </div>
+      <DmChatContainer
+        directMessageChat={sterilizeClientDm(
+          directMessage,
+          isUser1 ? directMessage.user1.id : directMessage.user2.id
+        )}
+        messages={clientMessages}
+        allLoaded={clientMessages.length < MESSAGE_COUNT}
+      />
     );
   } catch (error) {
     console.error(error);
