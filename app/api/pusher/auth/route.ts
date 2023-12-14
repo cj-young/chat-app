@@ -29,6 +29,13 @@ export async function POST(req: NextRequest) {
         } else {
           return authFailed();
         }
+      } else if (splitChannel[1] === "user") {
+        const userId = splitChannel[2];
+        if (userId === session.user.toString()) {
+          return NextResponse.json(authResponse);
+        } else {
+          return authFailed();
+        }
       }
     }
 

@@ -1,5 +1,6 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { pusherServer } from "@/lib/pusher";
 import User, { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -69,6 +70,13 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    console.log(`private-user-${receiver.id}`);
+    pusherServer.trigger(
+      `private-user-${receiver.id}`,
+      "friendRequest",
+      getUserProfile(session.user)
+    );
 
     return NextResponse.json({
       message: `Friend request sent to ${receiverUsername}`

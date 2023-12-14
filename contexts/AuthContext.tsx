@@ -1,8 +1,15 @@
 "use client";
 import { apiFetch } from "@/lib/api";
+import { pusherClient } from "@/lib/pusher";
 import { IClientDm, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 
 interface IAuthContext {
   profile: IProfile | null;
@@ -42,6 +49,27 @@ export default function AuthContextProvider({
     initialDirectMessages
   );
   const router = useRouter();
+
+  useEffect(() => {
+    console.log(`private-user-${initialProfile.id}`);
+    pusherClient.subscribe(`private-user-${initialProfile.id}`);
+
+    const onFriendRequest = (request: IProfile) => {
+      if (
+        !friendRequests.some((prevRequest) => prevRequest.id === request.id)
+      ) {
+        console.log("RECEIVED!");
+        setFriendRequests([...friendRequests, request]);
+      }
+    };
+
+    pusherClient.bind("friendRequest", onFriendRequest);
+
+    return () => {
+      pusherClient.unsubscribe(`private-user-${initialProfile.id}`);
+      pusherClient.unbind("friendRequest", onFriendRequest);
+    };
+  }, []);
 
   async function fulfillFriendRequest(
     userId: string,
