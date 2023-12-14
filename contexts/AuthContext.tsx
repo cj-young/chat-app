@@ -58,16 +58,33 @@ export default function AuthContextProvider({
       if (
         !friendRequests.some((prevRequest) => prevRequest.id === request.id)
       ) {
-        console.log("RECEIVED!");
         setFriendRequests([...friendRequests, request]);
       }
     };
 
+    const onFriendAccept = ({
+      user,
+      dmChat
+    }: {
+      user: IProfile;
+      dmChat: IClientDm;
+    }) => {
+      console.log({ user, dmChat });
+      if (!friends.some((prevFriend) => prevFriend.id === user.id)) {
+        setFriends([...friends, user]);
+      }
+      if (!directMessages.some((prevDm) => prevDm.chatId === dmChat.chatId)) {
+        setDirectMessages((prev) => [...prev, dmChat]);
+      }
+    };
+
     pusherClient.bind("friendRequest", onFriendRequest);
+    pusherClient.bind("friendAccept", onFriendAccept);
 
     return () => {
       pusherClient.unsubscribe(`private-user-${initialProfile.id}`);
       pusherClient.unbind("friendRequest", onFriendRequest);
+      pusherClient.unbind("friendAccept", onFriendAccept);
     };
   }, []);
 

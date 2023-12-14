@@ -1,5 +1,7 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { sterilizeClientDm } from "@/lib/directMessages";
+import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import User, { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
@@ -39,9 +41,11 @@ export async function POST(req: NextRequest) {
         latestMessageAt: Date.now()
       },
       { upsert: true, new: true }
-    );
+    )
+      .populate<{ user1: IUser }>("user1")
+      .populate<{ user2: IUser }>("user2");
 
-    await Promise.all([
+    const [sender, receiver] = await Promise.all([
       User.findByIdAndUpdate<IUser>(receiverId, {
         $addToSet: { friends: user.id, directMessages: dmChat.id }
       }),
@@ -50,6 +54,17 @@ export async function POST(req: NextRequest) {
         $pull: { friendRequests: receiverId }
       })
     ]);
+
+    if (receiver && sender) {
+      pusherServer.trigger(`private-user-${receiver.id}`, "friendAccept", {
+        user: getUserProfile(sender),
+        dmChat: sterilizeClientDm(dmChat, receiver.id)
+      });
+      pusherServer.trigger(`private-user-${sender.id}`, "friendAccept", {
+        user: getUserProfile(receiver),
+        dmChat: sterilizeClientDm(dmChat, sender.id)
+      });
+    }
 
     return NextResponse.json({ message: "Successfull added friend" });
   } catch (error) {
