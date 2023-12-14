@@ -2,6 +2,9 @@
 
 .message-item {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   list-style: none;
   display: grid;
   grid-template-columns: 4rem 1fr;
@@ -17,10 +20,22 @@
   }
 }
 
+.first-of-group {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 .info {
   display: flex;
   flex-direction: column;
   user-select: none;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  width: fit-content;
+  flex: 1;
+  min-width: 0;
 
   @include large-screen {
     flex-direction: row;
@@ -32,6 +47,12 @@
 .sender-name {
   font-weight: 500;
   user-select: none;
+  word-wrap: break-word;
+  min-width: 0;
+  max-width: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex: 1;
 }
 
 .content {
@@ -41,13 +62,17 @@
 .sent-at-first {
   font-size: var(--fs-200);
   color: var(--text-contrast-200);
+  user-select: none;
+  white-space: nowrap;
 }
 
-.sent-at {
+.sent-at {  
   font-size: var(--fs-200);
   color: var(--text-contrast-200);
   justify-self: end;
   visibility: var(--time-visibility);
+  user-select: none;
+  white-space: nowrap;
 }
 
 .profile-picture {
