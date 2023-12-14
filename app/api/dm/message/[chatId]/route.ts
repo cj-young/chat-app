@@ -1,8 +1,14 @@
 import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
-import { MESSAGE_COUNT, getMessages } from "@/lib/message";
+import {
+  MESSAGE_COUNT,
+  getMessages,
+  sterilizeClientMessage
+} from "@/lib/message";
+import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
+import { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,14 +29,14 @@ export async function POST(req: NextRequest) {
     await dbConnect();
 
     const [session, directMessage] = await Promise.all([
-      query,
+      query.populate<{ user: IUser }>("user"),
       DirectMessage.findById<IDirectMessage>(chatId)
     ]);
-    if (!session) return invalidSession();
+    if (!session || !directMessage) return invalidSession();
     if (
       !directMessage ||
-      (directMessage.user1.toString() !== session.user.toString() &&
-        directMessage.user2.toString() !== session.user.toString())
+      (directMessage.user1.toString() !== session.user.id &&
+        directMessage.user2.toString() !== session.user.id)
     ) {
       return NextResponse.json(
         { message: "Invalid chat ID, message failed to send" },
@@ -38,12 +44,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await Message.create<IMessage>({
+    const message = await Message.create<IMessage>({
       content,
-      sender: session.user,
+      sender: session.user.id,
       chatRef: "DirectMessage",
       chat: directMessage.id
     });
+
+    const clientMessage = sterilizeClientMessage({
+      ...message.toObject(),
+      id: message.id,
+      sender: session.user
+    });
+    pusherServer.trigger(
+      `private-directMessage-${chatId}`,
+      "messageSent",
+      clientMessage
+    );
 
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {

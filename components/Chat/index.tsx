@@ -1,6 +1,7 @@
 "use client";
 import Message from "@/components/Message";
 import { apiFetch } from "@/lib/api";
+import { pusherClient } from "@/lib/pusher";
 import { IClientDm, IClientMessage } from "@/types/user";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Loader from "../Loader";
@@ -27,6 +28,25 @@ export default function Chat({
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
   const chatRef = useRef<HTMLDivElement>(null);
   const scrollDummyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    pusherClient.subscribe(`private-directMessage-${chatId}`);
+    const onMessageSent = (
+      message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
+    ) => {
+      setMessages((prev) => [
+        { ...message, timestamp: new Date(message.timestamp) },
+        ...prev
+      ]);
+    };
+
+    pusherClient.bind("messageSent", onMessageSent);
+
+    return () => {
+      pusherClient.unsubscribe(`private-directMessage-${chatId}`);
+      pusherClient.unbind("messageSent", onMessageSent);
+    };
+  }, []);
 
   const loadMoreMessages = useCallback(async () => {
     try {
