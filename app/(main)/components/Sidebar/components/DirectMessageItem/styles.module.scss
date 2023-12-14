@@ -2,19 +2,24 @@
   width: 100%;
   max-width: 100%;
   list-style: none;
-  border-radius: var(--br);
+}
+
+.button {
+  width: 100%;
+  min-width: 0;
   padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  overflow: hidden;
 
   &:hover {
     background-color: var(--clr-hover);
   }
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  gap: 0.5rem;
 }
 
 .unread-count {

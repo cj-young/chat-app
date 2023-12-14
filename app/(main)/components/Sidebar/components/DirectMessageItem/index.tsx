@@ -1,7 +1,8 @@
+"use client";
 import NumberBadge from "@/components/NumberBadge";
 import ProfilePicture from "@/components/ProfilePicture";
 import { IClientDm } from "@/types/user";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -9,9 +10,14 @@ interface Props {
 }
 
 export default function DirectMessageItem({ directMessage }: Props) {
+  const router = useRouter();
+
   return (
     <li className={styles["dm-item"]}>
-      <Link href={`/dm/${directMessage.chatId}`} className={styles["link"]}>
+      <button
+        onClick={() => router.push(`/dm/${directMessage.chatId}`)}
+        className={styles["button"]}
+      >
         <ProfilePicture
           user={directMessage.user}
           status={directMessage.user.onlineStatus}
@@ -25,7 +31,7 @@ export default function DirectMessageItem({ directMessage }: Props) {
             className={styles["unread-count"]}
           />
         )}
-      </Link>
+      </button>
     </li>
   );
 }
