@@ -52,7 +52,9 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     console.log(`private-user-${initialProfile.id}`);
-    pusherClient.subscribe(`private-user-${initialProfile.id}`);
+    const userChannel = pusherClient.subscribe(
+      `private-user-${initialProfile.id}`
+    );
 
     const onFriendRequest = (request: IProfile) => {
       if (
@@ -78,13 +80,13 @@ export default function AuthContextProvider({
       }
     };
 
-    pusherClient.bind("friendRequest", onFriendRequest);
-    pusherClient.bind("friendAccept", onFriendAccept);
+    userChannel.bind("friendRequest", onFriendRequest);
+    userChannel.bind("friendAccept", onFriendAccept);
 
     return () => {
       pusherClient.unsubscribe(`private-user-${initialProfile.id}`);
-      pusherClient.unbind("friendRequest", onFriendRequest);
-      pusherClient.unbind("friendAccept", onFriendAccept);
+      userChannel.unbind("friendRequest", onFriendRequest);
+      userChannel.unbind("friendAccept", onFriendAccept);
     };
   }, []);
 

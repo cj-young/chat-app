@@ -30,7 +30,9 @@ export default function Chat({
   const scrollDummyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    pusherClient.subscribe(`private-directMessage-${chatId}`);
+    const pusherChannel = pusherClient.subscribe(
+      `private-directMessage-${chatId}`
+    );
     const onMessageSent = (
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
     ) => {
@@ -40,11 +42,11 @@ export default function Chat({
       ]);
     };
 
-    pusherClient.bind("messageSent", onMessageSent);
+    pusherChannel.bind("messageSent", onMessageSent);
 
     return () => {
       pusherClient.unsubscribe(`private-directMessage-${chatId}`);
-      pusherClient.unbind("messageSent", onMessageSent);
+      pusherChannel.unbind("messageSent", onMessageSent);
     };
   }, []);
 
