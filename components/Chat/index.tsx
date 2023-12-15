@@ -105,7 +105,7 @@ export default function Chat({
         )}
         {!allLoaded && <Loader className={styles["message-loader"]} />}
         <ul className={styles["chat-list"]}>
-          {messages.map((message, i) => {
+          {messages.toReversed().map((message, i) => {
             let isInGroup = false;
             if (i < messages.length - 1) {
               isInGroup =
