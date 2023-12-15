@@ -32,9 +32,13 @@ export default function Sidebar() {
         </Link>
         <h2 className={styles["conversations-header"]}>Conversations</h2>
         <ul className={styles["conversations-list"]}>
-          {directMessages.map((dm) => (
-            <DirectMessageItem directMessage={dm} key={dm.chatId} />
-          ))}
+          {directMessages
+            .sort(
+              (a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime()
+            )
+            .map((dm) => (
+              <DirectMessageItem directMessage={dm} key={dm.chatId} />
+            ))}
         </ul>
       </nav>
     </div>

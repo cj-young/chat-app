@@ -1,7 +1,7 @@
 "use client";
 import Message from "@/components/Message";
+import { usePusher } from "@/contexts/PusherContext";
 import { apiFetch } from "@/lib/api";
-import { pusherClient } from "@/lib/pusher";
 import { IClientDm, IClientMessage } from "@/types/user";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Loader from "../Loader";
@@ -28,11 +28,9 @@ export default function Chat({
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
   const chatRef = useRef<HTMLDivElement>(null);
   const scrollDummyRef = useRef<HTMLDivElement>(null);
+  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
-    const pusherChannel = pusherClient.subscribe(
-      `private-directMessage-${chatId}`
-    );
     const onMessageSent = (
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
     ) => {
@@ -42,11 +40,18 @@ export default function Chat({
       ]);
     };
 
-    pusherChannel.bind("messageSent", onMessageSent);
+    subscribeToEvent(
+      `private-directMessage-${chatId}`,
+      "messageSent",
+      onMessageSent
+    );
 
     return () => {
-      pusherClient.unsubscribe(`private-directMessage-${chatId}`);
-      pusherChannel.unbind("messageSent", onMessageSent);
+      unsubscribeFromEvent(
+        `private-directMessage-${chatId}`,
+        "messageSent",
+        onMessageSent
+      );
     };
   }, []);
 

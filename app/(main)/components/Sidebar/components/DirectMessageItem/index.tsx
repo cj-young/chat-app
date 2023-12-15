@@ -1,8 +1,11 @@
 "use client";
 import NumberBadge from "@/components/NumberBadge";
 import ProfilePicture from "@/components/ProfilePicture";
-import { IClientDm } from "@/types/user";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { usePusher } from "@/contexts/PusherContext";
+import { IClientDm, IClientMessage } from "@/types/user";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -11,6 +14,42 @@ interface Props {
 
 export default function DirectMessageItem({ directMessage }: Props) {
   const router = useRouter();
+
+  const { setDirectMessages } = useAuthContext();
+  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
+
+  useEffect(() => {
+    const onMessageSent = (
+      message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
+    ) => {
+      setDirectMessages((prev) =>
+        prev.map((prevMessage) => {
+          if (prevMessage.chatId === message.chatId) {
+            return {
+              ...prevMessage,
+              lastMessageAt: new Date(message.timestamp)
+            };
+          } else {
+            return prevMessage;
+          }
+        })
+      );
+    };
+
+    subscribeToEvent(
+      `private-directMessage-${directMessage.chatId}`,
+      "messageSent",
+      onMessageSent
+    );
+
+    return () => {
+      unsubscribeFromEvent(
+        `private-directMessage-${directMessage.chatId}`,
+        "messageSent",
+        onMessageSent
+      );
+    };
+  }, []);
 
   return (
     <li className={styles["dm-item"]}>
