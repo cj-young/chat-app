@@ -4,7 +4,9 @@ import { pusherClient } from "@/lib/pusher";
 import { IClientDm, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import {
+  Dispatch,
   ReactNode,
+  SetStateAction,
   createContext,
   useContext,
   useEffect,
@@ -20,6 +22,7 @@ interface IAuthContext {
   ): Promise<void>;
   friends: IProfile[];
   directMessages: IClientDm[];
+  setDirectMessages: Dispatch<SetStateAction<IClientDm[]>>;
   signOut(): Promise<void>;
 }
 
@@ -51,7 +54,6 @@ export default function AuthContextProvider({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(`private-user-${initialProfile.id}`);
     const userChannel = pusherClient.subscribe(
       `private-user-${initialProfile.id}`
     );
@@ -132,6 +134,7 @@ export default function AuthContextProvider({
         fulfillFriendRequest,
         friends,
         directMessages,
+        setDirectMessages,
         signOut
       }}
     >
