@@ -12,6 +12,7 @@ import {
   useEffect,
   useState
 } from "react";
+import { usePusher } from "./PusherContext";
 
 interface IAuthContext {
   profile: IProfile | null;
@@ -52,6 +53,7 @@ export default function AuthContextProvider({
     initialDirectMessages
   );
   const router = useRouter();
+  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
     const userChannel = pusherClient.subscribe(
@@ -82,13 +84,28 @@ export default function AuthContextProvider({
       }
     };
 
-    userChannel.bind("friendRequest", onFriendRequest);
-    userChannel.bind("friendAccept", onFriendAccept);
+    subscribeToEvent(
+      `private-user-${initialProfile.id}`,
+      "friendRequest",
+      onFriendRequest
+    );
+    subscribeToEvent(
+      `private-user-${initialProfile.id}`,
+      "friendAccept",
+      onFriendAccept
+    );
 
     return () => {
-      pusherClient.unsubscribe(`private-user-${initialProfile.id}`);
-      userChannel.unbind("friendRequest", onFriendRequest);
-      userChannel.unbind("friendAccept", onFriendAccept);
+      unsubscribeFromEvent(
+        `private-user-${initialProfile.id}`,
+        "friendRequest",
+        onFriendRequest
+      );
+      unsubscribeFromEvent(
+        `private-user-${initialProfile.id}`,
+        "friendAccept",
+        onFriendAccept
+      );
     };
   }, []);
 
