@@ -1,3 +1,4 @@
+import PusherContextProvider from "@/contexts/PusherContext";
 import UiContextProvider from "@/contexts/UiContext";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={dmSans.className}>
       <UiContextProvider>
-        <body>{children}</body>
+        <PusherContextProvider>
+          <body>{children}</body>
+        </PusherContextProvider>
       </UiContextProvider>
     </html>
   );
