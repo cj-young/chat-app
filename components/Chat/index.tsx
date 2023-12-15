@@ -3,7 +3,7 @@ import Message from "@/components/Message";
 import { usePusher } from "@/contexts/PusherContext";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage } from "@/types/user";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Loader from "../Loader";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
 import styles from "./styles.module.scss";
@@ -99,6 +99,10 @@ export default function Chat({
     return () => observer.disconnect();
   }, [loadMoreMessages]);
 
+  const reversedMessages = useMemo(() => {
+    return messages.toReversed();
+  }, [messages]);
+
   return (
     <div className={styles["chat-container"]} ref={chatRef}>
       <div className={styles["messages-container"]}>
@@ -107,16 +111,16 @@ export default function Chat({
         )}
         {!allLoaded && <Loader className={styles["message-loader"]} />}
         <ul className={styles["chat-list"]}>
-          {messages.toReversed().map((message, i) => {
+          {reversedMessages.map((message, i) => {
             let isInGroup = false;
-            if (i < messages.length - 1) {
+            if (i > 0) {
               isInGroup =
-                messages[i].sender.id === messages[i + 1].sender.id &&
-                messages[i].timestamp.getTime() -
-                  messages[i + 1].timestamp.getTime() <
+                reversedMessages[i].sender.id ===
+                  reversedMessages[i - 1].sender.id &&
+                reversedMessages[i].timestamp.getTime() -
+                  reversedMessages[i - 1].timestamp.getTime() <
                   5 * 60 * 1000; // True if messages are sent within 5 minutes
             }
-
             return (
               <Message
                 message={message}
