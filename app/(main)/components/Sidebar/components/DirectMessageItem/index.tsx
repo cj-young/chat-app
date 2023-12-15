@@ -19,9 +19,11 @@ export default function DirectMessageItem({ directMessage }: Props) {
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
-    const onMessageSent = (
-      message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
-    ) => {
+    const onMessageSent = ({
+      message
+    }: {
+      message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
+    }) => {
       setDirectMessages((prev) =>
         prev.map((prevMessage) => {
           if (prevMessage.chatId === message.chatId) {

@@ -31,9 +31,11 @@ export default function Chat({
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
-    const onMessageSent = (
-      message: Omit<IClientMessage, "timestamp"> & { timestamp: string }
-    ) => {
+    const onMessageSent = ({
+      message
+    }: {
+      message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
+    }) => {
       setMessages((prev) => [
         { ...message, timestamp: new Date(message.timestamp) },
         ...prev

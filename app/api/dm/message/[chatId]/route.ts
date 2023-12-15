@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     await pusherServer.trigger(
       `private-directMessage-${chatId}`,
       "messageSent",
-      clientMessage
+      { message: clientMessage }
     );
     console.log(`private-directMessage-${chatId}`);
     return NextResponse.json({ message: "Message successfully sent" });
