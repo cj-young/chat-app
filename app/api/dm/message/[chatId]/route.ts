@@ -44,24 +44,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const message = await Message.create<IMessage>({
+    const message = (await Message.create<IMessage>({
       content,
       sender: session.user.id,
       chatRef: "DirectMessage",
       chat: directMessage.id
-    });
+    })) as IMessage;
+
+    if (message) {
+      await DirectMessage.findByIdAndUpdate<IDirectMessage>(directMessage.id, {
+        latestMessageAt: message.createdAt
+      });
+    }
 
     const clientMessage = sterilizeClientMessage({
       ...message.toObject(),
       id: message.id,
       sender: session.user
     });
-    pusherServer.trigger(
+    await pusherServer.trigger(
       `private-directMessage-${chatId}`,
       "messageSent",
       clientMessage
     );
-
+    console.log(`private-directMessage-${chatId}`);
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {
     console.error(error);

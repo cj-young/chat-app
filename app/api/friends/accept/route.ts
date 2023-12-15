@@ -56,11 +56,15 @@ export async function POST(req: NextRequest) {
     ]);
 
     if (receiver && sender) {
-      pusherServer.trigger(`private-user-${receiver.id}`, "friendAccept", {
-        user: getUserProfile(sender),
-        dmChat: sterilizeClientDm(dmChat, receiver.id)
-      });
-      pusherServer.trigger(`private-user-${sender.id}`, "friendAccept", {
+      await pusherServer.trigger(
+        `private-user-${receiver.id}`,
+        "friendAccept",
+        {
+          user: getUserProfile(sender),
+          dmChat: sterilizeClientDm(dmChat, receiver.id)
+        }
+      );
+      await pusherServer.trigger(`private-user-${sender.id}`, "friendAccept", {
         user: getUserProfile(receiver),
         dmChat: sterilizeClientDm(dmChat, sender.id)
       });

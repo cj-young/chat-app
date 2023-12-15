@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`private-user-${receiver.id}`);
-    pusherServer.trigger(
+    await pusherServer.trigger(
       `private-user-${receiver.id}`,
       "friendRequest",
       getUserProfile(session.user)
