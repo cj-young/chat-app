@@ -1,0 +1,19 @@
+.home-button {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: var(--bg-main);
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  transition: border-radius 150ms ease;
+
+  svg,
+  svg * {
+    fill: var(--text-primary);
+  }
+
+  &.home-selected {
+    background-color: var(--clr-primary);
+    border-radius: calc(var(--br) * 2);
+  }
+}

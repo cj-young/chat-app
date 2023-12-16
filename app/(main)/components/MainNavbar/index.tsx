@@ -1,5 +1,7 @@
 "use client";
 import { useUiContext } from "@/contexts/UiContext";
+
+import HomeButton from "./components/HomeButton";
 import styles from "./styles.module.scss";
 
 export default function MainNavbar() {
@@ -11,6 +13,12 @@ export default function MainNavbar() {
         styles["nav"],
         mobileNavExpanded ? "" : styles["hidden"]
       ].join(" ")}
-    ></nav>
+    >
+      <ul className={styles["nav-list"]}>
+        <li>
+          <HomeButton />
+        </li>
+      </ul>
+    </nav>
   );
 }
