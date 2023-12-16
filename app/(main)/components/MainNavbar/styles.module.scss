@@ -4,6 +4,19 @@
   background-color: var(--bg-contrast-200);
   flex: 0 0 4.5rem;
   padding: 0.5rem;
+  display: flex;
+
+  @include large-screen {
+    flex-direction: column;
+  }
+}
+
+.nav-item {
+  height: 100%;
+
+  @include large-screen {
+    width: 100%;
+  }
 }
 
 .hidden {

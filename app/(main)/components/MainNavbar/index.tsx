@@ -15,7 +15,7 @@ export default function MainNavbar() {
       ].join(" ")}
     >
       <ul className={styles["nav-list"]}>
-        <li>
+        <li className={styles["nav-item"]}>
           <HomeButton />
         </li>
       </ul>

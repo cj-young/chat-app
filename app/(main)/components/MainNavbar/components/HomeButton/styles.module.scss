@@ -1,19 +1,34 @@
+@import "@/styles/mixins";
+
 .home-button {
-  width: 100%;
+  height: 100%;
   aspect-ratio: 1;
   background-color: var(--bg-main);
   border: none;
   border-radius: var(--br);
   cursor: pointer;
   transition: border-radius 150ms ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
 
   svg,
   svg * {
     fill: var(--text-primary);
   }
 
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
   &.home-selected {
     background-color: var(--clr-primary);
     border-radius: calc(var(--br) * 2);
+  }
+
+  @include large-screen {
+    width: 100%;
   }
 }
