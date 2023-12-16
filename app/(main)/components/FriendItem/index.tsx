@@ -2,6 +2,7 @@
 import PopupMenu from "@/components/PopupMenu";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useUiContext } from "@/contexts/UiContext";
+import { apiFetch } from "@/lib/api";
 import { formatOnlineStatus } from "@/lib/user";
 import EllipsisIcon from "@/public/ellipsis-solid.svg";
 import ChatIcon from "@/public/message-solid.svg";
@@ -14,6 +15,18 @@ interface Props {
 
 export default function FriendItem({ user }: Props) {
   const { addPopupMenu } = useUiContext();
+
+  async function removeFriend() {
+    try {
+      const res = await apiFetch("/friends/remove", "POST", {
+        receiverId: user.id
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error("An error occurred");
+    }
+  }
 
   return (
     <div className={styles["friend-item"]}>
@@ -35,7 +48,7 @@ export default function FriendItem({ user }: Props) {
           onClick={(e) => {
             addPopupMenu(
               <PopupMenu
-                items={[{ content: "Remove friend", onClick: () => null }]}
+                items={[{ content: "Remove friend", onClick: removeFriend }]}
                 x={e.clientX}
                 y={e.clientY}
               />
