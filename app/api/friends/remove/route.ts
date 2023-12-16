@@ -21,6 +21,15 @@ export async function POST(req: NextRequest) {
       User.findByIdAndUpdate(receiverId, { $pull: { friends: user.id } })
     ]);
 
+    await Promise.all([
+      pusherServer.trigger(`private-user-${receiverId}`, "friendRemove", {
+        userId: user.id
+      }),
+      pusherServer.trigger(`private-user-${user.id}`, "friendRemove", {
+        userId: receiverId
+      })
+    ]);
+
     return NextResponse.json({ message: "Successfully removed friend" });
   } catch (error) {
     console.error(error);

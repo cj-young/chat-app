@@ -71,7 +71,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`private-user-${receiver.id}`);
     await pusherServer.trigger(
       `private-user-${receiver.id}`,
       "friendRequest",
