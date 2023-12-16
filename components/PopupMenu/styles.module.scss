@@ -1,0 +1,32 @@
+.popup-menu {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0.25rem;
+  gap: 0.25rem;
+  position: fixed;
+  background-color: var(--bg-contrast-200);
+  border-radius: var(--br);
+}
+
+.hidden {
+  display: none;
+}
+
+.menu-button {
+  background-color: transparent;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-weight: 500;
+  font-size: var(--fs-300);
+
+  &:hover {
+    background-color: var(--clr-primary);
+  }
+}

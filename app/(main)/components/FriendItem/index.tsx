@@ -1,4 +1,7 @@
+"use clien";
+import PopupMenu from "@/components/PopupMenu";
 import ProfilePicture from "@/components/ProfilePicture";
+import { useUiContext } from "@/contexts/UiContext";
 import { formatOnlineStatus } from "@/lib/user";
 import EllipsisIcon from "@/public/ellipsis-solid.svg";
 import ChatIcon from "@/public/message-solid.svg";
@@ -10,6 +13,8 @@ interface Props {
 }
 
 export default function FriendItem({ user }: Props) {
+  const { addPopupMenu } = useUiContext();
+
   return (
     <div className={styles["friend-item"]}>
       <div className={styles["left"]}>
@@ -25,7 +30,18 @@ export default function FriendItem({ user }: Props) {
         <button className={styles["button"]}>
           <ChatIcon />
         </button>
-        <button className={styles["button"]}>
+        <button
+          className={styles["button"]}
+          onClick={(e) => {
+            addPopupMenu(
+              <PopupMenu
+                items={[{ content: "Remove friend", onClick: () => null }]}
+                x={e.clientX}
+                y={e.clientY}
+              />
+            );
+          }}
+        >
           <EllipsisIcon />
         </button>
       </div>

@@ -7,6 +7,7 @@ import { sterilizeClientDm } from "@/lib/directMessages";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import PopupMenuDisplay from "./components/PopupMenuDisplay";
 import styles from "./layout.module.scss";
 
 export default async function RootLayout({
@@ -49,6 +50,7 @@ export default async function RootLayout({
           <Sidebar />
           {children}
         </div>
+        <PopupMenuDisplay />
       </AuthContextProvider>
     );
   } catch (error) {
