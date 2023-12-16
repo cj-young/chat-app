@@ -1,4 +1,5 @@
 "use client";
+import { pusherClient } from "@/lib/pusher";
 import { Channel } from "pusher-js";
 import { ReactNode, createContext, useContext, useRef } from "react";
 
