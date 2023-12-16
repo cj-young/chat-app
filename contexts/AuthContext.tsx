@@ -1,6 +1,5 @@
 "use client";
 import { apiFetch } from "@/lib/api";
-import { pusherClient } from "@/lib/pusher";
 import { IClientDm, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import {
@@ -56,10 +55,6 @@ export default function AuthContextProvider({
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
-    const userChannel = pusherClient.subscribe(
-      `private-user-${initialProfile.id}`
-    );
-
     const onFriendRequest = (request: IProfile) => {
       if (
         !friendRequests.some((prevRequest) => prevRequest.id === request.id)
@@ -75,12 +70,16 @@ export default function AuthContextProvider({
       user: IProfile;
       dmChat: IClientDm;
     }) => {
-      if (!friends.some((prevFriend) => prevFriend.id === user.id)) {
-        setFriends([...friends, user]);
-      }
-      if (!directMessages.some((prevDm) => prevDm.chatId === dmChat.chatId)) {
-        setDirectMessages((prev) => [...prev, dmChat]);
-      }
+      setFriends((prevFriends) =>
+        prevFriends.some((prevFriend) => prevFriend.id === user.id)
+          ? prevFriends
+          : [...prevFriends, user]
+      );
+      setDirectMessages((prevDirectMessages) =>
+        directMessages.some((prevDm) => prevDm.chatId === dmChat.chatId)
+          ? prevDirectMessages
+          : [...prevDirectMessages, dmChat]
+      );
     };
 
     const onFriendRemove = ({ userId }: { userId: string }) => {
@@ -142,7 +141,6 @@ export default function AuthContextProvider({
         receiverId: userId
       });
       const data = await res.json();
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
