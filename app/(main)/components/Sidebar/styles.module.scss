@@ -54,4 +54,7 @@
 
 .conversations-list {
   margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }

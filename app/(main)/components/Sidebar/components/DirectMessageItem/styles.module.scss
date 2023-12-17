@@ -20,6 +20,14 @@
   &:hover {
     background-color: var(--clr-hover);
   }
+
+  &.selected {
+    background-color: var(--clr-select);
+  }
+}
+
+.selected {
+  background-color: red;
 }
 
 .unread-count {

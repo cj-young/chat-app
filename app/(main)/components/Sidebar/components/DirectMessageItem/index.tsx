@@ -4,7 +4,7 @@ import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { usePusher } from "@/contexts/PusherContext";
 import { IClientDm, IClientMessage } from "@/types/user";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import styles from "./styles.module.scss";
 
@@ -14,6 +14,7 @@ interface Props {
 
 export default function DirectMessageItem({ directMessage }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const { setDirectMessages } = useAuthContext();
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
@@ -57,7 +58,10 @@ export default function DirectMessageItem({ directMessage }: Props) {
     <li className={styles["dm-item"]}>
       <button
         onClick={() => router.push(`/dm/${directMessage.chatId}`)}
-        className={styles["button"]}
+        className={[
+          styles["button"],
+          pathname.endsWith(directMessage.chatId) ? styles["selected"] : ""
+        ].join(" ")}
       >
         <ProfilePicture
           user={directMessage.user}
