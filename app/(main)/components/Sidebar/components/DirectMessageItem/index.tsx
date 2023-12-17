@@ -2,11 +2,11 @@
 import NumberBadge from "@/components/NumberBadge";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { usePusher } from "@/contexts/PusherContext";
+import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage } from "@/types/user";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -19,12 +19,12 @@ export default function DirectMessageItem({ directMessage }: Props) {
   const isBeingViewed = pathname.endsWith(directMessage.chatId);
   const isBeingViewedRef = useRef<boolean>();
   isBeingViewedRef.current = isBeingViewed;
-
   const { setDirectMessages } = useAuthContext();
-  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
-  useEffect(() => {
-    const onMessageSent = ({
+  usePusherEvent(
+    `private-directMessage-${directMessage.chatId}`,
+    "messageSent",
+    ({
       message
     }: {
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
@@ -48,22 +48,8 @@ export default function DirectMessageItem({ directMessage }: Props) {
       if (isBeingViewedRef.current) {
         apiFetch(`/dm/reset-unread/${directMessage.chatId}`);
       }
-    };
-
-    subscribeToEvent(
-      `private-directMessage-${directMessage.chatId}`,
-      "messageSent",
-      onMessageSent
-    );
-
-    return () => {
-      unsubscribeFromEvent(
-        `private-directMessage-${directMessage.chatId}`,
-        "messageSent",
-        onMessageSent
-      );
-    };
-  }, []);
+    }
+  );
 
   return (
     <li className={styles["dm-item"]}>

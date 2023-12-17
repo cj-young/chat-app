@@ -1,4 +1,5 @@
 "use client";
+import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
@@ -8,10 +9,8 @@ import {
   SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useState
 } from "react";
-import { usePusher } from "./PusherContext";
 
 interface IAuthContext {
   profile: IProfile;
@@ -52,24 +51,23 @@ export default function AuthContextProvider({
     initialDirectMessages
   );
   const router = useRouter();
-  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
-  useEffect(() => {
-    const onFriendRequest = (request: IProfile) => {
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "friendRequest",
+    (request: IProfile) => {
       if (
         !friendRequests.some((prevRequest) => prevRequest.id === request.id)
       ) {
         setFriendRequests([...friendRequests, request]);
       }
-    };
+    }
+  );
 
-    const onFriendAccept = ({
-      user,
-      dmChat
-    }: {
-      user: IProfile;
-      dmChat: IClientDm;
-    }) => {
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "friendAccept",
+    ({ user, dmChat }: { user: IProfile; dmChat: IClientDm }) => {
       setFriends((prevFriends) =>
         prevFriends.some((prevFriend) => prevFriend.id === user.id)
           ? prevFriends
@@ -80,64 +78,28 @@ export default function AuthContextProvider({
           ? prevDirectMessages
           : [...prevDirectMessages, dmChat]
       );
-    };
+    }
+  );
 
-    const onFriendRemove = ({ userId }: { userId: string }) => {
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "friendRemove",
+    ({ userId }: { userId: string }) => {
       setFriends((prev) => prev.filter((friend) => friend.id !== userId));
-    };
+    }
+  );
 
-    const onDmCreated = ({ dmChat }: { dmChat: IClientDm }) => {
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "dmCreated",
+    ({ dmChat }: { dmChat: IClientDm }) => {
       setDirectMessages((prev) =>
         prev.some((prevDm) => prevDm.chatId === dmChat.chatId)
           ? prev
           : [...prev, dmChat]
       );
-    };
-
-    subscribeToEvent(
-      `private-user-${initialProfile.id}`,
-      "friendRequest",
-      onFriendRequest
-    );
-    subscribeToEvent(
-      `private-user-${initialProfile.id}`,
-      "friendAccept",
-      onFriendAccept
-    );
-    subscribeToEvent(
-      `private-user-${initialProfile.id}`,
-      "friendRemove",
-      onFriendRemove
-    );
-    subscribeToEvent(
-      `private-user-${initialProfile.id}`,
-      "friendRemove",
-      onDmCreated
-    );
-
-    return () => {
-      unsubscribeFromEvent(
-        `private-user-${initialProfile.id}`,
-        "friendRequest",
-        onFriendRequest
-      );
-      unsubscribeFromEvent(
-        `private-user-${initialProfile.id}`,
-        "friendAccept",
-        onFriendAccept
-      );
-      unsubscribeFromEvent(
-        `private-user-${initialProfile.id}`,
-        "friendRemove",
-        onFriendRemove
-      );
-      unsubscribeFromEvent(
-        `private-user-${initialProfile.id}`,
-        "friendRemove",
-        onDmCreated
-      );
-    };
-  }, []);
+    }
+  );
 
   async function fulfillFriendRequest(
     userId: string,
