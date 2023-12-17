@@ -4,8 +4,8 @@ import ChatInput from "@/components/ChatInput";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
-import { IClientDm, IClientMessage } from "@/types/user";
-import { useEffect } from "react";
+import { IClientDm, IClientMessage, ITempMessage } from "@/types/user";
+import { useEffect, useState } from "react";
 import DmNavbar from "../DmNavbar";
 import styles from "./styles.module.scss";
 
@@ -21,7 +21,8 @@ export default function DmChatContainer({
   allLoaded
 }: Props) {
   const { mobileNavExpanded } = useUiContext();
-  const { setDirectMessages } = useAuthContext();
+  const { setDirectMessages, profile } = useAuthContext();
+  const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
 
   useEffect(() => {
     apiFetch(`/dm/reset-unread/${directMessageChat.chatId}`);
@@ -53,10 +54,19 @@ export default function DmChatContainer({
         chatId={directMessageChat.chatId}
         initialAllLoaded={allLoaded}
         directMessageChat={directMessageChat}
+        tempMessages={tempMessages}
+        removeTempMessage={(tempId: string) => {
+          setTempMessages((prev) =>
+            prev.filter((prevMessage) => prevMessage.id !== tempId)
+          );
+        }}
       />
       <ChatInput
         chatName={directMessageChat.user.displayName}
         submitRoute={`/dm/message/${directMessageChat.chatId}`}
+        addTempMessage={(message: ITempMessage) => {
+          setTempMessages((prev) => [...prev, message]);
+        }}
       />
     </main>
   );

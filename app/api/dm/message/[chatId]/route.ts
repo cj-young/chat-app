@@ -17,8 +17,9 @@ export async function POST(req: NextRequest) {
   try {
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
 
-    const { content } = (await req.json()) as {
+    const { content, tempId } = (await req.json()) as {
       content: string;
+      tempId: string;
     };
     const taggedSessionId = req.cookies.get("session")?.value;
     if (!taggedSessionId) return invalidSession();
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
     await pusherServer.trigger(
       `private-directMessage-${chatId}`,
       "messageSent",
-      { message: clientMessage }
+      { message: clientMessage, tempId }
     );
 
     return NextResponse.json({ message: "Message successfully sent" });

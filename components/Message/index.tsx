@@ -1,13 +1,14 @@
-import { IClientMessage } from "@/types/user";
+import { IClientMessage, ITempMessage } from "@/types/user";
 import ProfilePicture from "../ProfilePicture";
 import styles from "./styles.module.scss";
 
 interface Props {
-  message: IClientMessage;
+  message: IClientMessage | ITempMessage;
   isFirst: boolean;
+  isTemp?: boolean;
 }
 
-export default function Message({ message, isFirst }: Props) {
+export default function Message({ message, isFirst, isTemp }: Props) {
   return (
     <li className={styles["message-item"]}>
       {isFirst ? (
@@ -41,10 +42,24 @@ export default function Message({ message, isFirst }: Props) {
                 .replace(",", "")}
             </span>
           </div>
-          <span className={styles["content"]}>{message.content}</span>
+          <span
+            className={[
+              styles["content"],
+              isTemp ? styles["temp-content"] : ""
+            ].join(" ")}
+          >
+            {message.content}
+          </span>
         </div>
       ) : (
-        <span className={styles["content"]}>{message.content}</span>
+        <span
+          className={[
+            styles["content"],
+            isTemp ? styles["temp-content"] : ""
+          ].join(" ")}
+        >
+          {message.content}
+        </span>
       )}
     </li>
   );

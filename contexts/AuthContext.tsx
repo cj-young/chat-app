@@ -14,7 +14,7 @@ import {
 import { usePusher } from "./PusherContext";
 
 interface IAuthContext {
-  profile: IProfile | null;
+  profile: IProfile;
   friendRequests: IProfile[];
   fulfillFriendRequest(
     userId: string,

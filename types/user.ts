@@ -23,3 +23,10 @@ export interface IClientMessage {
   timestamp: Date;
   id: string;
 }
+
+export interface ITempMessage {
+  content: string;
+  sender: IProfile;
+  timestamp: Date;
+  id: string;
+}

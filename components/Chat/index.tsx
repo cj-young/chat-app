@@ -2,7 +2,7 @@
 import Message from "@/components/Message";
 import { usePusher } from "@/contexts/PusherContext";
 import { apiFetch } from "@/lib/api";
-import { IClientDm, IClientMessage } from "@/types/user";
+import { IClientDm, IClientMessage, ITempMessage } from "@/types/user";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Loader from "../Loader";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
@@ -13,6 +13,8 @@ interface Props {
   chatId: string;
   initialAllLoaded: boolean;
   directMessageChat?: IClientDm;
+  tempMessages?: ITempMessage[];
+  removeTempMessage?(tempId: string): void;
 }
 
 const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
@@ -21,7 +23,9 @@ export default function Chat({
   initialMessages,
   chatId,
   initialAllLoaded,
-  directMessageChat
+  directMessageChat,
+  tempMessages,
+  removeTempMessage
 }: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
@@ -32,14 +36,17 @@ export default function Chat({
 
   useEffect(() => {
     const onMessageSent = ({
-      message
+      message,
+      tempId
     }: {
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
+      tempId: string;
     }) => {
       setMessages((prev) => [
         { ...message, timestamp: new Date(message.timestamp) },
         ...prev
       ]);
+      if (removeTempMessage) removeTempMessage(tempId);
     };
 
     subscribeToEvent(
@@ -126,6 +133,25 @@ export default function Chat({
                 message={message}
                 isFirst={!isInGroup}
                 key={message.id}
+              />
+            );
+          })}
+          {tempMessages?.map((message, i) => {
+            let isInGroup = false;
+            if (i === 0) {
+              isInGroup =
+                reversedMessages[reversedMessages.length - 1].sender.id ===
+                message.sender.id;
+            } else {
+              isInGroup =
+                tempMessages[i].sender.id === tempMessages[i - 1].sender.id;
+            }
+            return (
+              <Message
+                message={message}
+                isFirst={!isInGroup}
+                key={message.id}
+                isTemp={true}
               />
             );
           })}

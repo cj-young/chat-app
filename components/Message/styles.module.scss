@@ -66,7 +66,7 @@
   white-space: nowrap;
 }
 
-.sent-at {  
+.sent-at {
   font-size: var(--fs-200);
   color: var(--text-contrast-200);
   justify-self: end;
@@ -79,4 +79,8 @@
   width: 2.5rem;
   height: 2.5rem;
   justify-self: end;
+}
+
+.temp-content {
+  opacity: 50%;
 }
