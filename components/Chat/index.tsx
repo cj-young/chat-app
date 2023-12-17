@@ -1,9 +1,10 @@
 "use client";
 import Message from "@/components/Message";
 import { usePusher } from "@/contexts/PusherContext";
+import useScroll from "@/hooks/useScroll";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage, ITempMessage } from "@/types/user";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Loader from "../Loader";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
 import styles from "./styles.module.scss";
@@ -30,8 +31,6 @@ export default function Chat({
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
-  const chatRef = useRef<HTMLDivElement>(null);
-  const scrollDummyRef = useRef<HTMLDivElement>(null);
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   useEffect(() => {
@@ -92,26 +91,14 @@ export default function Chat({
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (!scrollDummyRef?.current) return;
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        console.log(entry);
-        loadMoreMessages();
-      }
-    });
-    observer.observe(scrollDummyRef.current);
-
-    return () => observer.disconnect();
-  }, [loadMoreMessages]);
+  const { scrollRef } = useScroll(loadMoreMessages);
 
   const reversedMessages = useMemo(() => {
     return [...messages].reverse();
   }, [messages]);
 
   return (
-    <div className={styles["chat-container"]} ref={chatRef}>
+    <div className={styles["chat-container"]}>
       <div className={styles["messages-container"]}>
         {allLoaded && directMessageChat && (
           <DirectMessageBanner directMessageChat={directMessageChat} />
@@ -165,7 +152,7 @@ export default function Chat({
           <div
             className={styles["scroll-dummy"]}
             aria-hidden="true"
-            ref={scrollDummyRef}
+            ref={scrollRef}
             style={{ height: MESSAGE_FETCH_SCROLL_BUFFER }}
           ></div>
         )}
