@@ -1,6 +1,5 @@
 "use client";
 import Message from "@/components/Message";
-import { usePusher } from "@/contexts/PusherContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import useScroll from "@/hooks/useScroll";
 import { apiFetch } from "@/lib/api";
@@ -32,7 +31,6 @@ export default function Chat({
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
-  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   usePusherEvent(
     `private-directMessage-${chatId}`,
