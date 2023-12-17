@@ -86,6 +86,14 @@ export default function AuthContextProvider({
       setFriends((prev) => prev.filter((friend) => friend.id !== userId));
     };
 
+    const onDmCreated = ({ dmChat }: { dmChat: IClientDm }) => {
+      setDirectMessages((prev) =>
+        prev.some((prevDm) => prevDm.chatId === dmChat.chatId)
+          ? prev
+          : [...prev, dmChat]
+      );
+    };
+
     subscribeToEvent(
       `private-user-${initialProfile.id}`,
       "friendRequest",
@@ -100,6 +108,11 @@ export default function AuthContextProvider({
       `private-user-${initialProfile.id}`,
       "friendRemove",
       onFriendRemove
+    );
+    subscribeToEvent(
+      `private-user-${initialProfile.id}`,
+      "friendRemove",
+      onDmCreated
     );
 
     return () => {
@@ -117,6 +130,11 @@ export default function AuthContextProvider({
         `private-user-${initialProfile.id}`,
         "friendRemove",
         onFriendRemove
+      );
+      unsubscribeFromEvent(
+        `private-user-${initialProfile.id}`,
+        "friendRemove",
+        onDmCreated
       );
     };
   }, []);
