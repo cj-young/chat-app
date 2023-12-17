@@ -4,13 +4,13 @@ import "server-only";
 
 export interface IGroupChat extends Document {
   members: Types.ObjectId[];
-  unreadCounts: Map<Types.ObjectId, number>;
+  unreadCounts: Map<string, number>;
   latestMessageAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const groupChatSchema = new Schema(
+const groupChatSchema = new Schema<IGroupChat>(
   {
     members: {
       type: [
