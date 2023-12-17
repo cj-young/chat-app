@@ -3,7 +3,6 @@ import { Document, Schema, Types, model, models } from "mongoose";
 import "server-only";
 
 export interface IDirectMessage extends Document {
-  name: string;
   user1: Types.ObjectId;
   user2: Types.ObjectId;
   user1Unread: number;
@@ -15,10 +14,6 @@ export interface IDirectMessage extends Document {
 
 const directMessageSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true
-    },
     user1: {
       type: Schema.Types.ObjectId,
       ref: "User",
