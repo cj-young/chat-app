@@ -30,13 +30,15 @@ export default async function RootLayout({
     }
 
     const profile = getUserProfile(user);
-    const friendRequests = user.friendRequests.map((requester) =>
-      getUserProfile(requester)
-    );
-    const friends = user.friends.map((friend) => getUserProfile(friend));
-    const directMessages = user.directMessages.map((dm) =>
-      sterilizeClientDm(dm, user.id)
-    );
+    const friendRequests = user.friendRequests
+      .filter((requester) => requester && requester.id != null)
+      .map((requester) => getUserProfile(requester));
+    const friends = user.friends
+      .filter((friend) => friend && friend.id != null)
+      .map((friend) => getUserProfile(friend));
+    const directMessages = user.directMessages
+      .filter((dm) => dm.user1 && dm.user2)
+      .map((dm) => sterilizeClientDm(dm, user.id));
 
     return (
       <AuthContextProvider
@@ -54,6 +56,7 @@ export default async function RootLayout({
       </AuthContextProvider>
     );
   } catch (error) {
+    console.error(error);
     redirect("/login");
   }
 }

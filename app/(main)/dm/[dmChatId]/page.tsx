@@ -35,6 +35,7 @@ export default async function DmChat({ params }: Props) {
     ]);
 
     if (!directMessage || !user) redirect("/");
+    if (!directMessage.user1 || !directMessage.user2) redirect("/");
 
     const isUser1 = directMessage.user1.id === user.id;
     const isUser2 = directMessage.user2.id === user.id;
