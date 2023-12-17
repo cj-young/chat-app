@@ -1,9 +1,9 @@
 export default [
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fblue.png?alt=media&token=4058bff0-5d9f-46ef-a8ab-7b5f0dd7d857",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fcyan.png?alt=media&token=4097b959-b13c-4552-9305-e0e32de64d90",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fgreen.png?alt=media&token=fa667c9a-74c6-4e8e-9240-0c7601cc217f",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fmagenta.png?alt=media&token=b6631aaa-79f1-4555-be5f-b5279e1e5aae",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Forange.png?alt=media&token=bb0ee92a-e8d9-47fd-95f4-8c3310ca84f7",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fred.png?alt=media&token=3fe3a677-005f-4dbb-ada6-c705d87c93a4",
-  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fyellow.png?alt=media&token=9ea6c221-2eeb-4bdd-9297-8aa96d35b5a6"
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fblue.png?alt=media&token=6d270dbd-6895-44e5-9c09-255c49e53dc1",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fcyan.png?alt=media&token=8af9b0ce-c9b6-44b0-b344-36b2823e2edd",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fgreen.png?alt=media&token=692eb7d5-5ca7-4933-93cc-8e283fbc62a9",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fmagenta.png?alt=media&token=87ebbef1-4eec-4dd2-b4e3-adc4aea71223",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Forange.png?alt=media&token=752f8cc7-2e28-430f-9c1b-f96f7a4d4d67",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fred.png?alt=media&token=cb5c63e0-6e5d-46d2-b2ca-c02286d01def",
+  "https://firebasestorage.googleapis.com/v0/b/next-chat-app-efcab.appspot.com/o/profile-pictures%2Fyellow.png?alt=media&token=6147fdbf-3bd6-4e6d-bb56-25bd10216d22"
 ];
