@@ -7,6 +7,7 @@ import { sterilizeClientDm } from "@/lib/directMessages";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import ModalDisplay from "./components/ModalDisplay";
 import PopupMenuDisplay from "./components/PopupMenuDisplay";
 import styles from "./layout.module.scss";
 
@@ -53,6 +54,7 @@ export default async function RootLayout({
           {children}
         </div>
         <PopupMenuDisplay />
+        <ModalDisplay />
       </AuthContextProvider>
     );
   } catch (error) {

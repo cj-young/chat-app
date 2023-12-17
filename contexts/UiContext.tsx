@@ -7,6 +7,9 @@ interface IUiContext {
   popupMenu: ReactNode | null;
   addPopupMenu(element: ReactNode): void;
   closePopupMenu(): void;
+  modal: ReactNode | null;
+  addModal(element: ReactNode): void;
+  closeModal(): void;
 }
 
 interface Props {
@@ -18,6 +21,7 @@ const UiContext = createContext<IUiContext>({} as IUiContext);
 export default function UiContextProvider({ children }: Props) {
   const [mobileNavExpanded, setMobileNavExpanded] = useState(false);
   const [popupMenu, setPopupMenu] = useState<ReactNode | null>(null);
+  const [modal, setModal] = useState<ReactNode | null>(null);
 
   function toggleMobileNav() {
     setMobileNavExpanded((prevMobileNavExpanded) => !prevMobileNavExpanded);
@@ -31,6 +35,14 @@ export default function UiContextProvider({ children }: Props) {
     setPopupMenu(null);
   }
 
+  function addModal(modal: ReactNode) {
+    setModal(modal);
+  }
+
+  function closeModal() {
+    setModal(null);
+  }
+
   return (
     <UiContext.Provider
       value={{
@@ -38,7 +50,10 @@ export default function UiContextProvider({ children }: Props) {
         toggleMobileNav,
         addPopupMenu,
         closePopupMenu,
-        popupMenu
+        popupMenu,
+        modal,
+        addModal,
+        closeModal
       }}
     >
       {children}
