@@ -52,6 +52,29 @@
   margin-left: 0.75rem;
 }
 
+.add-conversation {
+  background-color: var(--bg-main);
+  width: 100%;
+  border: none;
+  border-radius: var(--br);
+  padding: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--clr-hover);
+  }
+
+  svg {
+    fill: var(--text-contrast-200);
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
 .conversations-list {
   margin-top: 0.5rem;
   display: flex;

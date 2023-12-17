@@ -2,6 +2,7 @@
 import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import PlusSymbol from "@/public/plus-solid.svg";
 import FriendsIcon from "@/public/user-group-solid.svg";
 import Link from "next/link";
 import DirectMessageItem from "./components/DirectMessageItem";
@@ -31,6 +32,9 @@ export default function Sidebar() {
           )}
         </Link>
         <h2 className={styles["conversations-header"]}>Conversations</h2>
+        <button className={styles["add-conversation"]}>
+          <PlusSymbol />
+        </button>
         <ul className={styles["conversations-list"]}>
           {directMessages
             .sort(
