@@ -100,7 +100,7 @@ export default function Chat({
   }, [loadMoreMessages]);
 
   const reversedMessages = useMemo(() => {
-    return messages.toReversed();
+    return [...messages].reverse();
   }, [messages]);
 
   return (

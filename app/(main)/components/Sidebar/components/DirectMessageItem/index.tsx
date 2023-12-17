@@ -3,9 +3,10 @@ import NumberBadge from "@/components/NumberBadge";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { usePusher } from "@/contexts/PusherContext";
+import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage } from "@/types/user";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -15,6 +16,9 @@ interface Props {
 export default function DirectMessageItem({ directMessage }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  const isBeingViewed = pathname.endsWith(directMessage.chatId);
+  const isBeingViewedRef = useRef<boolean>();
+  isBeingViewedRef.current = isBeingViewed;
 
   const { setDirectMessages } = useAuthContext();
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
@@ -26,17 +30,24 @@ export default function DirectMessageItem({ directMessage }: Props) {
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
     }) => {
       setDirectMessages((prev) =>
-        prev.map((prevMessage) => {
-          if (prevMessage.chatId === message.chatId) {
+        prev.map((prevChat) => {
+          if (prevChat.chatId === message.chatId) {
             return {
-              ...prevMessage,
+              ...prevChat,
+              unreadMessages: isBeingViewedRef.current
+                ? 0
+                : prevChat.unreadMessages + 1,
               lastMessageAt: new Date(message.timestamp)
             };
           } else {
-            return prevMessage;
+            return prevChat;
           }
         })
       );
+
+      if (isBeingViewedRef.current) {
+        apiFetch(`/dm/reset-unread/${directMessage.chatId}`);
+      }
     };
 
     subscribeToEvent(
@@ -60,7 +71,7 @@ export default function DirectMessageItem({ directMessage }: Props) {
         onClick={() => router.push(`/dm/${directMessage.chatId}`)}
         className={[
           styles["button"],
-          pathname.endsWith(directMessage.chatId) ? styles["selected"] : ""
+          isBeingViewed ? styles["selected"] : ""
         ].join(" ")}
       >
         <ProfilePicture
