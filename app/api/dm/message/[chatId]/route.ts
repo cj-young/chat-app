@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const { user } = session;
+
     const message = (await Message.create<IMessage>({
       content,
       sender: session.user.id,
@@ -51,9 +53,25 @@ export async function POST(req: NextRequest) {
       chat: directMessage.id
     })) as IMessage;
 
+    const isUser1 = user.id === directMessage.user1;
+
+    let dmUpdateInfo;
+    if (isUser1) {
+      dmUpdateInfo = {
+        $inc: { user2Unread: 1 }
+      };
+    } else {
+      dmUpdateInfo = {
+        $inc: { user1Unread: 1 }
+      };
+    }
+
     if (message) {
+      if (isUser1) {
+      }
       await DirectMessage.findByIdAndUpdate<IDirectMessage>(directMessage.id, {
-        latestMessageAt: message.createdAt
+        latestMessageAt: message.createdAt,
+        ...dmUpdateInfo
       });
     }
 
@@ -62,12 +80,13 @@ export async function POST(req: NextRequest) {
       id: message.id,
       sender: session.user
     });
+
     await pusherServer.trigger(
       `private-directMessage-${chatId}`,
       "messageSent",
       { message: clientMessage }
     );
-    console.log(`private-directMessage-${chatId}`);
+
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {
     console.error(error);
