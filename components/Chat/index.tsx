@@ -141,7 +141,12 @@ export default function Chat({
             if (i === 0) {
               isInGroup =
                 reversedMessages[reversedMessages.length - 1].sender.id ===
-                message.sender.id;
+                  message.sender.id &&
+                message.timestamp.getTime() -
+                  reversedMessages[
+                    reversedMessages.length - 1
+                  ].timestamp.getTime() <
+                  5 * 60 * 1000; // True if messages are sent within 5 minutes;
             } else {
               isInGroup =
                 tempMessages[i].sender.id === tempMessages[i - 1].sender.id;
