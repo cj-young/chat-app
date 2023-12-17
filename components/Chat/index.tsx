@@ -1,10 +1,11 @@
 "use client";
 import Message from "@/components/Message";
 import { usePusher } from "@/contexts/PusherContext";
+import usePusherEvent from "@/hooks/usePusherEvent";
 import useScroll from "@/hooks/useScroll";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage, ITempMessage } from "@/types/user";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Loader from "../Loader";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
 import styles from "./styles.module.scss";
@@ -33,8 +34,10 @@ export default function Chat({
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
-  useEffect(() => {
-    const onMessageSent = ({
+  usePusherEvent(
+    `private-directMessage-${chatId}`,
+    "messageSent",
+    ({
       message,
       tempId
     }: {
@@ -46,22 +49,8 @@ export default function Chat({
         ...prev
       ]);
       if (removeTempMessage) removeTempMessage(tempId);
-    };
-
-    subscribeToEvent(
-      `private-directMessage-${chatId}`,
-      "messageSent",
-      onMessageSent
-    );
-
-    return () => {
-      unsubscribeFromEvent(
-        `private-directMessage-${chatId}`,
-        "messageSent",
-        onMessageSent
-      );
-    };
-  }, []);
+    }
+  );
 
   const loadMoreMessages = useCallback(async () => {
     try {
