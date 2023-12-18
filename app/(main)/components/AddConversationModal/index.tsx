@@ -6,6 +6,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
 import Checkbox from "@/public/check-solid.svg";
 import ErrorIcon from "@/public/triangle-exclamation-solid.svg";
+import XIcon from "@/public/xmark-solid.svg";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import styles from "./styles.module.scss";
@@ -53,7 +54,10 @@ export default function AddConversationModal() {
 
   return (
     <div className={styles["modal"]}>
-      <h2>Add friends to new conversation</h2>
+      <button className={styles["exit-modal"]} onClick={closeModal}>
+        <XIcon />
+      </button>
+      <h2 className={styles["title"]}>Add friends to new conversation</h2>
       {friends.length > 0 ? (
         <form onSubmit={handleSubmit}>
           <ul className={styles["friends-list"]}>
