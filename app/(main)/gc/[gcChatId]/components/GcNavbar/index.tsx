@@ -1,6 +1,7 @@
 "use client";
 import MobileNavToggle from "@/components/MobileNavToggle";
 import { useAuthContext } from "@/contexts/AuthContext";
+import AddUserIcon from "@/public/user-plus-solid.svg";
 import { IClientGroupChat } from "@/types/user";
 import styles from "./styles.module.scss";
 
@@ -19,6 +20,11 @@ export default function GcNavbar({ groupChat }: Props) {
         <h1 className={styles["gc-members"]}>
           {groupChat.members.map((member) => member.displayName).join(", ")}
         </h1>
+      </div>
+      <div className={styles["buttons"]}>
+        <button className={styles["add-user"]}>
+          <AddUserIcon />
+        </button>
       </div>
       <button onClick={signOut} className={styles["sign-out-button"]}>
         Sign Out

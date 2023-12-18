@@ -27,49 +27,24 @@
   white-space: nowrap;
 }
 
-.nav-items {
+.buttons {
+  margin-left: auto;
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
 }
 
-.nav-link {
-  list-style: none;
-  font-size: var(--fs-400);
+.add-user {
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  margin-left: auto;
 
-  button {
-    background-color: transparent;
-    padding: 0.0625rem 0.5rem;
-    border: none;
-    cursor: pointer;
-    border-radius: var(--br);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &:hover {
-      background-color: var(--clr-hover);
-    }
-
-    &.selected {
-      background-color: var(--clr-select);
-    }
-  }
-
-  .add-friend {
-    background-color: var(--clr-primary);
-    display: flex;
-    font-weight: bold;
-    gap: 0.25rem;
-
-    &:hover {
-      background-color: var(--clr-primary);
-    }
-
-    svg {
-      width: 0.75rem;
-      fill: var(--text-primary);
-    }
+  svg {
+    fill: var(--text-primary);
+    width: 75%;
+    height: 75%;
   }
 }
 
@@ -81,6 +56,5 @@
   color: var(--text-primary);
   padding: 0.75rem 1rem;
   cursor: pointer;
-  margin-left: auto;
   white-space: nowrap;
 }
