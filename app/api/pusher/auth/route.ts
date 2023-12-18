@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
+import GroupChat, { IGroupChat } from "@/models/GroupChat";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -36,6 +37,13 @@ export async function POST(req: NextRequest) {
         } else {
           return authFailed();
         }
+      } else if (splitChannel[1] === "groupChat") {
+        const chatId = splitChannel[2];
+        if (await isGroupChatAuthorized(chatId, session.user.toString())) {
+          return NextResponse.json(authResponse);
+        } else {
+          return authFailed();
+        }
       }
     }
 
@@ -64,4 +72,14 @@ async function isDmAuthorized(
   return (
     userId === dmChat.user1.toString() || userId === dmChat.user2.toString()
   );
+}
+
+async function isGroupChatAuthorized(chatId: string, userId: string) {
+  if (!isValidObjectId(chatId)) return false;
+
+  await dbConnect();
+
+  const groupChat = await GroupChat.findById<IGroupChat>(chatId);
+  if (!groupChat) return false;
+  return groupChat.members.some((memberId) => memberId.toString() === userId);
 }
