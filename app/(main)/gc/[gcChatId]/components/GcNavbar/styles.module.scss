@@ -1,0 +1,86 @@
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  overflow-x: auto;
+  flex: 0 0 auto;
+  background-color: var(--bg-main);
+}
+
+.gc-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gc-image {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 1000vmax;
+}
+
+.gc-members {
+  font-size: var(--fs-500);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.nav-items {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.nav-link {
+  list-style: none;
+  font-size: var(--fs-400);
+
+  button {
+    background-color: transparent;
+    padding: 0.0625rem 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--br);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover {
+      background-color: var(--clr-hover);
+    }
+
+    &.selected {
+      background-color: var(--clr-select);
+    }
+  }
+
+  .add-friend {
+    background-color: var(--clr-primary);
+    display: flex;
+    font-weight: bold;
+    gap: 0.25rem;
+
+    &:hover {
+      background-color: var(--clr-primary);
+    }
+
+    svg {
+      width: 0.75rem;
+      fill: var(--text-primary);
+    }
+  }
+}
+
+.sign-out-button {
+  border: none;
+  border-radius: var(--br);
+  background-color: var(--clr-accent);
+  font-weight: bold;
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  margin-left: auto;
+  white-space: nowrap;
+}
