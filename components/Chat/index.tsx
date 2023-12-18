@@ -114,6 +114,7 @@ export default function Chat({
             let isInGroup = false;
             if (i === 0) {
               isInGroup =
+                reversedMessages.length > 0 &&
                 reversedMessages[reversedMessages.length - 1].sender.id ===
                   message.sender.id &&
                 message.timestamp.getTime() -
