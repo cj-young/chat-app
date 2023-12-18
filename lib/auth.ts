@@ -6,6 +6,7 @@ import { IProfile } from "@/types/user";
 import { NextResponse } from "next/server";
 import dbConnect from "./db";
 
+import GroupChat, { IGroupChat } from "@/models/GroupChat";
 import "server-only";
 
 export async function createSession(user: IUser): Promise<ISession> {
@@ -22,13 +23,17 @@ export async function getSessionUser(sessionId: string) {
   await dbConnect();
 
   const session = await Session.findById<ISession>(sessionId).populate<{
-    user: Omit<IUser, "friends" | "friendRequests" | "directMessages"> & {
+    user: Omit<
+      IUser,
+      "friends" | "friendRequests" | "directMessages" | "groupChats"
+    > & {
       friends: IUser[];
       friendRequests: IUser[];
       directMessages: (Omit<IDirectMessage, "user1" | "user2"> & {
         user1: IUser;
         user2: IUser;
       })[];
+      groupChats: (Omit<IGroupChat, "members"> & { members: IUser[] })[];
     };
   }>({
     path: "user",
@@ -40,6 +45,11 @@ export async function getSessionUser(sessionId: string) {
         path: "directMessages",
         model: DirectMessage,
         populate: ["user1", "user2"]
+      },
+      {
+        path: "groupChats",
+        model: GroupChat,
+        populate: ["members"]
       }
     ]
   });

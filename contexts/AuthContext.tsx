@@ -1,7 +1,7 @@
 "use client";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
-import { IClientDm, IProfile } from "@/types/user";
+import { IClientDm, IClientGroupChat, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import {
   Dispatch,
@@ -22,6 +22,7 @@ interface IAuthContext {
   friends: IProfile[];
   directMessages: IClientDm[];
   setDirectMessages: Dispatch<SetStateAction<IClientDm[]>>;
+  groupChats: IClientGroupChat[];
   signOut(): Promise<void>;
 }
 
@@ -31,6 +32,7 @@ interface Props {
   initialFriendRequests: IProfile[];
   initialFriends: IProfile[];
   initialDirectMessages: IClientDm[];
+  initialGroupChats: IClientGroupChat[];
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -40,7 +42,8 @@ export default function AuthContextProvider({
   initialProfile,
   initialFriendRequests,
   initialFriends,
-  initialDirectMessages
+  initialDirectMessages,
+  initialGroupChats
 }: Props) {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [friendRequests, setFriendRequests] = useState<IProfile[]>(
@@ -50,6 +53,8 @@ export default function AuthContextProvider({
   const [directMessages, setDirectMessages] = useState<IClientDm[]>(
     initialDirectMessages
   );
+  const [groupChats, setGroupChats] =
+    useState<IClientGroupChat[]>(initialGroupChats);
   const router = useRouter();
 
   usePusherEvent(
@@ -76,7 +81,10 @@ export default function AuthContextProvider({
       setDirectMessages((prevDirectMessages) =>
         directMessages.some((prevDm) => prevDm.chatId === dmChat.chatId)
           ? prevDirectMessages
-          : [...prevDirectMessages, dmChat]
+          : [
+              ...prevDirectMessages,
+              { ...dmChat, lastMessageAt: new Date(dmChat.lastMessageAt) }
+            ]
       );
     }
   );
@@ -98,6 +106,17 @@ export default function AuthContextProvider({
           ? prev
           : [...prev, dmChat]
       );
+    }
+  );
+
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "groupChatCreated",
+    (groupChat: IClientGroupChat) => {
+      setGroupChats((prev) => [
+        ...prev,
+        { ...groupChat, lastMessageAt: new Date(groupChat.lastMessageAt) }
+      ]);
     }
   );
 
@@ -143,7 +162,8 @@ export default function AuthContextProvider({
         friends,
         directMessages,
         setDirectMessages,
-        signOut
+        signOut,
+        groupChats
       }}
     >
       {children}
