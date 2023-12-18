@@ -54,47 +54,55 @@ export default function AddConversationModal() {
   return (
     <div className={styles["modal"]}>
       <h2>Add friends to new conversation</h2>
-      <form onSubmit={handleSubmit}>
-        <ul className={styles["friends-list"]}>
-          {friends.map((friend) => (
-            <li key={friend.id} className={styles["friend-item"]}>
-              <label className={styles["friend-label"]}>
-                <ProfilePicture user={friend} status={friend.onlineStatus} />
-                <span className={styles["display-name"]}>
-                  {friend.displayName}
-                </span>
-                <span className={styles["username"]}>{friend.username}</span>
-                <input
-                  type="checkbox"
-                  checked={selectedFriends.includes(friend.id)}
-                  onChange={() => handleCheckboxChange(friend.id)}
-                />
-                <div
-                  className={[
-                    styles["checkbox"],
-                    selectedFriends.includes(friend.id) ? styles["checked"] : ""
-                  ].join(" ")}
-                >
-                  {selectedFriends.includes(friend.id) && <Checkbox />}
-                </div>
-              </label>
-            </li>
-          ))}
-        </ul>
-        <LoaderButton
-          type="submit"
-          className={styles["create-button"]}
-          loading={isLoading}
-        >
-          Create conversation
-        </LoaderButton>
-        {formError && (
-          <div className={styles["form-error"]}>
-            <ErrorIcon />
-            <span>{formError}</span>
-          </div>
-        )}
-      </form>
+      {friends.length > 0 ? (
+        <form onSubmit={handleSubmit}>
+          <ul className={styles["friends-list"]}>
+            {friends.map((friend) => (
+              <li key={friend.id} className={styles["friend-item"]}>
+                <label className={styles["friend-label"]}>
+                  <ProfilePicture user={friend} status={friend.onlineStatus} />
+                  <span className={styles["display-name"]}>
+                    {friend.displayName}
+                  </span>
+                  <span className={styles["username"]}>{friend.username}</span>
+                  <input
+                    type="checkbox"
+                    checked={selectedFriends.includes(friend.id)}
+                    onChange={() => handleCheckboxChange(friend.id)}
+                  />
+                  <div
+                    className={[
+                      styles["checkbox"],
+                      selectedFriends.includes(friend.id)
+                        ? styles["checked"]
+                        : ""
+                    ].join(" ")}
+                  >
+                    {selectedFriends.includes(friend.id) && <Checkbox />}
+                  </div>
+                </label>
+              </li>
+            ))}
+          </ul>
+          <LoaderButton
+            type="submit"
+            className={styles["create-button"]}
+            loading={isLoading}
+          >
+            Create conversation
+          </LoaderButton>
+          {formError && (
+            <div className={styles["form-error"]}>
+              <ErrorIcon />
+              <span>{formError}</span>
+            </div>
+          )}
+        </form>
+      ) : (
+        <p className={styles["no-friends"]}>
+          You don't have any friends to add to a conversation
+        </p>
+      )}
     </div>
   );
 }
