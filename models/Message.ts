@@ -24,7 +24,7 @@ const messageSchema = new Schema<IMessage>(
     },
     chatRef: {
       type: String,
-      enum: ["DirectMessage"],
+      enum: ["DirectMessage", "GroupChat"],
       required: true
     },
     chat: {
