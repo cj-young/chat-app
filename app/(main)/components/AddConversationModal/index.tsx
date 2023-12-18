@@ -2,7 +2,11 @@
 import LoaderButton from "@/components/LoaderButton";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useUiContext } from "@/contexts/UiContext";
+import { apiFetch } from "@/lib/api";
 import Checkbox from "@/public/check-solid.svg";
+import ErrorIcon from "@/public/triangle-exclamation-solid.svg";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import styles from "./styles.module.scss";
 
@@ -10,9 +14,31 @@ export default function AddConversationModal() {
   const { friends } = useAuthContext();
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState("");
+  const router = useRouter();
+  const { closeModal } = useUiContext();
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await apiFetch("/group-chat/create", "POST", {
+        groupChatUsers: selectedFriends
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        return setFormError(
+          data.message ?? "An error occurred, please try again"
+        );
+      }
+
+      closeModal();
+      router.push(`/gc/${data.chatId}`);
+    } catch (error) {
+      setIsLoading(false);
+      setFormError("An error occurred, please try again");
+    }
   }
 
   function handleCheckboxChange(friendId: string) {
@@ -62,6 +88,12 @@ export default function AddConversationModal() {
         >
           Create conversation
         </LoaderButton>
+        {formError && (
+          <div className={styles["form-error"]}>
+            <ErrorIcon />
+            <span>{formError}</span>
+          </div>
+        )}
       </form>
     </div>
   );

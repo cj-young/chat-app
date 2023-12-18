@@ -83,3 +83,20 @@
   font-weight: bold;
   cursor: pointer;
 }
+
+.form-error {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  span {
+    color: var(--clr-error);
+  }
+
+  svg {
+    height: 1rem;
+    fill: var(--clr-error);
+  }
+}
