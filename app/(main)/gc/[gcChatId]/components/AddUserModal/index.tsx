@@ -32,8 +32,8 @@ export default function AddUserModal({ alreadyInChat, chatId }: Props) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await apiFetch("/group-chat/add-users", "POST", {
-        users: selectedFriends
+      const res = await apiFetch(`/group-chat/add-users/${chatId}`, "POST", {
+        userIds: selectedFriends
       });
       const data = await res.json();
 
@@ -42,7 +42,7 @@ export default function AddUserModal({ alreadyInChat, chatId }: Props) {
           data.message ?? "An error occurred, please try again"
         );
       }
-
+      console.log(data);
       closeModal();
     } catch (error) {
       setIsLoading(false);
