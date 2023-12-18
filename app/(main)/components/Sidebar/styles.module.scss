@@ -3,6 +3,10 @@
 .sidebar {
   background-color: var(--bg-contrast-100);
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 
   @include large-screen {
     flex: 0 0 15rem;
@@ -14,14 +18,14 @@
   display: none;
 
   @include large-screen {
-    display: unset;
+    display: flex;
   }
 }
 
 .nav {
   padding: 0.5rem;
   overflow-y: auto;
-  height: 100%;
+  flex: 1;
 }
 
 .friends {

@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import AddConversationModal from "../AddConversationModal";
 import DirectMessageItem from "./components/DirectMessageItem";
 import GroupChatItem from "./components/GroupChatItem";
+import ProfileCard from "./components/ProfileCard";
 import styles from "./styles.module.scss";
 
 export default function Sidebar() {
@@ -69,6 +70,7 @@ export default function Sidebar() {
             )}
         </ul>
       </nav>
+      <ProfileCard />
     </div>
   );
 }
