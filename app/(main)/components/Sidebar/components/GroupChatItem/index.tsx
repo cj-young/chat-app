@@ -60,9 +60,15 @@ export default function GroupChatItem({ groupChat }: Props) {
         ].join(" ")}
       >
         <img src={groupChat.imageUrl} className={styles["group-chat-image"]} />
-        <span className={styles["display-name"]}>
-          {groupChat.members.map((member) => member.displayName).join(", ")}
-        </span>
+        <div className={styles["info"]}>
+          <span className={styles["display-name"]}>
+            {groupChat.members.map((member) => member.displayName).join(", ")}
+          </span>
+          <span className={styles["member-count"]}>
+            {groupChat.members.length} member
+            {groupChat.members.length > 1 ? "s" : ""}
+          </span>
+        </div>
         {groupChat.unreadMessages > 0 && (
           <NumberBadge
             number={groupChat.unreadMessages}
