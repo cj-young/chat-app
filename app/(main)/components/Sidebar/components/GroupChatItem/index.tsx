@@ -52,7 +52,7 @@ export default function GroupChatItem({ groupChat }: Props) {
   return (
     <li className={styles["group-chat-item"]}>
       <button
-        onClick={() => router.push(`/dm/${groupChat.chatId}`)}
+        onClick={() => router.push(`/gc/${groupChat.chatId}`)}
         className={[
           styles["button"],
           isBeingViewed ? styles["selected"] : ""
