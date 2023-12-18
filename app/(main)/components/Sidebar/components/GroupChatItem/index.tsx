@@ -2,6 +2,7 @@
 import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
+import { apiFetch } from "@/lib/api";
 import { IClientGroupChat, IClientMessage } from "@/types/user";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
@@ -17,7 +18,7 @@ export default function GroupChatItem({ groupChat }: Props) {
   const isBeingViewed = pathname.endsWith(`/gc/${groupChat.chatId}`);
   const isBeingViewedRef = useRef<boolean>();
   isBeingViewedRef.current = isBeingViewed;
-  const { setDirectMessages } = useAuthContext();
+  const { setDirectMessages, setGroupChats } = useAuthContext();
 
   usePusherEvent(
     `private-groupChat-${groupChat.chatId}`,
@@ -27,7 +28,7 @@ export default function GroupChatItem({ groupChat }: Props) {
     }: {
       message: Omit<IClientMessage, "timestamp"> & { timestamp: string };
     }) => {
-      setDirectMessages((prev) =>
+      setGroupChats((prev) =>
         prev.map((prevChat) => {
           if (prevChat.chatId === message.chatId) {
             return {
@@ -43,9 +44,9 @@ export default function GroupChatItem({ groupChat }: Props) {
         })
       );
 
-      // if (isBeingViewedRef.current) {
-      //   apiFetch(`/dm/reset-unread/${groupChat.chatId}`);
-      // }
+      if (isBeingViewedRef.current) {
+        apiFetch(`/gc/reset-unread/${groupChat.chatId}`);
+      }
     }
   );
 

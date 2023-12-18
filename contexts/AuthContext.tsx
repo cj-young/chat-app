@@ -23,6 +23,7 @@ interface IAuthContext {
   directMessages: IClientDm[];
   setDirectMessages: Dispatch<SetStateAction<IClientDm[]>>;
   groupChats: IClientGroupChat[];
+  setGroupChats: Dispatch<SetStateAction<IClientGroupChat[]>>;
   signOut(): Promise<void>;
 }
 
@@ -163,7 +164,8 @@ export default function AuthContextProvider({
         directMessages,
         setDirectMessages,
         signOut,
-        groupChats
+        groupChats,
+        setGroupChats
       }}
     >
       {children}

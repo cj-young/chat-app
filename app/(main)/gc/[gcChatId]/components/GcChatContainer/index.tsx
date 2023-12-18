@@ -21,13 +21,13 @@ export default function GcChatContainer({
   allLoaded
 }: Props) {
   const { mobileNavExpanded } = useUiContext();
-  const { setDirectMessages, profile } = useAuthContext();
+  const { setGroupChats } = useAuthContext();
   const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
 
   useEffect(() => {
-    apiFetch(`/gc/reset-unread/${groupChat.chatId}`);
+    apiFetch(`/group-chat/reset-unread/${groupChat.chatId}`);
 
-    setDirectMessages((prev) =>
+    setGroupChats((prev) =>
       prev.map((prevChat) => {
         if (prevChat.chatId === groupChat.chatId) {
           return {
