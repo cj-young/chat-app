@@ -13,6 +13,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow: hidden;
+  max-width: 50%;
+  min-width: 0;
 }
 
 .gc-image {
@@ -25,6 +28,8 @@
   font-size: var(--fs-500);
   font-weight: bold;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buttons {
