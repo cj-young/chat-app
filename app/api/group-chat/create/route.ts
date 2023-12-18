@@ -22,6 +22,8 @@ export async function POST(req: NextRequest) {
       groupChatUsers: string[];
     };
     groupChatUsers.push(user.id);
+
+    const members = [];
     for (let groupChatUser of groupChatUsers) {
       if (!isValidObjectId(groupChatUser)) {
         return NextResponse.json(
@@ -29,30 +31,29 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-    }
-
-    const unreadCounts = new Map<string, number>();
-    for (let groupChatUser of groupChatUsers) {
-      unreadCounts.set(groupChatUser, 0);
+      members.push({ user: groupChatUser, unreadMessages: 0 });
     }
 
     const groupChat = (await GroupChat.create<IGroupChat>({
-      members: groupChatUsers,
-      unreadCounts
+      members
     })) as IGroupChat;
 
     const populatedGroupChat = (await GroupChat.findById<IGroupChat>(
       groupChat.id
     ).populate<{
-      members: IUser[];
-    }>("members")) as Omit<IGroupChat, "members"> & { members: IUser[] };
+      members: { user: IUser; unreadMessages: number }[];
+    }>("members.user")) as Omit<IGroupChat, "members"> & {
+      members: { user: IUser; unreadMessages: number }[];
+    };
     if (!populatedGroupChat) {
       throw new Error("Failed to create group chat");
     }
 
     await User.updateMany(
       {
-        _id: { $in: populatedGroupChat.members.map((member) => member.id) }
+        _id: {
+          $in: populatedGroupChat.members.map((member) => member.user.id)
+        }
       },
       {
         $addToSet: { groupChats: populatedGroupChat.id }
@@ -61,12 +62,11 @@ export async function POST(req: NextRequest) {
 
     const pusherPromises = [];
     for (let member of populatedGroupChat.members) {
-      console.log(member.id);
       pusherPromises.push(
         pusherServer.trigger(
-          `private-user-${member.id}`,
+          `private-user-${member.user.id}`,
           "groupChatCreated",
-          sterilizeClientGroupChat(populatedGroupChat, member.id)
+          sterilizeClientGroupChat(populatedGroupChat, member.user.id)
         )
       );
     }

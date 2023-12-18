@@ -28,12 +28,15 @@ export default async function GcChat({ params }: Props) {
     const [user, groupChat] = await Promise.all([
       getSessionUser(sessionId.slice(1)),
       GroupChat.findById<IGroupChat>(params.gcChatId).populate<{
-        members: IUser[];
-      }>("members")
+        members: { user: IUser; unreadMessages: number }[];
+      }>("members.user")
     ]);
 
     if (!groupChat || !user) redirect("/");
-    if (!groupChat.members.some((member) => user.id)) redirect("/");
+    if (
+      !groupChat.members.some((member) => member.user.id.toString() === user.id)
+    )
+      redirect("/");
 
     const messages = await getMessages(groupChat.id, "GroupChat");
 

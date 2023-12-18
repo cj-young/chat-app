@@ -81,5 +81,5 @@ async function isGroupChatAuthorized(chatId: string, userId: string) {
 
   const groupChat = await GroupChat.findById<IGroupChat>(chatId);
   if (!groupChat) return false;
-  return groupChat.members.some((memberId) => memberId.toString() === userId);
+  return groupChat.members.some((member) => member.user.toString() === userId);
 }

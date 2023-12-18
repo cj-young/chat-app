@@ -33,7 +33,9 @@ export async function getSessionUser(sessionId: string) {
         user1: IUser;
         user2: IUser;
       })[];
-      groupChats: (Omit<IGroupChat, "members"> & { members: IUser[] })[];
+      groupChats: (Omit<IGroupChat, "members"> & {
+        members: { user: IUser; unreadMessages: number }[];
+      })[];
     };
   }>({
     path: "user",
@@ -49,7 +51,7 @@ export async function getSessionUser(sessionId: string) {
       {
         path: "groupChats",
         model: GroupChat,
-        populate: ["members"]
+        populate: ["members.user"]
       }
     ]
   });

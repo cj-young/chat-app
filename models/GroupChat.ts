@@ -4,8 +4,7 @@ import "server-only";
 import defaultGroupChatPictures from "./defaultGroupChatPictures";
 
 export interface IGroupChat extends Document {
-  members: Types.ObjectId[];
-  unreadCounts: Map<string, number>;
+  members: { user: Types.ObjectId; unreadMessages: number }[];
   latestMessageAt: Date;
   imageUrl: string;
   createdAt: Date;
@@ -17,16 +16,19 @@ const groupChatSchema = new Schema<IGroupChat>(
     members: {
       type: [
         {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-          required: true
+          user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+          },
+          unreadMessages: {
+            type: Number,
+            required: true,
+            default: 0
+          }
         }
       ],
       default: []
-    },
-    unreadCounts: {
-      type: Map,
-      of: Number
     },
     latestMessageAt: {
       type: Date,
