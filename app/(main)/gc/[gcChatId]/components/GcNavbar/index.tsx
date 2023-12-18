@@ -2,6 +2,7 @@
 import MobileNavToggle from "@/components/MobileNavToggle";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import LeaveChatIcon from "@/public/right-from-bracket-solid.svg";
 import AddUserIcon from "@/public/user-plus-solid.svg";
 import { IClientGroupChat } from "@/types/user";
 import AddUserModal from "../AddUserModal";
@@ -26,7 +27,7 @@ export default function GcNavbar({ groupChat }: Props) {
       </div>
       <div className={styles["buttons"]}>
         <button
-          className={styles["add-user"]}
+          className={styles["nav-button"]}
           onClick={() =>
             addModal(
               <AddUserModal
@@ -37,6 +38,9 @@ export default function GcNavbar({ groupChat }: Props) {
           }
         >
           <AddUserIcon />
+        </button>
+        <button className={styles["nav-button"]}>
+          <LeaveChatIcon />
         </button>
       </div>
       <button onClick={signOut} className={styles["sign-out-button"]}>
