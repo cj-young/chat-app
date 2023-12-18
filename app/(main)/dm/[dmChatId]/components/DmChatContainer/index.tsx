@@ -60,6 +60,7 @@ export default function DmChatContainer({
             prev.filter((prevMessage) => prevMessage.id !== tempId)
           );
         }}
+        chatType="directMessage"
       />
       <ChatInput
         chatName={directMessageChat.user.displayName}

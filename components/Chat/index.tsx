@@ -13,6 +13,7 @@ interface Props {
   initialMessages: IClientMessage[];
   chatId: string;
   initialAllLoaded: boolean;
+  chatType: "directMessage" | "groupChat";
   directMessageChat?: IClientDm;
   tempMessages?: ITempMessage[];
   removeTempMessage?(tempId: string): void;
@@ -26,14 +27,15 @@ export default function Chat({
   initialAllLoaded,
   directMessageChat,
   tempMessages,
-  removeTempMessage
+  removeTempMessage,
+  chatType
 }: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
 
   usePusherEvent(
-    `private-directMessage-${chatId}`,
+    `private-${chatType}-${chatId}`,
     "messageSent",
     ({
       message,
@@ -56,7 +58,13 @@ export default function Chat({
       setIsLoadingMessage(true);
 
       const res = await apiFetch(
-        `/dm/message/${chatId}?lastMessage=${
+        `/${
+          chatType === "directMessage"
+            ? "dm"
+            : chatType === "groupChat"
+            ? "gc"
+            : ""
+        }/message/${chatId}?lastMessage=${
           messages[messages.length - 1] ? messages[messages.length - 1].id : ""
         }`
       );
