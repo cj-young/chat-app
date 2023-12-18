@@ -30,3 +30,11 @@ export interface ITempMessage {
   timestamp: Date;
   id: string;
 }
+
+export interface IClientGroupChat {
+  imageUrl: string;
+  members: IProfile[];
+  unreadMessages: number;
+  chatId: string;
+  lastMessageAt: Date;
+}
