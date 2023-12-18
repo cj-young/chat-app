@@ -3,7 +3,7 @@ import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
-import { IClientGroupChat, IClientMessage } from "@/types/user";
+import { IClientGroupChat, IClientMessage, IProfile } from "@/types/user";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef } from "react";
 import styles from "./styles.module.scss";
@@ -47,6 +47,31 @@ export default function GroupChatItem({ groupChat }: Props) {
       if (isBeingViewedRef.current) {
         apiFetch(`/gc/reset-unread/${groupChat.chatId}`);
       }
+    }
+  );
+
+  usePusherEvent(
+    `private-groupChat-${groupChat.chatId}`,
+    "usersAdded",
+    ({ users }: { users: IProfile[] }) => {
+      const userSet = new Set(users.map((user) => user.id));
+      setGroupChats((prev) =>
+        prev.map((prevGroupChat) => {
+          if (prevGroupChat.chatId === groupChat.chatId) {
+            return {
+              ...prevGroupChat,
+              members: [
+                ...prevGroupChat.members.filter(
+                  (member) => !userSet.has(member.id)
+                ),
+                ...users
+              ]
+            };
+          } else {
+            return prevGroupChat;
+          }
+        })
+      );
     }
   );
 
