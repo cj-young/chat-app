@@ -60,6 +60,7 @@ export default function GcChatContainer({
           );
         }}
         chatType="groupChat"
+        groupChat={groupChat}
       />
       <ChatInput
         chatName={groupChat.members
