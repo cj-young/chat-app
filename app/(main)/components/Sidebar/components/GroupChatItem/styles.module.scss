@@ -1,0 +1,48 @@
+.group-chat-item {
+  width: 100%;
+  max-width: 100%;
+  list-style: none;
+}
+
+.button {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--clr-hover);
+  }
+
+  &.selected {
+    background-color: var(--clr-select);
+  }
+}
+
+.group-chat-image {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 1000vmax;
+}
+
+.selected {
+  background-color: red;
+}
+
+.unread-count {
+  margin-left: auto;
+}
+
+.display-name {
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
