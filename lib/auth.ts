@@ -61,9 +61,7 @@ export async function getSessionUser(sessionId: string) {
 
 export async function getSignupSession(sessionId: string) {
   await dbConnect();
-  const session = await SignupSession.findById<ISignupSession>(
-    sessionId
-  ).populate<{ user: IUser }>("user");
+  const session = await SignupSession.findById<ISignupSession>(sessionId);
 
   return !session || session.isExpired() ? null : session;
 }
