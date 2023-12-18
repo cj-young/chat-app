@@ -65,7 +65,7 @@ export default function GcChatContainer({
         chatName={groupChat.members
           .map((member) => member.displayName)
           .join(", ")}
-        submitRoute={`/gc/message/${groupChat.chatId}`}
+        submitRoute={`/group-chat/message/${groupChat.chatId}`}
         addTempMessage={(message: ITempMessage) => {
           setTempMessages((prev) => [...prev, message]);
         }}
