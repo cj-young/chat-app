@@ -75,6 +75,27 @@ export default function GroupChatItem({ groupChat }: Props) {
     }
   );
 
+  usePusherEvent(
+    `private-groupChat-${groupChat.chatId}`,
+    "userLeft",
+    (userId: string) => {
+      setGroupChats((prev) =>
+        prev.map((prevGroupChat) => {
+          if (prevGroupChat.chatId === groupChat.chatId) {
+            return {
+              ...prevGroupChat,
+              members: prevGroupChat.members.filter(
+                (member) => member.id !== userId
+              )
+            };
+          } else {
+            return prevGroupChat;
+          }
+        })
+      );
+    }
+  );
+
   return (
     <li className={styles["group-chat-item"]}>
       <button

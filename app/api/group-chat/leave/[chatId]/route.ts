@@ -33,6 +33,20 @@ export async function POST(req: NextRequest) {
     if (!groupChat)
       return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
 
+    await pusherServer.trigger(
+      `private-user-${userId}`,
+      "leftGroupChat",
+      groupChat.id
+    );
+
+    if (groupChat) {
+      await pusherServer.trigger(
+        `private-groupChat-${groupChat.id}`,
+        "userLeft",
+        userId
+      );
+    }
+
     return NextResponse.json({ message: "Successfully left group chat" });
   } catch (error) {
     return NextResponse.json(

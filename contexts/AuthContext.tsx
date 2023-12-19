@@ -121,6 +121,16 @@ export default function AuthContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "leftGroupChat",
+    (chatId: string) => {
+      setGroupChats((prev) =>
+        prev.filter((prevGroupChat) => prevGroupChat.chatId !== chatId)
+      );
+    }
+  );
+
   async function fulfillFriendRequest(
     userId: string,
     method: "accept" | "decline"
