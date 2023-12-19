@@ -1,0 +1,22 @@
+@import "@/styles/mixins";
+
+.add-server-button {
+  background-color: var(--bg-main);
+  border: none;
+  border-radius: calc(var(--br) * 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  height: 100%;
+  aspect-ratio: 1;
+  padding: 1rem;
+
+  svg {
+    fill: var(--clr-accent);
+  }
+
+  @include large-screen {
+    width: 100%;
+  }
+}

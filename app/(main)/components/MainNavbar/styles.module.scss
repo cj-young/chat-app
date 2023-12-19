@@ -11,6 +11,12 @@
   }
 }
 
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .nav-item {
   height: 100%;
 
