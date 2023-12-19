@@ -112,7 +112,11 @@ export default function GroupChatItem({ groupChat }: Props) {
           />
           <div className={styles["names"]}>
             <span className={styles["display-name"]}>
-              {groupChat.members.map((member) => member.displayName).join(", ")}
+              {groupChat.members.length > 0
+                ? groupChat.members
+                    .map((member) => member.displayName)
+                    .join(", ")
+                : "Empty group chat"}
             </span>
             <span className={styles["member-count"]}>
               {groupChat.members.length + 1} member
