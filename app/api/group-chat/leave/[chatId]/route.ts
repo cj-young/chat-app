@@ -25,9 +25,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
 
     const [groupChat, user] = await Promise.all([
-      GroupChat.findByIdAndUpdate<IGroupChat>(chatId, {
-        $pull: { members: { user: userId } }
-      }),
+      GroupChat.findByIdAndUpdate<IGroupChat>(
+        chatId,
+        {
+          $pull: { members: { user: userId } }
+        },
+        { new: true }
+      ),
       User.findByIdAndUpdate<IUser>(userId, { $pull: { groupChats: chatId } })
     ]);
     if (!groupChat)
@@ -48,6 +52,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Delete group chat if no members remain
+    console.log(groupChat);
     if (groupChat.members.length === 0) {
       await GroupChat.findByIdAndDelete(groupChat.id);
     }
