@@ -10,7 +10,9 @@ export default function GroupChatBanner({ groupChat }: Props) {
     <div className={styles["banner"]}>
       <img src={groupChat.imageUrl} className={styles["group-chat-image"]} />
       <span className={styles["member-names"]}>
-        {groupChat.members.map((member) => member.displayName).join(", ")}
+        {groupChat.members.length > 0
+          ? groupChat.members.map((member) => member.displayName).join(", ")
+          : "Empty group chat"}
       </span>
       <span className={styles["beginning-message"]}>
         This is the beginning of your conversation with{" "}
