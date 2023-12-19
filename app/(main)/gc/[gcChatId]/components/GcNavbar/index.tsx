@@ -6,6 +6,7 @@ import LeaveChatIcon from "@/public/right-from-bracket-solid.svg";
 import AddUserIcon from "@/public/user-plus-solid.svg";
 import { IClientGroupChat } from "@/types/user";
 import AddUserModal from "../AddUserModal";
+import LeaveChatModal from "../LeaveChatModal";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -39,7 +40,10 @@ export default function GcNavbar({ groupChat }: Props) {
         >
           <AddUserIcon />
         </button>
-        <button className={styles["nav-button"]}>
+        <button
+          className={styles["nav-button"]}
+          onClick={() => addModal(<LeaveChatModal chatId={groupChat.chatId} />)}
+        >
           <LeaveChatIcon />
         </button>
       </div>
