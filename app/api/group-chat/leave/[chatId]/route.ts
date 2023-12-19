@@ -47,6 +47,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Delete group chat if no members remain
+    if (groupChat.members.length === 0) {
+      await GroupChat.findByIdAndDelete(groupChat.id);
+    }
+
     return NextResponse.json({ message: "Successfully left group chat" });
   } catch (error) {
     return NextResponse.json(
