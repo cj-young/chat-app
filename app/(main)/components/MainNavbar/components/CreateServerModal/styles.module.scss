@@ -1,3 +1,5 @@
+@import "@/styles/mixins";
+
 .modal {
   background-color: var(--bg-main);
   border-radius: var(--br);
@@ -28,8 +30,13 @@
 
 .form {
   display: flex;
+  flex-direction: column;
   gap: 2rem;
   margin-top: 1rem;
+
+  @include large-screen {
+    flex-direction: row;
+  }
 }
 
 .create-server {
