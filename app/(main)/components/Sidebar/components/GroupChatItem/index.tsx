@@ -18,7 +18,7 @@ export default function GroupChatItem({ groupChat }: Props) {
   const isBeingViewed = pathname.endsWith(`/gc/${groupChat.chatId}`);
   const isBeingViewedRef = useRef<boolean>();
   isBeingViewedRef.current = isBeingViewed;
-  const { setDirectMessages, setGroupChats } = useAuthContext();
+  const { setGroupChats } = useAuthContext();
 
   usePusherEvent(
     `private-groupChat-${groupChat.chatId}`,
