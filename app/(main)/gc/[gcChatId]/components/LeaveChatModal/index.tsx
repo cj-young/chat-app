@@ -21,9 +21,8 @@ export default function LeaveChatModal({ chatId }: Props) {
     try {
       const res = await apiFetch(`/group-chat/leave/${chatId}`, "POST");
       const data = await res.json();
-      console.log(data);
       closeModal();
-      // router.push("/");
+      router.push("/");
     } catch (error) {
       console.error(error);
       setIsLoading(false);
