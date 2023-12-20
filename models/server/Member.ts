@@ -10,6 +10,7 @@ export interface IMember extends Document {
     channel: Types.ObjectId;
     unreadMessages: number;
   }[];
+  lastChannel: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,14 +45,18 @@ const memberSchema = new Schema<IMember>(
             type: Number,
             required: true,
             default: 0
-          },
-          required: true
+          }
         }
       ],
+      required: true,
       default: []
+    },
+    lastChannel: {
+      type: Schema.Types.ObjectId,
+      ref: "Channel"
     }
   },
   { timestamps: true }
 );
 
-export default models.Member || model<IMember>("Server", memberSchema);
+export default models.Member || model<IMember>("Member", memberSchema);

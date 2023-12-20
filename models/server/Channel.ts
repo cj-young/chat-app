@@ -37,4 +37,4 @@ const channelSchema = new Schema<IChannel>(
   { timestamps: true }
 );
 
-export default models.Channel || model<IChannel>("Server", channelSchema);
+export default models.Channel || model<IChannel>("Channel", channelSchema);

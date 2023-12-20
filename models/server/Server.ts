@@ -19,8 +19,7 @@ const serverSchema = new Schema<IServer>(
   {
     name: {
       type: String,
-      required: true,
-      unique: true
+      required: true
     },
     members: {
       type: [

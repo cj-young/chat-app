@@ -13,7 +13,7 @@ export interface IUser extends Document {
   googleId?: string;
   friends: mongoose.Types.ObjectId[];
   friendRequests: mongoose.Types.ObjectId[];
-  servers: mongoose.Types.ObjectId[];
+  servers: { uiOrder: number; server: mongoose.Types.ObjectId }[];
   directMessages: mongoose.Types.ObjectId[];
   groupChats: mongoose.Types.ObjectId[];
   imageUrl: string;
@@ -70,9 +70,16 @@ const userSchema = new Schema<IUser>(
     servers: {
       type: [
         {
-          type: Schema.Types.ObjectId,
-          ref: "Server",
-          required: true
+          uiOrder: {
+            type: Number,
+            required: true,
+            default: 0
+          },
+          server: {
+            type: Schema.Types.ObjectId,
+            ref: "Server",
+            required: true
+          }
         }
       ],
       default: []
