@@ -4,7 +4,7 @@ import Input from "@/components/Input";
 import LoaderButton from "@/components/LoaderButton";
 import { useUiContext } from "@/contexts/UiContext";
 import XIcon from "@/public/xmark-solid.svg";
-import { useCallback, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 import styles from "./styles.module.scss";
 
 export default function CreateServerModal() {
@@ -17,13 +17,30 @@ export default function CreateServerModal() {
     setServerImage(acceptedFiles[0]);
   }, []);
 
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      if (serverImage) formData.set("serverImage", serverImage);
+      formData.set("serverName", serverName);
+      const res = await fetch("/api/server/create", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles["modal"]}>
       <button className={styles["exit-modal"]} onClick={closeModal}>
         <XIcon />
       </button>
       <h2>Create a server</h2>
-      <form className={styles["form"]}>
+      <form className={styles["form"]} onSubmit={handleSubmit}>
         <ImageInput
           onDrop={onImageDrop}
           activeImage={serverImage}
