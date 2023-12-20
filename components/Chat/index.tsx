@@ -3,6 +3,7 @@ import Message from "@/components/Message";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import useScroll from "@/hooks/useScroll";
 import { apiFetch } from "@/lib/api";
+import { IClientChannel } from "@/types/server";
 import {
   IClientDm,
   IClientGroupChat,
@@ -13,6 +14,7 @@ import { useCallback, useMemo, useState } from "react";
 import Loader from "../Loader";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
 import GroupChatBanner from "./banners/GroupChatBanner";
+import ServerChannelBanner from "./banners/ServerChannelBanner";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
   tempMessages?: ITempMessage[];
   removeTempMessage?(tempId: string): void;
   groupChat?: IClientGroupChat;
+  serverChannel?: IClientChannel;
 }
 
 const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
@@ -36,7 +39,8 @@ export default function Chat({
   tempMessages,
   removeTempMessage,
   chatType,
-  groupChat
+  groupChat,
+  serverChannel
 }: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
@@ -109,6 +113,9 @@ export default function Chat({
           <DirectMessageBanner directMessageChat={directMessageChat} />
         )}
         {allLoaded && groupChat && <GroupChatBanner groupChat={groupChat} />}
+        {allLoaded && serverChannel && (
+          <ServerChannelBanner channel={serverChannel} />
+        )}
         {!allLoaded && <Loader className={styles["message-loader"]} />}
         <ul className={styles["chat-list"]}>
           {reversedMessages.map((message, i) => {

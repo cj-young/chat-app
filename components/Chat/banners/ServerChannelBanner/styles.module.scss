@@ -1,0 +1,41 @@
+.banner {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  padding-top: 5rem;
+  width: 100%;
+  max-width: 75%;
+  overflow: hidden;
+}
+
+.banner-image-container {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 1000vmax;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-contrast-200);
+
+  svg {
+    fill: var(--bg-main);
+    width: 50%;
+    height: 50%;
+  }
+}
+
+.channel-name {
+  font-size: var(--fs-700);
+  font-weight: bold;
+  line-height: 1;
+  margin-top: 1rem;
+  word-wrap: break-word;
+}
+
+.beginning-message {
+  margin-top: 1rem;
+  color: var(--text-contrast-100);
+  line-height: 1.25;
+  word-wrap: break-word;
+  min-width: 0;
+}

@@ -39,6 +39,7 @@ export default function ChannelChatContainer({
           );
         }}
         chatType="server"
+        serverChannel={channel}
       />
       <ChatInput
         chatName={channel.name}
