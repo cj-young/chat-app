@@ -44,10 +44,12 @@ export default async function RootLayout({
     const groupChats = user.groupChats.map((groupChat) =>
       sterilizeClientGroupChat(groupChat, user.id)
     );
-    const servers = user.servers.map((server) => ({
-      uiOrder: server.uiOrder,
-      server: sterilizeClientServer(server.server)
-    }));
+    const servers = user.servers
+      .filter((server) => server != null && server.server != null)
+      .map((server) => ({
+        uiOrder: server.uiOrder,
+        server: sterilizeClientServer(server.server)
+      }));
 
     return (
       <AuthContextProvider
