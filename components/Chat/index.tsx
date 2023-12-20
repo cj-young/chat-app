@@ -19,7 +19,7 @@ interface Props {
   initialMessages: IClientMessage[];
   chatId: string;
   initialAllLoaded: boolean;
-  chatType: "directMessage" | "groupChat";
+  chatType: "directMessage" | "groupChat" | "server";
   directMessageChat?: IClientDm;
   tempMessages?: ITempMessage[];
   removeTempMessage?(tempId: string): void;
