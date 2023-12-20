@@ -5,6 +5,7 @@ import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import ServerSidebar from "./components/ServerSidebar";
 
 interface Props {
   params: {
@@ -45,6 +46,7 @@ export default async function ServerLayout({ params, children }: Props) {
 
   return (
     <ServerContextProvider initialChannelGroups={channelGroups}>
+      <ServerSidebar />
       {children}
     </ServerContextProvider>
   );

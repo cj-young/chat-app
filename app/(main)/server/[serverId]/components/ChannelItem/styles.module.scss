@@ -1,0 +1,37 @@
+.channel-item {
+  list-style: none;
+
+  & + & {
+    margin-top: 0.125rem;
+  }
+}
+
+.channel-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--br);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+
+  svg {
+    fill: var(--text-contrast-100);
+  }
+
+  &:hover {
+    background-color: var(--clr-hover);
+  }
+
+  &.selected {
+    background-color: var(--clr-select);
+  }
+}
+
+.channel-name {
+  font-size: var(--fs-400);
+  color: var(--text-contrast-100);
+  line-height: 1.25;
+}
