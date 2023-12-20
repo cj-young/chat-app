@@ -6,6 +6,7 @@ import {
   sterilizeClientMessage
 } from "@/lib/message";
 import Message, { IMessage } from "@/models/Message";
+import { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import { isValidObjectId } from "mongoose";
@@ -28,14 +29,14 @@ export async function POST(req: NextRequest) {
     await dbConnect();
 
     const [session, channel] = await Promise.all([
-      query,
+      query.populate<{ user: IUser }>("user"),
       Channel.findById<IChannel>(channelId)
     ]);
 
     if (!session || !channel) return invalidSession();
 
     const member = await Member.findOne<IMember>({
-      user: session.user,
+      user: session.user.id,
       server: channel.server
     });
 
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const message = (await Message.create<IMessage>({
       content,
-      sender: session.user,
+      sender: session.user.id,
       chatRef: "Channel",
       chat: channel.id
     })) as IMessage;
@@ -66,9 +67,16 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
 
-    //TODO: Update unread messages
+    const clientMessage = sterilizeClientMessage({
+      ...message.toObject(),
+      id: message.id,
+      sender: session.user
+    });
 
-    //TODO: Send pusher message
+    await pusherServer.trigger(`private-server-${channelId}`, "messageSent", {
+      message: clientMessage,
+      tempId
+    });
 
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {
