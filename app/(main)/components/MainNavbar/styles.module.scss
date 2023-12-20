@@ -3,24 +3,49 @@
 .nav {
   background-color: var(--bg-contrast-200);
   flex: 0 0 4.5rem;
-  padding: 0.5rem;
-  display: flex;
+  height: 4.5rem;
 
   @include large-screen {
-    flex-direction: column;
+    height: unset;
+    width: 4.5rem;
   }
 }
 
 .nav-list {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+
+  @include large-screen {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 }
 
 .nav-item {
   height: 100%;
+  list-style: none;
+  overflow: hidden;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @include large-screen {
+    height: fit-content;
     width: 100%;
   }
 }
