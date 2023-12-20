@@ -1,6 +1,12 @@
+import Message from "@/components/Message";
+import DirectMessage from "@/models/DirectMessage";
+import GroupChat from "@/models/GroupChat";
 import Session from "@/models/Session";
 import SignupSession from "@/models/SignupSession";
 import User from "@/models/User";
+import Channel from "@/models/server/Channel";
+import Member from "@/models/server/Member";
+import Server from "@/models/server/Server";
 import mongoose from "mongoose";
 
 import "server-only";
@@ -48,6 +54,30 @@ async function dbConnect() {
 
     if (!cached.conn.models.SignupSession) {
       cached.conn.model("SignupSession", SignupSession);
+    }
+
+    if (!cached.conn.models.Server) {
+      cached.conn.model("Server", Server);
+    }
+
+    if (!cached.conn.models.Member) {
+      cached.conn.model("Member", Member);
+    }
+
+    if (!cached.conn.models.Message) {
+      cached.conn.model("Message", Message);
+    }
+
+    if (!cached.conn.models.DirectMessage) {
+      cached.conn.model("DirectMessage", DirectMessage);
+    }
+
+    if (!cached.conn.models.GroupChat) {
+      cached.conn.model("GroupChat", GroupChat);
+    }
+
+    if (!cached.conn.models.Channel) {
+      cached.conn.model("Channel", Channel);
     }
   } catch (e) {
     cached.promise = null;
