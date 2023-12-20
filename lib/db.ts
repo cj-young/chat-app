@@ -1,6 +1,6 @@
-import Message from "@/components/Message";
 import DirectMessage from "@/models/DirectMessage";
 import GroupChat from "@/models/GroupChat";
+import Message from "@/models/Message";
 import Session from "@/models/Session";
 import SignupSession from "@/models/SignupSession";
 import User from "@/models/User";
