@@ -66,8 +66,10 @@ export async function POST(req: NextRequest) {
       $push: {
         channelGroups: {
           name: "Text Channels",
-          channels: [defaultChannel.id]
-        }
+          channels: [{ channel: defaultChannel.id, uiOrder: 0 }],
+          uiOrder: 0
+        },
+        members: member.id
       }
     });
 

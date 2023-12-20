@@ -3,3 +3,11 @@ export interface IClientServer {
   name: string;
   imageUrl: string;
 }
+
+export interface IClientChannel {
+  serverId: string;
+  channelId: string;
+  name: string;
+  type: "text";
+  uiOrder: number;
+}

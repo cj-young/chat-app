@@ -8,7 +8,8 @@ export interface IServer extends Document {
   members: Types.ObjectId[];
   channelGroups: {
     name: string;
-    channels: Types.ObjectId[];
+    channels: { channel: Types.ObjectId; uiOrder: number }[];
+    uiOrder: number;
   }[];
   imageUrl: string;
   createdAt: Date;
@@ -37,11 +38,21 @@ const serverSchema = new Schema<IServer>(
           name: String,
           channels: [
             {
-              type: Schema.Types.ObjectId,
-              ref: "Channel",
-              required: true
+              channel: {
+                type: Schema.Types.ObjectId,
+                ref: "Channel",
+                required: true
+              },
+              uiOrder: {
+                type: Number,
+                required: true
+              }
             }
-          ]
+          ],
+          uiOrder: {
+            type: Number,
+            required: true
+          }
         }
       ],
       default: []
