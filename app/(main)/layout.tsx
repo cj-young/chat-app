@@ -5,6 +5,7 @@ import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
 import { sterilizeClientGroupChat } from "@/lib/groupChat";
+import { sterilizeClientServer } from "@/lib/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -44,6 +45,10 @@ export default async function RootLayout({
     const groupChats = user.groupChats.map((groupChat) =>
       sterilizeClientGroupChat(groupChat, user.id)
     );
+    const servers = user.servers.map((server) => ({
+      uiOrder: server.uiOrder,
+      server: sterilizeClientServer(server.server)
+    }));
 
     return (
       <AuthContextProvider
@@ -52,6 +57,7 @@ export default async function RootLayout({
         initialFriends={friends}
         initialDirectMessages={directMessages}
         initialGroupChats={groupChats}
+        initialServers={servers}
       >
         <div className={styles["app-container"]}>
           <MainNavbar />

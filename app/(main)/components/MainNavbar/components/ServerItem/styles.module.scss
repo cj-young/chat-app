@@ -1,0 +1,13 @@
+@import "@/styles/mixins";
+
+.server-button {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: calc(var(--br) * 2);
+  border: none;
+  overflow: hidden;
+
+  @include large-screen {
+    width: 100%;
+  }
+}

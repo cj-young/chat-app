@@ -1,6 +1,7 @@
 "use client";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
+import { IClientServer } from "@/types/server";
 import { IClientDm, IClientGroupChat, IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import {
@@ -25,6 +26,7 @@ interface IAuthContext {
   groupChats: IClientGroupChat[];
   setGroupChats: Dispatch<SetStateAction<IClientGroupChat[]>>;
   signOut(): Promise<void>;
+  servers: { uiOrder: number; server: IClientServer }[];
 }
 
 interface Props {
@@ -34,6 +36,7 @@ interface Props {
   initialFriends: IProfile[];
   initialDirectMessages: IClientDm[];
   initialGroupChats: IClientGroupChat[];
+  initialServers: { uiOrder: number; server: IClientServer }[];
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -44,7 +47,8 @@ export default function AuthContextProvider({
   initialFriendRequests,
   initialFriends,
   initialDirectMessages,
-  initialGroupChats
+  initialGroupChats,
+  initialServers
 }: Props) {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [friendRequests, setFriendRequests] = useState<IProfile[]>(
@@ -56,6 +60,7 @@ export default function AuthContextProvider({
   );
   const [groupChats, setGroupChats] =
     useState<IClientGroupChat[]>(initialGroupChats);
+  const [servers, setServers] = useState(initialServers);
   const router = useRouter();
 
   usePusherEvent(
@@ -175,7 +180,8 @@ export default function AuthContextProvider({
         setDirectMessages,
         signOut,
         groupChats,
-        setGroupChats
+        setGroupChats,
+        servers
       }}
     >
       {children}
