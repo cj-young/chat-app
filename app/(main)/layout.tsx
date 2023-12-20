@@ -7,6 +7,7 @@ import { sterilizeClientServer } from "@/lib/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import MainNavbar from "./components/MainNavbar";
 import ModalDisplay from "./components/ModalDisplay";
 import PopupMenuDisplay from "./components/PopupMenuDisplay";
 import styles from "./layout.module.scss";
@@ -57,7 +58,10 @@ export default async function RootLayout({
         initialGroupChats={groupChats}
         initialServers={servers}
       >
-        <div className={styles["app-container"]}>{children}</div>
+        <div className={styles["app-container"]}>
+          <MainNavbar />
+          {children}
+        </div>
         <PopupMenuDisplay />
         <ModalDisplay />
       </AuthContextProvider>
