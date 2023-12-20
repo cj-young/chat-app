@@ -1,5 +1,3 @@
-import MainNavbar from "@/app/(main)/components/MainNavbar";
-import Sidebar from "@/app/(main)/components/Sidebar";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
@@ -59,11 +57,7 @@ export default async function RootLayout({
         initialGroupChats={groupChats}
         initialServers={servers}
       >
-        <div className={styles["app-container"]}>
-          <MainNavbar />
-          <Sidebar />
-          {children}
-        </div>
+        <div className={styles["app-container"]}>{children}</div>
         <PopupMenuDisplay />
         <ModalDisplay />
       </AuthContextProvider>
