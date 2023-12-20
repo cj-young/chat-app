@@ -50,17 +50,18 @@ export async function POST(req: NextRequest) {
     });
     await user.save();
 
-    const member = await Member.create<IMember>({
-      user: user.id,
-      server: server.id,
-      role: "owner"
-    });
-
     const defaultChannel = (await Channel.create({
       server: server.id,
       name: "public",
       channelType: "text"
     })) as IChannel;
+
+    const member = await Member.create<IMember>({
+      user: user.id,
+      server: server.id,
+      role: "owner",
+      channels: { channel: defaultChannel.id, unreadMessages: 0 }
+    });
 
     await Server.findByIdAndUpdate(server.id, {
       $push: {
