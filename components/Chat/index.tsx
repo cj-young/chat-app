@@ -71,6 +71,8 @@ export default function Chat({
             ? "dm"
             : chatType === "groupChat"
             ? "gc"
+            : chatType === "server"
+            ? "server"
             : ""
         }/message/${chatId}?lastMessage=${
           messages[messages.length - 1] ? messages[messages.length - 1].id : ""
