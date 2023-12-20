@@ -7,8 +7,12 @@ interface Props {
 
 export default function ServerItem({ server }: Props) {
   return (
-    <button className={styles["server-button"]}>
-      <img src={server.imageUrl} alt={server.name} />
-    </button>
+    <button
+      className={styles["server-button"]}
+      style={{
+        backgroundImage: `url(${server.imageUrl})`,
+        backgroundSize: "cover"
+      }}
+    ></button>
   );
 }

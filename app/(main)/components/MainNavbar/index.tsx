@@ -22,7 +22,9 @@ export default function MainNavbar() {
           <HomeButton />
         </li>
         {servers.map((server) => (
-          <ServerItem server={server.server} key={server.server.serverId} />
+          <li key={server.server.serverId} className={styles["nav-item"]}>
+            <ServerItem server={server.server} />
+          </li>
         ))}
         <li className={styles["nav-item"]}>
           <AddServerButton />
