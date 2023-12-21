@@ -34,3 +34,13 @@ export const createNameSchema = z.object({
 });
 
 export type CreateNameInfo = z.infer<typeof createNameSchema>;
+
+export const createChannelSchema = z.object({
+  channelType: z.enum(["text"]),
+  name: z
+    .string()
+    .min(2, "Channel name must be at least 2 characters long")
+    .max(20, "Channel name cannot be more than 20 characters long")
+});
+
+export type CreateChannelInfo = z.infer<typeof createChannelSchema>;

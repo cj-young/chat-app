@@ -28,6 +28,7 @@ export default function ServerSidebar() {
               name={group.name}
               channels={group.channels}
               key={group.uiOrder}
+              uiOrder={group.uiOrder}
             />
           ))}
         </ul>

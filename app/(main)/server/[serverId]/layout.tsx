@@ -1,6 +1,11 @@
 import ServerContextProvider from "@/contexts/ServerContext";
 import { getSession } from "@/lib/auth";
-import { getMember, getServer, sterilizeClientChannel } from "@/lib/server";
+import {
+  getMember,
+  getServer,
+  sterilizeClientChannel,
+  sterilizeClientServer
+} from "@/lib/server";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -43,9 +48,14 @@ export default async function ServerLayout({ params, children }: Props) {
     name: group.name,
     uiOrder: group.uiOrder
   }));
+  const clientServer = sterilizeClientServer(server);
 
   return (
-    <ServerContextProvider initialChannelGroups={channelGroups}>
+    <ServerContextProvider
+      initialChannelGroups={channelGroups}
+      initialServerInfo={clientServer}
+      initialRole={member.role}
+    >
       <ServerSidebar />
       {children}
     </ServerContextProvider>
