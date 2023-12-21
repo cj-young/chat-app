@@ -3,21 +3,15 @@ import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
 import { useUiContext } from "@/contexts/UiContext";
 import { IClientChannel } from "@/types/server";
-import { IClientMessage, ITempMessage } from "@/types/user";
+import { ITempMessage } from "@/types/user";
 import { useState } from "react";
 import styles from "./styles.module.scss";
 
 interface Props {
   channel: IClientChannel;
-  initialMessages: IClientMessage[];
-  allLoaded: boolean;
 }
 
-export default function ChannelChatContainer({
-  channel,
-  initialMessages,
-  allLoaded
-}: Props) {
+export default function ChannelChatContainer({ channel }: Props) {
   const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
   const { mobileNavExpanded } = useUiContext();
 
@@ -29,9 +23,7 @@ export default function ChannelChatContainer({
       ].join(" ")}
     >
       <Chat
-        initialMessages={initialMessages}
         chatId={channel.channelId}
-        initialAllLoaded={allLoaded}
         tempMessages={tempMessages}
         removeTempMessage={(tempId: string) => {
           setTempMessages((prev) =>

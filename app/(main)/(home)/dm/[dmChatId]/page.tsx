@@ -1,10 +1,8 @@
-import { getSessionUser, getUserProfile } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
-import { MESSAGE_COUNT, getMessages } from "@/lib/message";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import { IUser } from "@/models/User";
-import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -43,24 +41,12 @@ export default async function DmChat({ params }: Props) {
       redirect("/");
     }
 
-    const messages = await getMessages(directMessage.id, "DirectMessage");
-
-    const clientMessages: IClientMessage[] = messages.map((message) => ({
-      content: message.content,
-      sender: getUserProfile(message.sender),
-      chatId: message.chat.toString(),
-      timestamp: message.createdAt,
-      id: message.id
-    }));
-
     return (
       <DmChatContainer
         directMessageChat={sterilizeClientDm(
           directMessage,
           isUser1 ? directMessage.user1.id : directMessage.user2.id
         )}
-        messages={clientMessages}
-        allLoaded={clientMessages.length < MESSAGE_COUNT}
       />
     );
   } catch (error) {

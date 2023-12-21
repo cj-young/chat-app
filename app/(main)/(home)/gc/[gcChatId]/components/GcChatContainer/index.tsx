@@ -4,22 +4,16 @@ import ChatInput from "@/components/ChatInput";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
-import { IClientGroupChat, IClientMessage, ITempMessage } from "@/types/user";
+import { IClientGroupChat, ITempMessage } from "@/types/user";
 import { useEffect, useState } from "react";
 import GcNavbar from "../GcNavbar";
 import styles from "./styles.module.scss";
 
 interface Props {
   groupChat: IClientGroupChat;
-  messages: IClientMessage[];
-  allLoaded: boolean;
 }
 
-export default function GcChatContainer({
-  groupChat,
-  messages,
-  allLoaded
-}: Props) {
+export default function GcChatContainer({ groupChat }: Props) {
   const { mobileNavExpanded } = useUiContext();
   const { setGroupChats } = useAuthContext();
   const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
@@ -50,9 +44,7 @@ export default function GcChatContainer({
     >
       <GcNavbar groupChat={groupChat} />
       <Chat
-        initialMessages={messages}
         chatId={groupChat.chatId}
-        initialAllLoaded={allLoaded}
         tempMessages={tempMessages}
         removeTempMessage={(tempId: string) => {
           setTempMessages((prev) =>

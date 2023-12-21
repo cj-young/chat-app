@@ -4,22 +4,16 @@ import ChatInput from "@/components/ChatInput";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
-import { IClientDm, IClientMessage, ITempMessage } from "@/types/user";
+import { IClientDm, ITempMessage } from "@/types/user";
 import { useEffect, useState } from "react";
 import DmNavbar from "../DmNavbar";
 import styles from "./styles.module.scss";
 
 interface Props {
   directMessageChat: IClientDm;
-  messages: IClientMessage[];
-  allLoaded: boolean;
 }
 
-export default function DmChatContainer({
-  directMessageChat,
-  messages,
-  allLoaded
-}: Props) {
+export default function DmChatContainer({ directMessageChat }: Props) {
   const { mobileNavExpanded } = useUiContext();
   const { setDirectMessages, profile } = useAuthContext();
   const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
@@ -50,9 +44,7 @@ export default function DmChatContainer({
     >
       <DmNavbar directMessageChat={directMessageChat} />
       <Chat
-        initialMessages={messages}
         chatId={directMessageChat.chatId}
-        initialAllLoaded={allLoaded}
         directMessageChat={directMessageChat}
         tempMessages={tempMessages}
         removeTempMessage={(tempId: string) => {

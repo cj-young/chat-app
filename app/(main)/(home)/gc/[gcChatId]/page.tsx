@@ -1,10 +1,8 @@
-import { getSessionUser, getUserProfile } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientGroupChat } from "@/lib/groupChat";
-import { MESSAGE_COUNT, getMessages } from "@/lib/message";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
 import { IUser } from "@/models/User";
-import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -38,21 +36,9 @@ export default async function GcChat({ params }: Props) {
     )
       redirect("/");
 
-    const messages = await getMessages(groupChat.id, "GroupChat");
-
-    const clientMessages: IClientMessage[] = messages.map((message) => ({
-      content: message.content,
-      sender: getUserProfile(message.sender),
-      chatId: message.chat.toString(),
-      timestamp: message.createdAt,
-      id: message.id
-    }));
-
     return (
       <GcChatContainer
         groupChat={sterilizeClientGroupChat(groupChat, user.id)}
-        messages={clientMessages}
-        allLoaded={clientMessages.length < MESSAGE_COUNT}
       />
     );
   } catch (error) {

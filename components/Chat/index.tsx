@@ -18,9 +18,7 @@ import ServerChannelBanner from "./banners/ServerChannelBanner";
 import styles from "./styles.module.scss";
 
 interface Props {
-  initialMessages: IClientMessage[];
   chatId: string;
-  initialAllLoaded: boolean;
   chatType: "directMessage" | "groupChat" | "server";
   directMessageChat?: IClientDm;
   tempMessages?: ITempMessage[];
@@ -32,9 +30,7 @@ interface Props {
 const MESSAGE_FETCH_SCROLL_BUFFER = "40rem";
 
 export default function Chat({
-  initialMessages,
   chatId,
-  initialAllLoaded,
   directMessageChat,
   tempMessages,
   removeTempMessage,
@@ -43,8 +39,8 @@ export default function Chat({
   serverChannel
 }: Props) {
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
-  const [messages, setMessages] = useState(initialMessages);
-  const [allLoaded, setAllLoaded] = useState(initialAllLoaded);
+  const [messages, setMessages] = useState<IClientMessage[]>([]);
+  const [allLoaded, setAllLoaded] = useState(false);
 
   usePusherEvent(
     `private-${chatType}-${chatId}`,
@@ -68,7 +64,15 @@ export default function Chat({
     try {
       if (isLoadingMessage) return;
       setIsLoadingMessage(true);
-
+      console.log(messages.length);
+      const qs =
+        messages.length > 0
+          ? `?lastMessage=${
+              messages[messages.length - 1]
+                ? messages[messages.length - 1].id
+                : ""
+            }`
+          : "";
       const res = await apiFetch(
         `/${
           chatType === "directMessage"
@@ -78,9 +82,7 @@ export default function Chat({
             : chatType === "server"
             ? "server"
             : ""
-        }/message/${chatId}?lastMessage=${
-          messages[messages.length - 1] ? messages[messages.length - 1].id : ""
-        }`
+        }/message/${chatId}${qs}`
       );
       const data = await res.json();
       if (!res.ok) {
