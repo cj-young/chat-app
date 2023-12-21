@@ -1,4 +1,6 @@
+"use client";
 import { IClientServer } from "@/types/server";
+import { useRouter } from "next/navigation";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -6,6 +8,12 @@ interface Props {
 }
 
 export default function ServerItem({ server }: Props) {
+  const router = useRouter();
+
+  function handleClick() {
+    router.push(`/server/${server.serverId}`);
+  }
+
   return (
     <button
       className={styles["server-button"]}
@@ -13,6 +21,7 @@ export default function ServerItem({ server }: Props) {
         backgroundImage: `url(${server.imageUrl})`,
         backgroundSize: "cover"
       }}
+      onClick={handleClick}
     ></button>
   );
 }
