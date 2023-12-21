@@ -6,6 +6,7 @@ import PlusSymbol from "@/public/plus-solid.svg";
 import { useMemo } from "react";
 import AddGroupModal from "../AddGroupModal";
 import ChannelGroup from "../ChannelGroup";
+import ServerCard from "../ServerCard";
 import styles from "./styles.module.scss";
 
 export default function ServerSidebar() {
@@ -23,6 +24,7 @@ export default function ServerSidebar() {
         mobileNavExpanded ? "" : styles["hidden"]
       ].join(" ")}
     >
+      <ServerCard />
       <nav className={styles["nav"]}>
         <ul className={styles["nav-list"]}>
           {sortedChannelGroups.map((group) => (

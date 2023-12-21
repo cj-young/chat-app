@@ -1,0 +1,77 @@
+.modal {
+  --padding: 1rem;
+  padding: var(--padding);
+  position: relative;
+  background-color: var(--bg-main);
+  border-radius: var(--br);
+  width: min(40ch, calc(100% - 1rem));
+}
+
+.exit-modal {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  top: var(--padding);
+  right: var(--padding);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    fill: var(--text-primary);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.title {
+  font-size: var(--fs-600);
+  display: block;
+  margin-right: 2rem;
+}
+
+.description {
+  margin-top: 1rem;
+  color: var(--text-contrast-200);
+}
+
+.link-container {
+  width: 100%;
+  border-radius: var(--br);
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.link-input {
+  width: 100%;
+}
+
+.copy-button {
+  height: 3rem;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: var(--br);
+  background-color: var(--clr-accent);
+  cursor: pointer;
+  position: relative;
+
+  svg {
+    fill: var(--text-primary);
+    width: 1.25rem;
+    height: 1.25rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+}
+
+.copied-message {
+  margin-top: 0.5rem;
+  display: inline-block;
+  color: var(--clr-primary);
+  font-weight: bold;
+}
