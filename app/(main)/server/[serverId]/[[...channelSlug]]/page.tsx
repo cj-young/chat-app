@@ -34,7 +34,6 @@ export default async function ChannelPage({ params }: Props) {
       let minChannelId: string | null = null;
       let minChannelGroupOrder = Number.MAX_VALUE;
       let minChannelOrder = Number.MAX_VALUE;
-      console.log(server.channelGroups);
       for (let channelGroup of server.channelGroups) {
         if (channelGroup.uiOrder <= minChannelGroupOrder) {
           for (let channel of channelGroup.channels) {
@@ -44,9 +43,7 @@ export default async function ChannelPage({ params }: Props) {
           }
         }
       }
-      console.log(minChannelId);
       if (!minChannelId) redirect("/");
-      console.log(`/server/${serverId}/${minChannelId}`);
       redirect(`/server/${serverId}/${minChannelId}`);
     }
   }
