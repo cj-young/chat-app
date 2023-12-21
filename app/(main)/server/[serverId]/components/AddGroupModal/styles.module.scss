@@ -1,0 +1,49 @@
+.modal {
+  --padding: 1rem;
+  padding: var(--padding);
+  position: relative;
+  background-color: var(--bg-main);
+  border-radius: var(--br);
+}
+
+.exit-modal {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  top: var(--padding);
+  right: var(--padding);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    fill: var(--text-primary);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.title {
+  font-size: var(--fs-600);
+  display: block;
+  margin-right: 2rem;
+}
+
+.form {
+  margin-top: 2rem;
+}
+
+.name-input {
+  margin-top: 0.5rem;
+}
+
+.submit-button {
+  width: 100%;
+  border: none;
+  border-radius: var(--br);
+  background-color: var(--clr-primary);
+  font-weight: bold;
+  font-size: var(--fs-400);
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+}

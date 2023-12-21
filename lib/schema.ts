@@ -44,3 +44,12 @@ export const createChannelSchema = z.object({
 });
 
 export type CreateChannelInfo = z.infer<typeof createChannelSchema>;
+
+export const createGroupSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Group name must be at least 2 characters long")
+    .max(20, "Group name cannot be more than 20 characters long")
+});
+
+export type CreateGroupInfo = z.infer<typeof createGroupSchema>;

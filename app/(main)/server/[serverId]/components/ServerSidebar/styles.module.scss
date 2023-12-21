@@ -19,3 +19,35 @@
   overflow-y: auto;
   flex: 1;
 }
+
+.add-channel-container {
+  list-style: none;
+  margin-top: 0.25rem;
+}
+
+.add-channel {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--br);
+  padding: 0.125rem 0.5rem;
+  cursor: pointer;
+  --color: var(--text-contrast-200);
+
+  svg {
+    width: 0.75rem;
+    fill: var(--color);
+  }
+
+  &:hover {
+    --color: var(--text-primary);
+  }
+
+  span {
+    color: var(--color);
+    font-size: var(--fs-400);
+  }
+}
