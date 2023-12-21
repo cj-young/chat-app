@@ -12,6 +12,7 @@ export interface IServer extends Document {
     uiOrder: number;
   }[];
   imageUrl: string;
+  homeChannel?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -64,6 +65,10 @@ const serverSchema = new Schema<IServer>(
         defaultServerPictures[
           Math.floor(Math.random() * defaultServerPictures.length)
         ]
+    },
+    homeChannel: {
+      type: Schema.Types.ObjectId,
+      ref: "Channel"
     }
   },
   { timestamps: true }
