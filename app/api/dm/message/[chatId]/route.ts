@@ -105,16 +105,20 @@ export async function GET(req: NextRequest) {
 
   if (!isValidObjectId(chatId))
     return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
-  if (!isValidObjectId(lastMessageId))
+  if (lastMessageId !== null && !isValidObjectId(lastMessageId))
     return NextResponse.json(
       { message: "Invalid message ID" },
       { status: 400 }
     );
 
   await dbConnect();
-  const lastMessage = await Message.findById(lastMessageId);
-  if (!lastMessage)
-    return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
+  let lastMessage: IMessage | undefined;
+  if (lastMessageId) {
+    const foundMessage = await Message.findById<IMessage>(lastMessageId);
+    if (!foundMessage)
+      return NextResponse.json({ message: "Invalid chat ID" }, { status: 400 });
+    lastMessage = foundMessage;
+  }
 
   const messages = await getMessages(chatId, "DirectMessage", lastMessage);
 
