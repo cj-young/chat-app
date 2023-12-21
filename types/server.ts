@@ -11,3 +11,5 @@ export interface IClientChannel {
   type: "text";
   uiOrder: number;
 }
+
+export type TRole = "owner" | "admin" | "guest";
