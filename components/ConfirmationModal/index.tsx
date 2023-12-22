@@ -1,12 +1,12 @@
 "use client";
 import { useUiContext } from "@/contexts/UiContext";
 import XIcon from "@/public/xmark-solid.svg";
+import { useState } from "react";
 import LoaderButton from "../LoaderButton";
 import styles from "./styles.module.scss";
 
 interface Props {
   confirmCallback(): any;
-  loading?: boolean;
   title: string;
   confirmMessage?: string;
   cancelMessage?: string;
@@ -14,12 +14,18 @@ interface Props {
 
 export default function ConfirmationModal({
   confirmCallback,
-  loading = false,
   confirmMessage,
   cancelMessage,
   title
 }: Props) {
   const { closeModal } = useUiContext();
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleClick() {
+    setIsLoading(true);
+    await confirmCallback();
+    setIsLoading(false);
+  }
 
   return (
     <div className={styles["modal"]}>
@@ -36,8 +42,8 @@ export default function ConfirmationModal({
         </button>
         <LoaderButton
           className={[styles["leave-button"], styles["button"]].join(" ")}
-          onClick={() => confirmCallback()}
-          loading={loading}
+          onClick={handleClick}
+          loading={isLoading}
         >
           {confirmMessage ?? "Yes, continue"}
         </LoaderButton>
