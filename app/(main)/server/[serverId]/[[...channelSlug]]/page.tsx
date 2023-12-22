@@ -33,6 +33,8 @@ export default async function ChannelPage({ params }: Props) {
           for (let channel of channelGroup.channels) {
             if (channel.uiOrder < minChannelOrder) {
               minChannelId = channel.channel.toString();
+              minChannelGroupOrder = channelGroup.uiOrder;
+              minChannelOrder = channel.uiOrder;
             }
           }
         }
