@@ -1,22 +1,24 @@
 "use client";
+import ConfirmationModal from "@/components/ConfirmationModal";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
-import XIcon from "@/public/xmark-solid.svg";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import styles from "./styles.module.scss";
+import { useState } from "react";
 
 interface Props {
   chatId: string;
 }
+
+const CONFIRM_LEAVE_CHAT_MESSAGE = "Yes, leave";
+const CANCEL_LEAVE_CHAT_MESSAGE = "No, cancel";
+const MODAL_TITLE = "Are you sure you want to leave this chat?";
 
 export default function LeaveChatModal({ chatId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const { closeModal } = useUiContext();
   const router = useRouter();
 
-  async function handleLeaveChat(e: FormEvent) {
-    e.preventDefault();
+  async function handleLeaveChat() {
     setIsLoading(true);
     try {
       const res = await apiFetch(`/group-chat/leave/${chatId}`, "POST");
@@ -30,27 +32,12 @@ export default function LeaveChatModal({ chatId }: Props) {
   }
 
   return (
-    <div className={styles["modal"]}>
-      <button className={styles["exit-modal"]} onClick={closeModal}>
-        <XIcon />
-      </button>
-      <h2 className={styles["title"]}>
-        Are you sure you want to leave this chat?
-      </h2>
-      <div className={styles["buttons"]}>
-        <button
-          className={[styles["cancel-button"], styles["button"]].join(" ")}
-          onClick={closeModal}
-        >
-          No, cancel
-        </button>
-        <button
-          className={[styles["leave-button"], styles["button"]].join(" ")}
-          onClick={handleLeaveChat}
-        >
-          Yes, leave
-        </button>
-      </div>
-    </div>
+    <ConfirmationModal
+      confirmCallback={handleLeaveChat}
+      loading={isLoading}
+      confirmMessage={CONFIRM_LEAVE_CHAT_MESSAGE}
+      cancelMessage={CANCEL_LEAVE_CHAT_MESSAGE}
+      title={MODAL_TITLE}
+    />
   );
 }
