@@ -57,6 +57,11 @@
     left: 50%;
     bottom: 0;
     background-color: var(--bg-contrast-100);
+    display: none;
+
+    @include large-screen {
+      display: block;
+    }
   }
 }
 
