@@ -41,32 +41,30 @@ export default function ChannelGroup({ name, channels, uiOrder }: Props) {
         </button>
         <h3 className={styles["group-name"]}>{name}</h3>
       </div>
-      {(role === "owner" || role === "admin") && isExpanded && (
-        <ul className={styles["channel-list"]}>
-          {sortedChannels.map((channel) => (
-            <ChannelItem channel={channel} key={channel.channelId} />
-          ))}
-          {
-            <li className={styles["add-channel-container"]}>
-              <button
-                className={styles["add-channel"]}
-                onClick={() =>
-                  addModal(
-                    <AddChannelModal
-                      groupName={name}
-                      groupOrder={uiOrder}
-                      serverId={serverInfo.serverId}
-                    />
-                  )
-                }
-              >
-                <PlusSymbol />
-                <span>Add channel</span>
-              </button>
-            </li>
-          }
-        </ul>
-      )}
+      <ul className={styles["channel-list"]}>
+        {sortedChannels.map((channel) => (
+          <ChannelItem channel={channel} key={channel.channelId} />
+        ))}
+        {(role === "owner" || role === "admin") && isExpanded && (
+          <li className={styles["add-channel-container"]}>
+            <button
+              className={styles["add-channel"]}
+              onClick={() =>
+                addModal(
+                  <AddChannelModal
+                    groupName={name}
+                    groupOrder={uiOrder}
+                    serverId={serverInfo.serverId}
+                  />
+                )
+              }
+            >
+              <PlusSymbol />
+              <span>Add channel</span>
+            </button>
+          </li>
+        )}
+      </ul>
     </li>
   );
 }

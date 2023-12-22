@@ -1,0 +1,69 @@
+.invite-page {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.invite-container {
+  background-color: var(--bg-contrast-200);
+  border-radius: var(--br);
+  width: min(30ch, 100% - 1rem);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.server-image {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 1000vmax;
+}
+
+.title {
+  margin-top: 1rem;
+  max-width: 30ch;
+  text-align: center;
+  font-weight: normal;
+  color: var(--text-contrast-100);
+  font-size: var(--fs-600);
+}
+
+.server-name {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.button {
+  border: none;
+  border-radius: var(--br);
+
+  a {
+    font-weight: bold;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+}
+
+.join-button {
+  background-color: var(--clr-primary);
+}
+
+.ignore-button {
+  background-color: var(--bg-main);
+}
