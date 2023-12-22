@@ -1,6 +1,8 @@
 "use client";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import AddServerButton from "./components/AddServerButton";
 import HomeButton from "./components/HomeButton";
 import ServerItem from "./components/ServerItem";
@@ -9,6 +11,14 @@ import styles from "./styles.module.scss";
 export default function MainNavbar() {
   const { mobileNavExpanded } = useUiContext();
   const { servers } = useAuthContext();
+  const pathname = usePathname();
+  const currentServerId: string | null = useMemo(() => {
+    const splitPath = pathname
+      .split("/")
+      .filter((segment) => segment.length > 0);
+    if (splitPath[0] !== "server") return null;
+    return splitPath[1];
+  }, [pathname]);
 
   return (
     <nav
@@ -22,7 +32,15 @@ export default function MainNavbar() {
           <HomeButton />
         </li>
         {servers.map((server) => (
-          <li key={server.server.serverId} className={styles["nav-item"]}>
+          <li
+            key={server.server.serverId}
+            className={[
+              styles["nav-item"],
+              server.server.serverId === currentServerId
+                ? styles["selected"]
+                : ""
+            ].join(" ")}
+          >
             <ServerItem server={server.server} />
           </li>
         ))}
