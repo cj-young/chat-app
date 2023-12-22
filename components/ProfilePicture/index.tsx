@@ -1,4 +1,6 @@
+"use client";
 import { IProfile, TOnlineStatus } from "@/types/user";
+import { useId } from "react";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -13,6 +15,9 @@ const STATUS_OUTLINE_RADIUS = 16;
 const STATUS_RADIUS = 10;
 
 export default function ProfilePicture({ user, status, className }: Props) {
+  const statusMaskId = useId();
+  const noStatusMaskId = useId();
+
   return (
     <svg
       className={className ?? styles["profile-picture"]}
@@ -21,7 +26,7 @@ export default function ProfilePicture({ user, status, className }: Props) {
     >
       <defs>
         {status ? (
-          <mask id="profile-picture-mask-status" fill="white">
+          <mask id={statusMaskId} fill="white">
             <circle cx="32" cy="32" r="32" fill="white" />
 
             <circle
@@ -32,7 +37,7 @@ export default function ProfilePicture({ user, status, className }: Props) {
             />
           </mask>
         ) : (
-          <mask id="profile-picture-mask-no-status" fill="white">
+          <mask id={noStatusMaskId} fill="white">
             <circle cx="32" cy="32" r="32" fill="white" />
           </mask>
         )}
@@ -43,7 +48,7 @@ export default function ProfilePicture({ user, status, className }: Props) {
         y="0"
         width="64"
         height="64"
-        mask={`url(#profile-picture-mask-${status ? "status" : "no-status"})`}
+        mask={`url(#${status ? statusMaskId : noStatusMaskId}`}
       />
       {status === "online" ? (
         <StatusOnline />
