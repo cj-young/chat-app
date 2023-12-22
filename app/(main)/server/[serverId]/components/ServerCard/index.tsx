@@ -29,7 +29,9 @@ export default function ServerCard() {
           <li className={styles["dropdown-item"]}>
             <button
               className={styles["dropdown-button"]}
-              onClick={() => addModal(<InviteModal />)}
+              onClick={() =>
+                addModal(<InviteModal serverId={serverInfo.serverId} />)
+              }
             >
               <span>Invite people</span>
               <InviteIcon />

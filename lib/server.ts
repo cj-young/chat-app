@@ -51,3 +51,7 @@ export function sterilizeClientChannel(
     uiOrder
   };
 }
+
+export function getInviteLink(code: string) {
+  return `${process.env.BASE_URL}/invite/${code}`;
+}

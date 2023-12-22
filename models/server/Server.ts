@@ -13,6 +13,8 @@ export interface IServer extends Document {
   }[];
   imageUrl: string;
   homeChannel?: Types.ObjectId;
+  inviteCode: { code: string; expiresAt: Date };
+  isInviteExpired(): boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -69,9 +71,27 @@ const serverSchema = new Schema<IServer>(
     homeChannel: {
       type: Schema.Types.ObjectId,
       ref: "Channel"
+    },
+    inviteCode: {
+      type: {
+        code: {
+          type: String,
+          required: true
+        },
+        expiresAt: {
+          type: Date,
+          required: true
+        }
+      }
     }
   },
   { timestamps: true }
 );
+
+serverSchema.methods.isInviteExpired = function () {
+  return (
+    !this.inviteCode || Date.now() - this.inviteCode.expiresAt.getTime() >= 0
+  );
+};
 
 export default models.Server || model<IServer>("Server", serverSchema);
