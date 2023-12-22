@@ -1,4 +1,5 @@
 "use client";
+import { useUiContext } from "@/contexts/UiContext";
 import TextChannelIcon from "@/public/align-left-solid.svg";
 import { IClientChannel } from "@/types/server";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,13 +13,18 @@ interface Props {
 export default function ChannelItem({ channel }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const { closeMobileNav } = useUiContext();
 
   const isBeingViewed = useMemo(() => {
     return pathname.endsWith(channel.channelId);
   }, [pathname]);
 
   function handleClick() {
-    router.push(`/server/${channel.serverId}/${channel.channelId}`);
+    if (isBeingViewed) {
+      closeMobileNav();
+    } else {
+      router.push(`/server/${channel.serverId}/${channel.channelId}`);
+    }
   }
 
   return (

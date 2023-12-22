@@ -10,6 +10,7 @@ interface IUiContext {
   modal: ReactNode | null;
   addModal(element: ReactNode): void;
   closeModal(): void;
+  closeMobileNav(): void;
 }
 
 interface Props {
@@ -43,6 +44,10 @@ export default function UiContextProvider({ children }: Props) {
     setModal(null);
   }
 
+  function closeMobileNav() {
+    setMobileNavExpanded(false);
+  }
+
   return (
     <UiContext.Provider
       value={{
@@ -53,7 +58,8 @@ export default function UiContextProvider({ children }: Props) {
         popupMenu,
         modal,
         addModal,
-        closeModal
+        closeModal,
+        closeMobileNav
       }}
     >
       {children}

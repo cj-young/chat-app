@@ -1,6 +1,7 @@
 "use client";
 import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useUiContext } from "@/contexts/UiContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import { IClientGroupChat, IClientMessage, IProfile } from "@/types/user";
@@ -19,6 +20,7 @@ export default function GroupChatItem({ groupChat }: Props) {
   const isBeingViewedRef = useRef<boolean>();
   isBeingViewedRef.current = isBeingViewed;
   const { setGroupChats } = useAuthContext();
+  const { closeMobileNav } = useUiContext();
 
   usePusherEvent(
     `private-groupChat-${groupChat.chatId}`,
@@ -96,10 +98,18 @@ export default function GroupChatItem({ groupChat }: Props) {
     }
   );
 
+  function handleClick() {
+    if (isBeingViewed) {
+      closeMobileNav();
+    } else {
+      router.push(`/gc/${groupChat.chatId}`);
+    }
+  }
+
   return (
     <li className={styles["group-chat-item"]}>
       <button
-        onClick={() => router.push(`/gc/${groupChat.chatId}`)}
+        onClick={handleClick}
         className={[
           styles["button"],
           isBeingViewed ? styles["selected"] : ""

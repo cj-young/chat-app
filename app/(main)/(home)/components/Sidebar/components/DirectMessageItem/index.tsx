@@ -2,6 +2,7 @@
 import NumberBadge from "@/components/NumberBadge";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useUiContext } from "@/contexts/UiContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, IClientMessage } from "@/types/user";
@@ -20,6 +21,7 @@ export default function DirectMessageItem({ directMessage }: Props) {
   const isBeingViewedRef = useRef<boolean>();
   isBeingViewedRef.current = isBeingViewed;
   const { setDirectMessages } = useAuthContext();
+  const { closeMobileNav } = useUiContext();
 
   usePusherEvent(
     `private-directMessage-${directMessage.chatId}`,
@@ -51,10 +53,18 @@ export default function DirectMessageItem({ directMessage }: Props) {
     }
   );
 
+  function handleClick() {
+    if (isBeingViewed) {
+      closeMobileNav();
+    } else {
+      router.push(`/dm/${directMessage.chatId}`);
+    }
+  }
+
   return (
     <li className={styles["dm-item"]}>
       <button
-        onClick={() => router.push(`/dm/${directMessage.chatId}`)}
+        onClick={handleClick}
         className={[
           styles["button"],
           isBeingViewed ? styles["selected"] : ""

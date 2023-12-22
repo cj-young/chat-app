@@ -2,14 +2,14 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import AddServerButton from "./components/AddServerButton";
 import HomeButton from "./components/HomeButton";
 import ServerItem from "./components/ServerItem";
 import styles from "./styles.module.scss";
 
 export default function MainNavbar() {
-  const { mobileNavExpanded } = useUiContext();
+  const { mobileNavExpanded, closeMobileNav } = useUiContext();
   const { servers } = useAuthContext();
   const pathname = usePathname();
   const currentServerId: string | null = useMemo(() => {
@@ -18,6 +18,10 @@ export default function MainNavbar() {
       .filter((segment) => segment.length > 0);
     if (splitPath[0] !== "server") return null;
     return splitPath[1];
+  }, [pathname]);
+
+  useEffect(() => {
+    closeMobileNav();
   }, [pathname]);
 
   return (
