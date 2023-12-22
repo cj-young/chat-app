@@ -1,0 +1,38 @@
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  overflow-x: auto;
+  flex: 0 0 auto;
+  background-color: var(--bg-main);
+}
+
+.channel-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  svg {
+    fill: var(--text-primary);
+  }
+}
+
+.channel-name {
+  font-size: var(--fs-500);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sign-out-button {
+  border: none;
+  border-radius: var(--br);
+  background-color: var(--clr-accent);
+  font-weight: bold;
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  margin-left: auto;
+  white-space: nowrap;
+}
