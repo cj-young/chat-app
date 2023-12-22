@@ -59,3 +59,25 @@ export function sterilizeClientChannel(
 export function getInviteLink(code: string) {
   return `${process.env.BASE_URL}/invite/${code}`;
 }
+
+export function getDefaultChannelId(server: IServer) {
+  if (server.homeChannel) {
+    return server.homeChannel.toString();
+  } else {
+    let minChannelId: string | null = null;
+    let minChannelGroupOrder = Number.MAX_VALUE;
+    let minChannelOrder = Number.MAX_VALUE;
+    for (let channelGroup of server.channelGroups) {
+      if (channelGroup.uiOrder <= minChannelGroupOrder) {
+        for (let channel of channelGroup.channels) {
+          if (channel.uiOrder < minChannelOrder) {
+            minChannelId = channel.channel.toString();
+            minChannelGroupOrder = channelGroup.uiOrder;
+            minChannelOrder = channel.uiOrder;
+          }
+        }
+      }
+    }
+    return minChannelId;
+  }
+}

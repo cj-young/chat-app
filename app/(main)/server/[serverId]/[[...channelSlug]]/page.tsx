@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/db";
-import { sterilizeClientChannel } from "@/lib/server";
+import { getDefaultChannelId, sterilizeClientChannel } from "@/lib/server";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Server, { IServer } from "@/models/server/Server";
 import { isValidObjectId } from "mongoose";
@@ -22,26 +22,11 @@ export default async function ChannelPage({ params }: Props) {
   if (!params.channelSlug || params.channelSlug.length === 0) {
     const server = await Server.findById<IServer>(serverId);
     if (!server) redirect("/");
-    if (server.homeChannel) {
-      redirect(`/server/${serverId}/${server.homeChannel.toString()}`);
-    } else {
-      let minChannelId: string | null = null;
-      let minChannelGroupOrder = Number.MAX_VALUE;
-      let minChannelOrder = Number.MAX_VALUE;
-      for (let channelGroup of server.channelGroups) {
-        if (channelGroup.uiOrder <= minChannelGroupOrder) {
-          for (let channel of channelGroup.channels) {
-            if (channel.uiOrder < minChannelOrder) {
-              minChannelId = channel.channel.toString();
-              minChannelGroupOrder = channelGroup.uiOrder;
-              minChannelOrder = channel.uiOrder;
-            }
-          }
-        }
-      }
-      if (!minChannelId) redirect("/");
-      redirect(`/server/${serverId}/${minChannelId}`);
-    }
+
+    const defaultChannelId = getDefaultChannelId(server);
+    if (!defaultChannelId) redirect("/");
+
+    redirect(`/server/${server.id}/${defaultChannelId}`);
   }
   const channelId = params.channelSlug[0];
 
