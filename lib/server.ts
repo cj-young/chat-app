@@ -1,3 +1,4 @@
+import { IUser } from "@/models/User";
 import { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -21,14 +22,17 @@ export async function getServer(serverId: string) {
 
   const server = await Server.findById<IServer>(serverId).populate<
     Omit<IServer, "members" | "channelGroups"> & {
-      members: IMember[];
+      members: (Omit<IMember, "user"> & { user: IUser })[];
       channelGroups: {
         name: string;
         channels: { channel: IChannel; uiOrder: number }[];
         uiOrder: number;
       }[];
     }
-  >(["members", "channelGroups.channels.channel"]);
+  >([
+    { path: "members", model: Member, populate: "user" },
+    "channelGroups.channels.channel"
+  ]);
   if (!server) return null;
   return server;
 }

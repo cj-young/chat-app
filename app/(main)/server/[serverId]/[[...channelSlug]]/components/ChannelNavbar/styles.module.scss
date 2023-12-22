@@ -25,6 +25,31 @@
   white-space: nowrap;
 }
 
+.buttons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-button {
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    fill: var(--text-primary);
+    width: 75%;
+    height: 75%;
+  }
+}
+
 .sign-out-button {
   border: none;
   border-radius: var(--br);
@@ -33,6 +58,5 @@
   color: var(--text-primary);
   padding: 0.75rem 1.5rem;
   cursor: pointer;
-  margin-left: auto;
   white-space: nowrap;
 }

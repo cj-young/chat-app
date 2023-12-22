@@ -1,5 +1,5 @@
 import ServerContextProvider from "@/contexts/ServerContext";
-import { getSession } from "@/lib/auth";
+import { getSession, getUserProfile } from "@/lib/auth";
 import {
   getMember,
   getServer,
@@ -49,12 +49,17 @@ export default async function ServerLayout({ params, children }: Props) {
     uiOrder: group.uiOrder
   }));
   const clientServer = sterilizeClientServer(server);
+  const members = server.members.map((member) => ({
+    role: member.role,
+    user: getUserProfile(member.user)
+  }));
 
   return (
     <ServerContextProvider
       initialChannelGroups={channelGroups}
       initialServerInfo={clientServer}
       initialRole={member.role}
+      initialMembers={members}
     >
       <ServerSidebar />
       {children}

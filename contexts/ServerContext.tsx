@@ -1,5 +1,10 @@
 "use client";
-import { IClientChannel, IClientServer, TRole } from "@/types/server";
+import {
+  IClientChannel,
+  IClientMember,
+  IClientServer,
+  TRole
+} from "@/types/server";
 import { ReactNode, createContext, useContext, useState } from "react";
 
 interface IServerContext {
@@ -10,6 +15,7 @@ interface IServerContext {
   }[];
   serverInfo: IClientServer;
   role: TRole;
+  members: IClientMember[];
 }
 
 const ServerContext = createContext<IServerContext>({} as IServerContext);
@@ -23,20 +29,25 @@ interface Props {
   }[];
   initialServerInfo: IClientServer;
   initialRole: TRole;
+  initialMembers: IClientMember[];
 }
 
 export default function ServerContextProvider({
   children,
   initialChannelGroups,
   initialServerInfo,
-  initialRole
+  initialRole,
+  initialMembers
 }: Props) {
   const [channelGroups, setChannelGroups] = useState(initialChannelGroups);
   const [serverInfo, setServerInfo] = useState(initialServerInfo);
   const [role, setRole] = useState(initialRole);
+  const [members, setMembers] = useState(initialMembers);
 
   return (
-    <ServerContext.Provider value={{ channelGroups, serverInfo, role }}>
+    <ServerContext.Provider
+      value={{ channelGroups, serverInfo, role, members }}
+    >
       {children}
     </ServerContext.Provider>
   );

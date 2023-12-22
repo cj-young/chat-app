@@ -1,3 +1,5 @@
+import { IProfile } from "./user";
+
 export interface IClientServer {
   serverId: string;
   name: string;
@@ -13,3 +15,8 @@ export interface IClientChannel {
 }
 
 export type TRole = "owner" | "admin" | "guest";
+
+export interface IClientMember {
+  role: TRole;
+  user: IProfile;
+}
