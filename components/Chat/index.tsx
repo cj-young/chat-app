@@ -78,7 +78,7 @@ export default function Chat({
           chatType === "directMessage"
             ? "dm"
             : chatType === "groupChat"
-            ? "gc"
+            ? "group-chat"
             : chatType === "server"
             ? "server"
             : ""
