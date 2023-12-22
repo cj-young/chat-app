@@ -1,13 +1,11 @@
 "use client";
-import NumberBadge from "@/components/NumberBadge";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import PlusSymbol from "@/public/plus-solid.svg";
-import FriendsIcon from "@/public/user-group-solid.svg";
-import Link from "next/link";
 import { useMemo } from "react";
 import AddConversationModal from "../AddConversationModal";
 import DirectMessageItem from "./components/DirectMessageItem";
+import FriendsLink from "./components/FriendsLink";
 import GroupChatItem from "./components/GroupChatItem";
 import ProfileCard from "./components/ProfileCard";
 import styles from "./styles.module.scss";
@@ -39,16 +37,7 @@ export default function Sidebar() {
       ].join(" ")}
     >
       <nav className={styles["nav"]}>
-        <Link href="/" className={styles["friends"]}>
-          <FriendsIcon />
-          <span>Friends</span>
-          {friendRequests.length > 0 && (
-            <NumberBadge
-              number={friendRequests.length}
-              className={styles["friends-notification-badge"]}
-            />
-          )}
-        </Link>
+        <FriendsLink />
         <h2 className={styles["conversations-header"]}>Conversations</h2>
         <button
           className={styles["add-conversation"]}
