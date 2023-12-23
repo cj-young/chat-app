@@ -6,13 +6,14 @@ import { apiFetch } from "@/lib/api";
 import CaretIcon from "@/public/caret-down-solid.svg";
 import LeaveServerIcon from "@/public/right-from-bracket-solid.svg";
 import InviteIcon from "@/public/share-solid.svg";
+import TrashIcon from "@/public/trash-solid.svg";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import InviteModal from "../InviteModal";
 import styles from "./styles.module.scss";
 
 export default function ServerCard() {
-  const { serverInfo } = useServer();
+  const { serverInfo, role } = useServer();
   const { addModal, closeModal } = useUiContext();
   const [menuExpanded, setMenuExpanded] = useState(false);
   const router = useRouter();
@@ -23,6 +24,22 @@ export default function ServerCard() {
         `/server/leave/${serverInfo.serverId}`,
         "POST"
       );
+      const data = await res.json();
+      if (!res.ok) {
+        return console.error(data.message);
+      }
+      router.push("/");
+      closeModal();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deleteServer() {
+    try {
+      const res = await apiFetch(`/server/delete`, "DELETE", {
+        serverId: serverInfo.serverId
+      });
       const data = await res.json();
       if (!res.ok) {
         return console.error(data.message);
@@ -77,6 +94,26 @@ export default function ServerCard() {
               <LeaveServerIcon />
             </button>
           </li>
+          {role === "owner" && (
+            <li className={styles["dropdown-item"]}>
+              <button
+                className={styles["dropdown-button"]}
+                onClick={() =>
+                  addModal(
+                    <ConfirmationModal
+                      confirmCallback={deleteServer}
+                      title="Are you sure you want to delete this server? This cannot be undone."
+                      confirmMessage="Yes, delete it"
+                      cancelMessage="No, cancel"
+                    />
+                  )
+                }
+              >
+                <span>Delete Server</span>
+                <TrashIcon />
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>
