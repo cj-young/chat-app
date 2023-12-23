@@ -43,7 +43,15 @@ export default function Chat({
   const [allLoaded, setAllLoaded] = useState(false);
 
   usePusherEvent(
-    `private-${chatType}-${chatId}`,
+    `private-${
+      chatType === "directMessage"
+        ? "directMessage"
+        : chatType === "groupChat"
+        ? "groupChat"
+        : chatType === "server"
+        ? "serverChannel"
+        : ""
+    }-${chatId}`,
     "messageSent",
     ({
       message,

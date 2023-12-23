@@ -73,10 +73,14 @@ export async function POST(req: NextRequest) {
       sender: session.user
     });
 
-    await pusherServer.trigger(`private-server-${channelId}`, "messageSent", {
-      message: clientMessage,
-      tempId
-    });
+    await pusherServer.trigger(
+      `private-serverChannel-${channelId}`,
+      "messageSent",
+      {
+        message: clientMessage,
+        tempId
+      }
+    );
 
     return NextResponse.json({ message: "Message successfully sent" });
   } catch (error) {

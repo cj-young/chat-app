@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         } else {
           return authFailed();
         }
-      } else if (splitChannel[1] === "server") {
+      } else if (splitChannel[1] === "serverChannel") {
         const channelId = splitChannel[2];
         if (
           await isServerChannelAuthorized(channelId, session.user.toString())
