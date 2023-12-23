@@ -79,10 +79,14 @@ export async function POST(req: NextRequest) {
     );
 
     const clientChannel = sterilizeClientChannel(channel, channelUiOrder ?? 0);
-    pusherServer.trigger(`private-server-${server.id}`, "channelCreated", {
-      channel: clientChannel,
-      groupUiOrder: groupOrder
-    });
+    await pusherServer.trigger(
+      `private-server-${server.id}`,
+      "channelCreated",
+      {
+        channel: clientChannel,
+        groupUiOrder: groupOrder
+      }
+    );
 
     return NextResponse.json({ message: "Successfully created channel" });
   } catch (error) {
