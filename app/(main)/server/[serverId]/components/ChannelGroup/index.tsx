@@ -42,9 +42,10 @@ export default function ChannelGroup({ name, channels, uiOrder }: Props) {
         <h3 className={styles["group-name"]}>{name}</h3>
       </div>
       <ul className={styles["channel-list"]}>
-        {sortedChannels.map((channel) => (
-          <ChannelItem channel={channel} key={channel.channelId} />
-        ))}
+        {isExpanded &&
+          sortedChannels.map((channel) => (
+            <ChannelItem channel={channel} key={channel.channelId} />
+          ))}
         {(role === "owner" || role === "admin") && isExpanded && (
           <li className={styles["add-channel-container"]}>
             <button
