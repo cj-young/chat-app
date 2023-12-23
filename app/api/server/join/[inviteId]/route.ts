@@ -67,7 +67,8 @@ export async function GET(req: NextRequest) {
 
     const clientMember: IClientMember = {
       role: member.role,
-      user: getUserProfile(user)
+      user: getUserProfile(user),
+      id: member.id
     };
     await pusherServer.trigger(
       `private-server-${server.id}`,

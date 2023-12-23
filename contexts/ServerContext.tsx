@@ -54,6 +54,17 @@ export default function ServerContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "userLeft",
+    ({ memberId }: { memberId: string }) => {
+      console.log(memberId);
+      setMembers((prev) =>
+        prev.filter((prevMember) => prevMember.id !== memberId)
+      );
+    }
+  );
+
   return (
     <ServerContext.Provider
       value={{ channelGroups, serverInfo, role, members }}

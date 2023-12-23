@@ -17,6 +17,7 @@ export interface IClientChannel {
 export type TRole = "owner" | "admin" | "guest";
 
 export interface IClientMember {
+  id: string;
   role: TRole;
   user: IProfile;
 }
