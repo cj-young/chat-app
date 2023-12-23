@@ -51,10 +51,14 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    await pusherServer.trigger(`private-server-${server.id}`, "userLeft", {
-      memberId: member.id
-    });
-    console.log(member.id);
+    await Promise.all([
+      pusherServer.trigger(`private-server-${server.id}`, "userLeft", {
+        memberId: member.id
+      }),
+      pusherServer.trigger(`private-user-${userId}`, "serverRemoved", {
+        serverId: server.id
+      })
+    ]);
 
     return NextResponse.json({ message: "Successfull left server" });
   } catch (error) {

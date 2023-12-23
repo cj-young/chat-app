@@ -147,6 +147,16 @@ export default function AuthContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "serverRemoved",
+    ({ serverId }: { serverId: string }) => {
+      setServers((prev) =>
+        prev.filter((prevServer) => prevServer.server.serverId !== serverId)
+      );
+    }
+  );
+
   async function fulfillFriendRequest(
     userId: string,
     method: "accept" | "decline"

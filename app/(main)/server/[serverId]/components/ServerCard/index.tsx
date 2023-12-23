@@ -13,7 +13,7 @@ import styles from "./styles.module.scss";
 
 export default function ServerCard() {
   const { serverInfo } = useServer();
-  const { addModal } = useUiContext();
+  const { addModal, closeModal } = useUiContext();
   const [menuExpanded, setMenuExpanded] = useState(false);
   const router = useRouter();
 
@@ -28,6 +28,7 @@ export default function ServerCard() {
         return console.error(data.message);
       }
       router.push("/");
+      closeModal();
     } catch (error) {
       console.error(error);
     }
