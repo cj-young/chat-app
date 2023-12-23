@@ -49,6 +49,12 @@ export async function POST(req: NextRequest) {
     server.channelGroups.push(channelGroup);
     await server.save();
 
+    await pusherServer.trigger(
+      `private-server-${server.id}`,
+      "channelGroupCreated",
+      { channelGroup }
+    );
+
     return NextResponse.json({ message: "Successfully created channel group" });
   } catch (error) {
     return NextResponse.json(
