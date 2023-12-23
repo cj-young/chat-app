@@ -1,4 +1,5 @@
 import { getSession, invalidSession } from "@/lib/auth";
+import { sterilizeClientChannel } from "@/lib/server";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -51,11 +52,13 @@ export async function POST(req: NextRequest) {
     const server = await Server.findById<IServer>(serverId);
     if (!server) return NextResponse.json({ message: "Invalid server" });
 
+    let channelUiOrder;
     for (let channelGroup of server.channelGroups) {
       if (channelGroup.uiOrder === groupOrder) {
+        channelUiOrder = channelGroup.channels.length;
         channelGroup.channels.push({
           channel: channel.id,
-          uiOrder: channelGroup.channels.length
+          uiOrder: channelUiOrder
         });
         break;
       }
@@ -74,6 +77,12 @@ export async function POST(req: NextRequest) {
         }
       }
     );
+
+    const clientChannel = sterilizeClientChannel(channel, channelUiOrder ?? 0);
+    pusherServer.trigger(`private-server-${server.id}`, "channelCreated", {
+      channel: clientChannel,
+      groupUiOrder: groupOrder
+    });
 
     return NextResponse.json({ message: "Successfully created channel" });
   } catch (error) {

@@ -65,6 +65,28 @@ export default function ServerContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "channelCreated",
+    ({
+      channel,
+      groupUiOrder
+    }: {
+      channel: IClientChannel;
+      groupUiOrder: number;
+    }) => {
+      setChannelGroups((prevGroups) =>
+        prevGroups.map((prevGroup) => {
+          if (prevGroup.uiOrder === groupUiOrder) {
+            return { ...prevGroup, channels: [...prevGroup.channels, channel] };
+          } else {
+            return prevGroup;
+          }
+        })
+      );
+    }
+  );
+
   return (
     <ServerContext.Provider
       value={{ channelGroups, serverInfo, role, members }}
