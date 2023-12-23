@@ -1,7 +1,8 @@
-import { getSession } from "@/lib/auth";
+import { getSession, getUserProfile } from "@/lib/auth";
 import User, { IUser } from "@/models/User";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
+import { IClientMember } from "@/types/server";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -63,6 +64,16 @@ export async function GET(req: NextRequest) {
       user.servers.push({ server: server.id, uiOrder: user.servers.length });
       await user.save();
     }
+
+    const clientMember: IClientMember = {
+      role: member.role,
+      user: getUserProfile(user)
+    };
+    await pusherServer.trigger(
+      `private-server-${server.id}`,
+      "userJoined",
+      clientMember
+    );
 
     return NextResponse.redirect(
       new URL(`/server/${server.id}`, process.env.BASE_URL)

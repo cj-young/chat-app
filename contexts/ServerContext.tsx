@@ -1,4 +1,5 @@
 "use client";
+import usePusherEvent from "@/hooks/usePusherEvent";
 import {
   IClientChannel,
   IClientMember,
@@ -43,6 +44,15 @@ export default function ServerContextProvider({
   const [serverInfo, setServerInfo] = useState(initialServerInfo);
   const [role, setRole] = useState(initialRole);
   const [members, setMembers] = useState(initialMembers);
+
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "userJoined",
+    (member: IClientMember) => {
+      console.log(member);
+      setMembers((prev) => [...prev, member]);
+    }
+  );
 
   return (
     <ServerContext.Provider

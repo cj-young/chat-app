@@ -5,6 +5,7 @@ import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
+import Server, { IServer } from "@/models/server/Server";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -51,6 +52,13 @@ export async function POST(req: NextRequest) {
         if (
           await isServerChannelAuthorized(channelId, session.user.toString())
         ) {
+          return NextResponse.json(authResponse);
+        } else {
+          return authFailed();
+        }
+      } else if (splitChannel[1] === "server") {
+        const serverId = splitChannel[2];
+        if (await isServerAuthorized(serverId, session.user.toString())) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
@@ -110,5 +118,24 @@ async function isServerChannelAuthorized(channelId: string, userId: string) {
   if (!member) return false;
   return member.channels.some(
     (channel) => channel.channel.toString() === channelId
+  );
+}
+
+async function isServerAuthorized(serverId: string, userId: string) {
+  if (!isValidObjectId(serverId)) return false;
+
+  await dbConnect();
+
+  const server = await Server.findById<IServer>(serverId);
+  if (!server) return false;
+
+  const member = await Member.findOne<IMember>({
+    server: serverId,
+    user: userId
+  });
+  if (!member) return false;
+
+  return server.members.some(
+    (serverMember) => serverMember.toString() === member.id
   );
 }
