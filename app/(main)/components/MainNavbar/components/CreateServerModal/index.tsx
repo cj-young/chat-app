@@ -4,6 +4,7 @@ import Input from "@/components/Input";
 import LoaderButton from "@/components/LoaderButton";
 import { useUiContext } from "@/contexts/UiContext";
 import XIcon from "@/public/xmark-solid.svg";
+import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
 import styles from "./styles.module.scss";
 
@@ -12,6 +13,7 @@ export default function CreateServerModal() {
   const [serverImage, setServerImage] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const [serverName, setServerName] = useState("");
+  const router = useRouter();
 
   const onImageDrop = useCallback((acceptedFiles: File[]) => {
     setServerImage(acceptedFiles[0]);
@@ -19,6 +21,7 @@ export default function CreateServerModal() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const formData = new FormData();
       if (serverImage) formData.set("serverImage", serverImage);
@@ -28,8 +31,13 @@ export default function CreateServerModal() {
         body: formData
       });
       const data = await res.json();
-      console.log(data);
+      if (data.serverId) {
+        router.push(`/server/${data.serverId}`);
+      }
+
+      closeModal();
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
     }
   }

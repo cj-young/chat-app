@@ -1,6 +1,7 @@
 import { getSession, invalidSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { uploadServerImage } from "@/lib/firebase";
+import { sterilizeClientServer } from "@/lib/server";
 import User, { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
@@ -44,9 +45,10 @@ export async function POST(req: NextRequest) {
     const user = await User.findById<IUser>(userId);
     if (!user)
       return NextResponse.json({ message: "Invalid session" }, { status: 401 });
+    const serverUiOrder = user.servers.length;
     user.servers.push({
       server: server.id,
-      uiOrder: user.servers.length
+      uiOrder: serverUiOrder
     });
     await user.save();
 
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
       channels: { channel: defaultChannel.id, unreadMessages: 0 }
     });
 
-    await Server.findByIdAndUpdate(server.id, {
+    await Server.findByIdAndUpdate<IServer>(server.id, {
       $push: {
         channelGroups: {
           name: "Text Channels",
@@ -74,7 +76,14 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    return NextResponse.json({ message: "Sent" });
+    const clientServer = sterilizeClientServer(server);
+    console.log(clientServer);
+    await pusherServer.trigger(`private-user-${user.id}`, "serverAdded", {
+      server: clientServer,
+      uiOrder: serverUiOrder
+    });
+
+    return NextResponse.json({ serverId: server.id });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

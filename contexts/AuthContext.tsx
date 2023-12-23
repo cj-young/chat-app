@@ -136,6 +136,17 @@ export default function AuthContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-user-${initialProfile.id}`,
+    "serverAdded",
+    ({ server, uiOrder }: { server: IClientServer; uiOrder: number }) => {
+      setServers((prev) => [
+        ...prev,
+        { server, uiOrder: uiOrder ?? prev.length }
+      ]);
+    }
+  );
+
   async function fulfillFriendRequest(
     userId: string,
     method: "accept" | "decline"
