@@ -72,16 +72,26 @@ export async function getSignupSession(sessionId: string) {
 export function getUserProfile(
   user: Pick<
     IUser,
-    "email" | "username" | "displayName" | "imageUrl" | "id" | "onlineStatus"
+    | "email"
+    | "username"
+    | "displayName"
+    | "imageUrl"
+    | "id"
+    | "preferredOnlineStatus"
+    | "isOnline"
   >
 ): IProfile {
+  const onlineStatus =
+    user.isOnline && user.preferredOnlineStatus !== "invisible"
+      ? user.preferredOnlineStatus
+      : "offline";
   return {
     email: user.email,
     username: user.username,
     displayName: user.displayName,
     imageUrl: user.imageUrl,
     id: user.id,
-    onlineStatus: user.onlineStatus
+    onlineStatus
   };
 }
 

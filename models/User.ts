@@ -17,7 +17,8 @@ export interface IUser extends Document {
   directMessages: mongoose.Types.ObjectId[];
   groupChats: mongoose.Types.ObjectId[];
   imageUrl: string;
-  onlineStatus: TOnlineStatus;
+  preferredOnlineStatus: Exclude<TOnlineStatus, "offline"> | "invisible";
+  isOnline: boolean;
   checkPassword(password: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -112,10 +113,15 @@ const userSchema = new Schema<IUser>(
           Math.floor(Math.random() * defaultProfilePictures.length)
         ]
     },
-    onlineStatus: {
+    preferredOnlineStatus: {
       type: String,
-      enum: ["online", "offline", "idle", "doNotDisturb"],
-      default: "offline"
+      enum: ["online", "idle", "doNotDisturb", "invisible"],
+      default: "online"
+    },
+    isOnline: {
+      type: Boolean,
+      default: false,
+      required: true
     }
   },
   { timestamps: true }
