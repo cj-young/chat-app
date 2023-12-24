@@ -75,10 +75,12 @@ function StatusOnline() {
 const HOLE_RADIUS = 5;
 const COLOR_OFFLINE = "hsl(140, 3%, 50%)";
 function StatusOffline() {
+  const maskId = useId();
+
   return (
     <svg>
       <defs>
-        <mask id="status-mask">
+        <mask id={maskId}>
           <rect width="100%" height="100%" fill="white" />
           <circle cx={STATUS_X} cy={STATUS_Y} r={HOLE_RADIUS} fill="black" />
         </mask>
@@ -88,7 +90,7 @@ function StatusOffline() {
         cy={STATUS_Y}
         r={STATUS_RADIUS}
         fill={COLOR_OFFLINE}
-        mask="url(#status-mask)"
+        mask={`url(#${maskId})`}
       />
     </svg>
   );
@@ -99,10 +101,12 @@ const SLOT_WIDTH = 12;
 const SLOT_HEIGHT = 6;
 const ROTATION_ANGLE = 135;
 function StatusDoNotDisturb() {
+  const maskId = useId();
+
   return (
     <svg>
       <defs>
-        <mask id="status-mask">
+        <mask id={maskId}>
           <rect width="100%" height="100%" fill="white" />
           <rect
             width={SLOT_WIDTH}
@@ -121,7 +125,7 @@ function StatusDoNotDisturb() {
         cy={STATUS_Y}
         r={STATUS_RADIUS}
         fill={COLOR_DO_NOT_DISTURB}
-        mask="url(#status-mask)"
+        mask={`url(#${maskId})`}
       />
     </svg>
   );
@@ -132,10 +136,12 @@ const SHADOW_OFFSET_X = -5;
 const SHADOW_OFFSET_Y = -5;
 const COLOR_IDLE = "hsl(50, 100%, 65%)";
 function StatusIdle() {
+  const maskId = useId();
+
   return (
     <svg>
       <defs>
-        <mask id="status-mask">
+        <mask id={maskId}>
           <rect width="100%" height="100%" fill="white" />
           <circle
             cx={STATUS_X + SHADOW_OFFSET_X}
@@ -150,7 +156,7 @@ function StatusIdle() {
         cy={STATUS_Y}
         r={STATUS_RADIUS}
         fill={COLOR_IDLE}
-        mask="url(#status-mask)"
+        mask={`url(#${maskId})`}
       />
     </svg>
   );
