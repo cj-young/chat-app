@@ -4,6 +4,7 @@ import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
 import { sterilizeClientGroupChat } from "@/lib/groupChat";
 import { sterilizeClientServer } from "@/lib/server";
+import { IProfile } from "@/types/user";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -31,7 +32,13 @@ export default async function RootLayout({
       redirect("/login");
     }
 
-    const profile = getUserProfile(user);
+    const profile: IProfile = {
+      ...getUserProfile(user),
+      onlineStatus:
+        user.preferredOnlineStatus === "invisible"
+          ? "offline"
+          : user.preferredOnlineStatus
+    };
     const friendRequests = user.friendRequests
       .filter((requester) => requester && requester.id != null)
       .map((requester) => getUserProfile(requester));
