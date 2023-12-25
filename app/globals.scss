@@ -1,3 +1,5 @@
+@import "@/styles/mixins";
+
 /* Box sizing rules */
 *,
 *::before,
@@ -107,17 +109,29 @@ textarea:not([rows]) {
   --clr-hover: hsl(143, 5%, 25%);
   --clr-select: hsl(143, 5%, 35%);
 
-  --fs-100: 0.5rem;
-  --fs-200: 0.75rem;
-  --fs-300: 0.875rem;
-  --fs-400: 1rem;
-  --fs-500: 1.25rem;
-  --fs-600: 1.5rem;
-  --fs-700: 2rem;
-  --fs-800: 3rem;
-  --fs-900: 5rem;
+  --fs-100: 0.75rem;
+  --fs-200: 0.875rem;
+  --fs-300: 1rem;
+  --fs-400: 1.25rem;
+  --fs-500: 1.5rem;
+  --fs-600: 2rem;
+  --fs-700: 3rem;
+  --fs-800: 5rem;
+  --fs-900: 7rem;
 
   --br: 8px;
+
+  @include large-screen {
+    --fs-100: 0.5rem;
+    --fs-200: 0.75rem;
+    --fs-300: 0.875rem;
+    --fs-400: 1rem;
+    --fs-500: 1.25rem;
+    --fs-600: 1.5rem;
+    --fs-700: 2rem;
+    --fs-800: 3rem;
+    --fs-900: 5rem;
+  }
 }
 
 * {
