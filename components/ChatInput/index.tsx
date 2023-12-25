@@ -3,9 +3,9 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { apiFetch } from "@/lib/api";
 import SendIcon from "@/public/paper-plane-solid.svg";
 import { ITempMessage } from "@/types/user";
-import { FormEvent, useState } from "react";
+import { FormEvent, KeyboardEvent, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import { v4 } from "uuid";
-import Input from "../Input";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -22,8 +22,8 @@ export default function ChatInput({
   const [message, setMessage] = useState("");
   const { profile } = useAuthContext();
 
-  async function sendMessage(e: FormEvent) {
-    e.preventDefault();
+  async function sendMessage(e?: FormEvent) {
+    if (e) e.preventDefault();
     const tempId = v4();
     addTempMessage({
       content: message,
@@ -38,14 +38,24 @@ export default function ChatInput({
     });
   }
 
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
   return (
     <form className={styles["input-form"]} onSubmit={sendMessage}>
-      <Input
-        type="text"
+      <TextareaAutosize
         placeholder={`Send a message to ${chatName}`}
         className={styles["input"]}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        maxRows={message.length > 0 ? 5 : 1}
+        minRows={1}
+        rows={1}
+        onKeyDown={handleKeyDown}
       />
       <button type="submit" className={styles["send-button"]}>
         <SendIcon />
