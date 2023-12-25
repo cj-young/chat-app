@@ -57,6 +57,10 @@
 .content {
   color: var(--text-contrast-100);
   white-space: break-spaces;
+
+  a {
+    color: var(--clr-accent);
+  }
 }
 
 .sent-at-first {

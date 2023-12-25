@@ -1,4 +1,5 @@
 import { IClientMessage, ITempMessage } from "@/types/user";
+import Linkify from "linkify-react";
 import ProfilePicture from "../ProfilePicture";
 import styles from "./styles.module.scss";
 
@@ -42,24 +43,26 @@ export default function Message({ message, isFirst, isTemp }: Props) {
                 .replace(",", "")}
             </span>
           </div>
-          <span
+          <Linkify
+            as="span"
             className={[
               styles["content"],
               isTemp ? styles["temp-content"] : ""
             ].join(" ")}
           >
             {message.content}
-          </span>
+          </Linkify>
         </div>
       ) : (
-        <span
+        <Linkify
+          as="span"
           className={[
             styles["content"],
             isTemp ? styles["temp-content"] : ""
           ].join(" ")}
         >
           {message.content}
-        </span>
+        </Linkify>
       )}
     </li>
   );
