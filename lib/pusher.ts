@@ -23,7 +23,11 @@ if (!global.pusherClient) {
     process.env.NEXT_PUBLIC_PUSHER_KEY as string,
     {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER as string,
-      authEndpoint: "/api/pusher/auth"
+      authEndpoint: "/api/pusher/auth",
+      userAuthentication: {
+        endpoint: "/api/pusher/user-auth",
+        transport: "ajax"
+      }
     }
   );
 }

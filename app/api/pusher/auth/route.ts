@@ -3,6 +3,7 @@ import dbConnect from "@/lib/db";
 import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
+import { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -16,53 +17,66 @@ export async function POST(req: NextRequest) {
     const channelName = data.get("channel_name") as string;
     const authResponse = pusherServer.authorizeChannel(socketId, channelName);
 
+    await dbConnect();
+
     const sessionId = req.cookies.get("session")?.value;
     if (!sessionId) return authFailed();
 
     const { query, userType } = getSession(sessionId);
     if (!query || userType !== "verified") return authFailed();
-    const session = await query;
+    const session = await query.populate<{ user: IUser }>("user");
     if (!session) return authFailed();
 
     const splitChannel = channelName.split("-");
     if (splitChannel[0] === "private") {
       if (splitChannel[1] === "directMessage") {
         const chatId = splitChannel[2];
-        if (await isDmAuthorized(chatId, session.user.toString())) {
+        if (await isDmAuthorized(chatId, session.user.id)) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
         }
       } else if (splitChannel[1] === "user") {
         const userId = splitChannel[2];
-        if (userId === session.user.toString()) {
+        if (userId === session.user.id) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
         }
       } else if (splitChannel[1] === "groupChat") {
         const chatId = splitChannel[2];
-        if (await isGroupChatAuthorized(chatId, session.user.toString())) {
+        if (await isGroupChatAuthorized(chatId, session.user.id)) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
         }
       } else if (splitChannel[1] === "serverChannel") {
         const channelId = splitChannel[2];
-        if (
-          await isServerChannelAuthorized(channelId, session.user.toString())
-        ) {
+        if (await isServerChannelAuthorized(channelId, session.user.id)) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
         }
       } else if (splitChannel[1] === "server") {
         const serverId = splitChannel[2];
-        if (await isServerAuthorized(serverId, session.user.toString())) {
+        if (await isServerAuthorized(serverId, session.user.id)) {
           return NextResponse.json(authResponse);
         } else {
           return authFailed();
         }
+      }
+    } else if (splitChannel[0] === "presence") {
+      const presenceResponse = pusherServer.authorizeChannel(
+        socketId,
+        channelName,
+        { user_id: session.user.id }
+      );
+
+      if (session.user) {
+        return NextResponse.json(presenceResponse);
+      } else {
+        console.log("user not found");
+        return authFailed();
       }
     }
 

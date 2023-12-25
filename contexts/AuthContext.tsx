@@ -10,8 +10,10 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState
 } from "react";
+import { usePusher } from "./PusherContext";
 
 interface IAuthContext {
   profile: IProfile;
@@ -62,6 +64,7 @@ export default function AuthContextProvider({
     useState<IClientGroupChat[]>(initialGroupChats);
   const [servers, setServers] = useState(initialServers);
   const router = useRouter();
+  const { joinAppChannel, leaveAppChannel } = usePusher();
 
   usePusherEvent(
     `private-user-${initialProfile.id}`,
@@ -156,6 +159,12 @@ export default function AuthContextProvider({
       );
     }
   );
+
+  useEffect(() => {
+    joinAppChannel();
+
+    return leaveAppChannel;
+  }, []);
 
   async function fulfillFriendRequest(
     userId: string,

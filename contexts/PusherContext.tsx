@@ -14,6 +14,8 @@ interface IPusherContext {
     eventId: string,
     callback: Function
   ): void;
+  joinAppChannel(): void;
+  leaveAppChannel(): void;
 }
 
 interface Props {
@@ -74,8 +76,24 @@ export default function PusherContextProvider({ children }: Props) {
     }
   }
 
+  function joinAppChannel() {
+    pusherClient.subscribe("presence-app");
+    console.log("subscribed to app");
+  }
+
+  function leaveAppChannel() {
+    pusherClient.unsubscribe("presence-app");
+  }
+
   return (
-    <PusherContext.Provider value={{ subscribeToEvent, unsubscribeFromEvent }}>
+    <PusherContext.Provider
+      value={{
+        subscribeToEvent,
+        unsubscribeFromEvent,
+        joinAppChannel,
+        leaveAppChannel
+      }}
+    >
       {children}
     </PusherContext.Provider>
   );
