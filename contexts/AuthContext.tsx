@@ -279,6 +279,7 @@ export default function AuthContextProvider({
   async function signOut() {
     try {
       router.push("/api/auth/sign-out");
+      router.refresh();
     } catch (error) {
       console.error(error);
     }
