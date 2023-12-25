@@ -6,7 +6,15 @@ import {
   IClientServer,
   TRole
 } from "@/types/server";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { TOnlineStatus } from "@/types/user";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from "react";
+import { usePusher } from "./PusherContext";
 
 interface IServerContext {
   channelGroups: {
@@ -44,6 +52,8 @@ export default function ServerContextProvider({
   const [serverInfo, setServerInfo] = useState(initialServerInfo);
   const [role, setRole] = useState(initialRole);
   const [members, setMembers] = useState(initialMembers);
+
+  const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
 
   usePusherEvent(
     `private-server-${serverInfo.serverId}`,
@@ -98,6 +108,42 @@ export default function ServerContextProvider({
       setChannelGroups((prev) => [...prev, channelGroup]);
     }
   );
+
+  useEffect(() => {
+    const memberCallbacks = new Map<string, Function>();
+    for (let member of members) {
+      if (memberCallbacks.has(member.user.id)) continue;
+      const onOnlineStatusChange = ({
+        onlineStatus
+      }: {
+        onlineStatus: TOnlineStatus;
+      }) => {
+        setMembers((prev) =>
+          prev.map((prevMember) =>
+            prevMember.user.id !== member.user.id
+              ? prevMember
+              : { ...member, user: { ...member.user, onlineStatus } }
+          )
+        );
+      };
+
+      memberCallbacks.set(member.user.id, onOnlineStatusChange);
+      subscribeToEvent(
+        `profile-${member.user.id}`,
+        "onlineStatusChanged",
+        onOnlineStatusChange
+      );
+    }
+    return () => {
+      for (let [userId, callback] of memberCallbacks) {
+        unsubscribeFromEvent(
+          `profile-${userId}`,
+          "onlineStatusChanged",
+          callback
+        );
+      }
+    };
+  }, [members]);
 
   return (
     <ServerContext.Provider

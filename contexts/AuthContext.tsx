@@ -2,7 +2,12 @@
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import { IClientServer } from "@/types/server";
-import { IClientDm, IClientGroupChat, IProfile } from "@/types/user";
+import {
+  IClientDm,
+  IClientGroupChat,
+  IProfile,
+  TOnlineStatus
+} from "@/types/user";
 import { useRouter } from "next/navigation";
 import {
   Dispatch,
@@ -64,7 +69,12 @@ export default function AuthContextProvider({
     useState<IClientGroupChat[]>(initialGroupChats);
   const [servers, setServers] = useState(initialServers);
   const router = useRouter();
-  const { joinAppChannel, leaveAppChannel } = usePusher();
+  const {
+    joinAppChannel,
+    leaveAppChannel,
+    subscribeToEvent,
+    unsubscribeFromEvent
+  } = usePusher();
 
   usePusherEvent(
     `private-user-${initialProfile.id}`,
@@ -165,6 +175,81 @@ export default function AuthContextProvider({
 
     return leaveAppChannel;
   }, []);
+
+  useEffect(() => {
+    const friendStatusCallbacks = new Map<string, Function>();
+    for (let friend of friends) {
+      if (friendStatusCallbacks.has(friend.id)) continue;
+      const onOnlineStatusChange = ({
+        onlineStatus
+      }: {
+        onlineStatus: TOnlineStatus;
+      }) => {
+        setFriends((prev) =>
+          prev.map((prevFriend) =>
+            prevFriend.id !== friend.id
+              ? prevFriend
+              : { ...prevFriend, onlineStatus }
+          )
+        );
+      };
+      friendStatusCallbacks.set(friend.id, onOnlineStatusChange);
+      subscribeToEvent(
+        `profile-${friend.id}`,
+        "onlineStatusChanged",
+        onOnlineStatusChange
+      );
+    }
+
+    return () => {
+      for (let [friendId, callback] of friendStatusCallbacks) {
+        unsubscribeFromEvent(
+          `profile-${friendId}`,
+          "onlineStatusChanged",
+          callback
+        );
+      }
+    };
+  }, [friends]);
+
+  useEffect(() => {
+    const dmStatusCallbacks = new Map<string, Function>();
+    for (let directMessage of directMessages) {
+      if (dmStatusCallbacks.has(directMessage.user.id)) continue;
+      const onOnlineStatusChange = ({
+        onlineStatus
+      }: {
+        onlineStatus: TOnlineStatus;
+      }) => {
+        setDirectMessages((prev) =>
+          prev.map((prevDirectMessage) =>
+            prevDirectMessage.user.id !== directMessage.user.id
+              ? prevDirectMessage
+              : {
+                  ...prevDirectMessage,
+                  user: { ...prevDirectMessage.user, onlineStatus }
+                }
+          )
+        );
+      };
+      dmStatusCallbacks.set(directMessage.user.id, onOnlineStatusChange);
+      subscribeToEvent(
+        `profile-${directMessage.user.id}`,
+        "onlineStatusChanged",
+        onOnlineStatusChange
+      );
+    }
+
+    return () => {
+      for (let [userId, callback] of dmStatusCallbacks) {
+        unsubscribeFromEvent(
+          `profile-${userId}`,
+          "onlineStatusChanged",
+          callback
+        );
+      }
+    };
+  }, [directMessages]);
 
   async function fulfillFriendRequest(
     userId: string,
