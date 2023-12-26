@@ -65,7 +65,8 @@ export async function POST(req: NextRequest) {
       {
         $inc: {
           "members.$[elem].unreadMessages": 1
-        }
+        },
+        latestMessageAt: Date.now()
       },
       { arrayFilters: [{ "elem.user": { $ne: user.id } }] }
     );
