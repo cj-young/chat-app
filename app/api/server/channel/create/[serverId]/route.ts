@@ -3,6 +3,7 @@ import { sterilizeClientChannel } from "@/lib/server";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
+import { TChannelType } from "@/types/server";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const { user: userId } = session;
     const { channelType, name, groupOrder } = (await req.json()) as {
-      channelType: "text";
+      channelType: TChannelType;
       name: string;
       groupOrder: number;
     };
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Successfully created channel" });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

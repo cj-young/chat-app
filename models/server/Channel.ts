@@ -1,3 +1,4 @@
+import { TChannelType } from "@/types/server";
 import { Document, Schema, Types, model, models } from "mongoose";
 
 import "server-only";
@@ -5,7 +6,7 @@ import "server-only";
 export interface IChannel extends Document {
   server: Types.ObjectId;
   name: string;
-  channelType: "text";
+  channelType: TChannelType;
   latestMessageAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -24,7 +25,7 @@ const channelSchema = new Schema<IChannel>(
     },
     channelType: {
       type: String,
-      enum: ["text"],
+      enum: ["text", "voice"],
       default: "text",
       required: true
     },

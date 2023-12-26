@@ -5,6 +5,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
 import { CreateChannelInfo, createChannelSchema } from "@/lib/schema";
 import TextChannelIcon from "@/public/align-left-solid.svg";
+import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import XIcon from "@/public/xmark-solid.svg";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -72,6 +73,23 @@ export default function AddChannelModal({
             />
             <TextChannelIcon />
             Text
+          </label>
+          <label
+            htmlFor="channel-type-voice"
+            className={[
+              styles["channel-type"],
+              watchChannelType === "voice" ? styles["selected"] : ""
+            ].join(" ")}
+          >
+            <input
+              {...register("channelType")}
+              id="channel-type-voice"
+              type="radio"
+              value="voice"
+              className={styles["channel-type-input"]}
+            />
+            <VoiceChannelIcon />
+            Voice
           </label>
         </div>
         <Input

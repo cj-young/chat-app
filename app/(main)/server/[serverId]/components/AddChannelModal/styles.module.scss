@@ -62,6 +62,10 @@
     height: 100%;
     fill: var(--color);
   }
+
+  & + & {
+    margin-top: 0.5rem;
+  }
 }
 
 .channel-type-input {

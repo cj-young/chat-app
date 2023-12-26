@@ -10,7 +10,7 @@ export interface IClientChannel {
   serverId: string;
   channelId: string;
   name: string;
-  type: "text";
+  type: TChannelType;
   uiOrder: number;
 }
 
@@ -21,3 +21,5 @@ export interface IClientMember {
   role: TRole;
   user: IProfile;
 }
+
+export type TChannelType = "text" | "voice";

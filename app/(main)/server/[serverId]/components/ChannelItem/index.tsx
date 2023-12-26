@@ -1,6 +1,7 @@
 "use client";
 import { useUiContext } from "@/contexts/UiContext";
 import TextChannelIcon from "@/public/align-left-solid.svg";
+import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import { IClientChannel } from "@/types/server";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -36,7 +37,13 @@ export default function ChannelItem({ channel }: Props) {
         ].join(" ")}
         onClick={handleClick}
       >
-        {channel.type === "text" ? <TextChannelIcon /> : <></>}
+        {channel.type === "text" ? (
+          <TextChannelIcon />
+        ) : channel.type === "voice" ? (
+          <VoiceChannelIcon />
+        ) : (
+          <></>
+        )}
         <span className={styles["channel-name"]}>{channel.name}</span>
       </button>
     </li>
