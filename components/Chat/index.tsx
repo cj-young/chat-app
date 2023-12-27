@@ -72,7 +72,6 @@ export default function Chat({
     try {
       if (isLoadingMessage) return;
       setIsLoadingMessage(true);
-      console.log(messages.length);
       const qs =
         messages.length > 0
           ? `?lastMessage=${
