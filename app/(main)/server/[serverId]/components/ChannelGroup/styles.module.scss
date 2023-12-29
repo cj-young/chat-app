@@ -1,5 +1,9 @@
 .channel-group {
   list-style: none;
+
+  & + & {
+    margin-top: 0.5rem;
+  }
 }
 
 .group-name-container {
