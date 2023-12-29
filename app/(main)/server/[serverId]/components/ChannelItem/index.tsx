@@ -1,5 +1,6 @@
 "use client";
 import { useUiContext } from "@/contexts/UiContext";
+import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import TextChannelIcon from "@/public/align-left-solid.svg";
 import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import { IClientChannel } from "@/types/server";
@@ -15,6 +16,7 @@ export default function ChannelItem({ channel }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { closeMobileNav } = useUiContext();
+  const { joinVoiceCall, leaveVoiceCall } = useVoiceCall();
 
   const isBeingViewed = useMemo(() => {
     return pathname.endsWith(channel.channelId);
@@ -24,6 +26,9 @@ export default function ChannelItem({ channel }: Props) {
     if (isBeingViewed) {
       closeMobileNav();
     } else {
+      if (channel.type === "voice") {
+        joinVoiceCall(channel.channelId);
+      }
       router.push(`/server/${channel.serverId}/${channel.channelId}`);
     }
   }

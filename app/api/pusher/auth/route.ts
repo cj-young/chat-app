@@ -72,11 +72,17 @@ export async function POST(req: NextRequest) {
         { user_id: session.user.id }
       );
 
-      if (session.user) {
+      if (!session.user) return authFailed();
+
+      if (splitChannel[1] === "app") {
         return NextResponse.json(presenceResponse);
-      } else {
-        console.log("user not found");
-        return authFailed();
+      } else if (splitChannel[1] === "voice") {
+        const channelId = splitChannel[2];
+        if (await isVoiceChatAuthorized(channelId, session.user.id)) {
+          return NextResponse.json(presenceResponse);
+        } else {
+          return authFailed();
+        }
       }
     }
 
@@ -151,5 +157,21 @@ async function isServerAuthorized(serverId: string, userId: string) {
 
   return server.members.some(
     (serverMember) => serverMember.toString() === member.id
+  );
+}
+
+async function isVoiceChatAuthorized(channelId: string, userId: string) {
+  if (!isValidObjectId(channelId)) return false;
+  const channel = await Channel.findById<IChannel>(channelId);
+  if (!channel) return false;
+
+  const member = await Member.findOne<IMember>({
+    server: channel.server,
+    user: userId
+  });
+  if (!member) return false;
+
+  return member.channels.some(
+    (memberChannel) => memberChannel.channel.toString() === channel.id
   );
 }

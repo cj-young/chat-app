@@ -1,4 +1,5 @@
 import AuthContextProvider from "@/contexts/AuthContext";
+import VoiceCallContextProvider from "@/contexts/VoiceChatContext";
 import { getSessionUser, getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
@@ -67,12 +68,14 @@ export default async function RootLayout({
         initialGroupChats={groupChats}
         initialServers={servers}
       >
-        <div className={styles["app-container"]}>
-          <MainNavbar />
-          {children}
-        </div>
-        <PopupMenuDisplay />
-        <ModalDisplay />
+        <VoiceCallContextProvider>
+          <div className={styles["app-container"]}>
+            <MainNavbar />
+            {children}
+          </div>
+          <PopupMenuDisplay />
+          <ModalDisplay />
+        </VoiceCallContextProvider>
       </AuthContextProvider>
     );
   } catch (error) {
