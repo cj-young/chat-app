@@ -1,5 +1,7 @@
+import { getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import User, { IUser } from "@/models/User";
+import Channel, { IChannel } from "@/models/server/Channel";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -39,8 +41,6 @@ export async function POST(req: NextRequest) {
         );
       } else if (data.events[0].name === "member_removed") {
         const userId = data.events[0].user_id;
-        console.log("USER ID");
-        console.log(userId);
         if (!isValidObjectId(userId)) {
           return NextResponse.json(
             { message: "Invalid user ID" },
@@ -63,6 +63,48 @@ export async function POST(req: NextRequest) {
           "onlineStatusChanged",
           { onlineStatus: "offline" }
         );
+      }
+    } else if (
+      typeof data.events[0].channel === "string" &&
+      data.events[0].channel.startsWith("presence-voice-")
+    ) {
+      const splitChannel = data.events[0].channel.split("-");
+      const callId = splitChannel[2];
+
+      if (data.events[0].name === "member_added") {
+        const userId = data.events[0].user_id;
+        if (!isValidObjectId(userId)) {
+          return NextResponse.json(
+            { message: "Invalid user ID" },
+            { status: 400 }
+          );
+        }
+        const [user, channel] = await Promise.all([
+          User.findById<IUser>(userId),
+          Channel.findById<IChannel>(callId)
+        ]);
+        if (!user) {
+          return NextResponse.json(
+            { message: "Invalid user ID" },
+            { status: 400 }
+          );
+        }
+
+        if (!channel) {
+          return NextResponse.json(
+            { message: "Invalid call ID" },
+            { status: 400 }
+          );
+        }
+
+        if (channel.channelType === "voice") {
+          console.log("TRIGGERING VOICE :))");
+          await pusherServer.trigger(
+            `private-server-${channel.server.toString()}`,
+            "userJoinedVoiceCall",
+            { channelId: channel.id, user: getUserProfile(user) }
+          );
+        }
       }
     }
 

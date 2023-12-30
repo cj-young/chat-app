@@ -6,6 +6,7 @@ import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannel } from "@/types/server";
+import { IProfile } from "@/types/user";
 import { useEffect, useMemo, useState } from "react";
 import AddGroupModal from "../AddGroupModal";
 import ChannelGroup from "../ChannelGroup";
@@ -33,9 +34,10 @@ export default function ServerSidebar() {
         const res = await apiFetch(
           `/server/channel-group/list/${serverInfo.serverId}`
         );
-        const { channelGroups } = await res.json();
+        const { channelGroups } = (await res.json()) as {
+          channelGroups: IChannelGroup[];
+        };
         setChannelGroups(channelGroups);
-        console.log(channelGroups);
       } catch (error) {
         console.error(error);
       }
@@ -73,6 +75,47 @@ export default function ServerSidebar() {
       channelGroup: { name: string; channels: []; uiOrder: number };
     }) => {
       setChannelGroups((prev) => [...prev, channelGroup]);
+    }
+  );
+
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "userJoinedVoiceCall",
+    ({ channelId, user }: { channelId: string; user: IProfile }) => {
+      setChannelGroups((prev) =>
+        prev.map((prevGroup) => {
+          if (
+            !prevGroup.channels.some(
+              (channel) => channel.channelId === channelId
+            )
+          ) {
+            return prevGroup;
+          } else {
+            const channelIndex = prevGroup.channels.findIndex(
+              (channel) => channel.channelId === channelId
+            );
+            const channel = prevGroup.channels[channelIndex];
+            if (channel.callMembers?.some((member) => member.id === user.id)) {
+              return prevGroup;
+            }
+            const newChannel = {
+              ...channel,
+              callMembers: channel.callMembers
+                ? [...channel.callMembers, user]
+                : [user]
+            };
+
+            return {
+              ...prevGroup,
+              channels: [
+                ...prevGroup.channels.slice(0, channelIndex),
+                newChannel,
+                ...prevGroup.channels.slice(channelIndex + 1)
+              ]
+            };
+          }
+        })
+      );
     }
   );
 
