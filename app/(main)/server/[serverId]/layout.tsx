@@ -50,6 +50,7 @@ export default async function ServerLayout({ params, children }: Props) {
   }));
   const clientServer = sterilizeClientServer(server);
   const members = server.members.map((member) => ({
+    id: member.id,
     role: member.role,
     user: getUserProfile(member.user)
   }));
