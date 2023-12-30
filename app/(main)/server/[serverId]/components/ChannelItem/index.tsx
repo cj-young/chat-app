@@ -6,6 +6,7 @@ import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import { IClientChannel } from "@/types/server";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
+import VoiceCallMember from "../VoiceCallMember";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -51,6 +52,13 @@ export default function ChannelItem({ channel }: Props) {
         )}
         <span className={styles["channel-name"]}>{channel.name}</span>
       </button>
+      {channel.type === "voice" && channel.callMembers && (
+        <ul className={styles["voice-call-members"]}>
+          {channel.callMembers.map((member) => (
+            <VoiceCallMember user={member} key={member.id} />
+          ))}
+        </ul>
+      )}
     </li>
   );
 }

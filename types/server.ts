@@ -12,6 +12,7 @@ export interface IClientChannel {
   name: string;
   type: TChannelType;
   uiOrder: number;
+  callMembers?: IProfile[]; // Only filled if type is "voice"
 }
 
 export type TRole = "owner" | "admin" | "guest";

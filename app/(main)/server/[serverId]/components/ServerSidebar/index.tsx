@@ -35,6 +35,7 @@ export default function ServerSidebar() {
         );
         const { channelGroups } = await res.json();
         setChannelGroups(channelGroups);
+        console.log(channelGroups);
       } catch (error) {
         console.error(error);
       }

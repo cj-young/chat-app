@@ -1,0 +1,20 @@
+.voice-call-member {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.125rem;
+}
+
+.profile-picture {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.display-name {
+  font-size: var(--fs-300);
+  font-weight: 500;
+  color: var(--text-contrast-100);
+  user-select: none;
+}

@@ -1,5 +1,6 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
 import { getMember, getServer, sterilizeClientChannel } from "@/lib/server";
+import User, { IUser } from "@/models/User";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -39,7 +40,39 @@ export async function GET(req: NextRequest) {
       uiOrder: group.uiOrder
     }));
 
-    console.log(channelGroups);
+    const memberPromises = [];
+
+    for (let channelGroup of channelGroups) {
+      for (let channel of channelGroup.channels) {
+        if (channel.type === "voice") {
+          const membersPromise = pusherServer
+            .get({
+              path: `/channels/presence-voice-${channel.channelId}/users`
+            })
+            .then(
+              (res) =>
+                res.json() as Promise<{
+                  users: { id: string }[];
+                }>
+            )
+            .then(({ users }) =>
+              Promise.all(users.map((user) => User.findById<IUser>(user.id)))
+            )
+            .then((users) => {
+              console.log(users);
+              const filteredUsers = users.filter(
+                (user): user is IUser => user !== null
+              );
+              channel.callMembers = filteredUsers.map((user) =>
+                getUserProfile(user)
+              );
+            });
+          memberPromises.push(membersPromise);
+        }
+      }
+    }
+
+    await Promise.all(memberPromises);
     return NextResponse.json({ channelGroups });
   } catch (error) {
     return NextResponse.json(
