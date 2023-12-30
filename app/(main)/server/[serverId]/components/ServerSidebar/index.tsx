@@ -1,5 +1,5 @@
 "use client";
-import ProfileCard from "@/app/(main)/(home)/components/Sidebar/components/ProfileCard";
+import ProfileCard from "@/app/(main)/components/ProfileCard";
 import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
 import usePusherEvent from "@/hooks/usePusherEvent";

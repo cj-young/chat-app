@@ -1,4 +1,5 @@
 "use client";
+import ProfileCard from "@/app/(main)/components/ProfileCard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import PlusSymbol from "@/public/plus-solid.svg";
@@ -7,7 +8,6 @@ import AddConversationModal from "../AddConversationModal";
 import DirectMessageItem from "./components/DirectMessageItem";
 import FriendsLink from "./components/FriendsLink";
 import GroupChatItem from "./components/GroupChatItem";
-import ProfileCard from "./components/ProfileCard";
 import styles from "./styles.module.scss";
 
 export default function Sidebar() {
