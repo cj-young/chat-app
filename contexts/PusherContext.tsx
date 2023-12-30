@@ -71,8 +71,12 @@ export default function PusherContextProvider({ children }: Props) {
 
     event.delete(callback);
     if (event.size === 0) {
-      pusherClient.unsubscribe(channelId);
-      channels.delete(channelId);
+      channel.events.delete(eventId);
+
+      if (channel.events.size === 0) {
+        pusherClient.unsubscribe(channelId);
+        channels.delete(channelId);
+      }
     }
   }
 
