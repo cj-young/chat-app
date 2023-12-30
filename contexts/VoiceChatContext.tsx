@@ -107,6 +107,21 @@ export default function VoiceCallContextProvider({ children }: Props) {
     return peerConnection;
   }
 
+  function closePeerConnection(peerConnection: RTCPeerConnection) {
+    // Set listeners to null to prevent events while
+    // connection is closing
+    peerConnection.onicecandidate = null;
+    peerConnection.ontrack = null;
+    peerConnection.onnegotiationneeded = null;
+    peerConnection.close();
+  }
+
+  function closeAllPeerConnections() {
+    for (let [_userId, peer] of peers.current) {
+      closePeerConnection(peer);
+    }
+  }
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -137,6 +152,19 @@ export default function VoiceCallContextProvider({ children }: Props) {
         }
       };
     });
+
+    voiceChannel.bind(
+      "pusher:member_removed",
+      async ({ id }: { id: string }) => {
+        const newStreams = new Map([...streams]);
+        newStreams.delete(id);
+        setStreams(newStreams);
+
+        const peerConnection = peers.current.get(id);
+        if (!peerConnection) return;
+        closePeerConnection(peerConnection);
+      }
+    );
 
     const onRtcPeerOffer = async ({
       sdp,
@@ -254,6 +282,9 @@ export default function VoiceCallContextProvider({ children }: Props) {
         "rtcIceCandidateSent",
         onRtcIceCandidateSent
       );
+      pusherClient.unsubscribe(`presence-voice-${callId}`);
+
+      closeAllPeerConnections();
     };
   }, [callId]);
 

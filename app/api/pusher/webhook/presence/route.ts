@@ -98,11 +98,29 @@ export async function POST(req: NextRequest) {
         }
 
         if (channel.channelType === "voice") {
-          console.log("TRIGGERING VOICE :))");
           await pusherServer.trigger(
             `private-server-${channel.server.toString()}`,
             "userJoinedVoiceCall",
             { channelId: channel.id, user: getUserProfile(user) }
+          );
+        }
+      } else if (data.events[0].name === "member_removed") {
+        const userId = data.events[0].user_id;
+        const channel = await Channel.findById<IChannel>(callId);
+
+        if (!channel) {
+          return NextResponse.json(
+            { message: "Invalid call ID" },
+            { status: 400 }
+          );
+        }
+
+        if (channel.channelType === "voice") {
+          console.log("Voice left trigger");
+          await pusherServer.trigger(
+            `private-server-${channel.server.toString()}`,
+            "userLeftVoiceCall",
+            { channelId: channel.id, userId }
           );
         }
       }
