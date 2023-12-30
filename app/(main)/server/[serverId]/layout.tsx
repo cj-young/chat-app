@@ -1,11 +1,6 @@
 import ServerContextProvider from "@/contexts/ServerContext";
 import { getSession, getUserProfile } from "@/lib/auth";
-import {
-  getMember,
-  getServer,
-  sterilizeClientChannel,
-  sterilizeClientServer
-} from "@/lib/server";
+import { getMember, getServer, sterilizeClientServer } from "@/lib/server";
 import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -41,13 +36,6 @@ export default async function ServerLayout({ params, children }: Props) {
   ]);
   if (!server || !member) redirect("/");
 
-  const channelGroups = server.channelGroups.map((group) => ({
-    channels: group.channels.map((channel) =>
-      sterilizeClientChannel(channel.channel, channel.uiOrder)
-    ),
-    name: group.name,
-    uiOrder: group.uiOrder
-  }));
   const clientServer = sterilizeClientServer(server);
   const members = server.members.map((member) => ({
     id: member.id,
@@ -57,7 +45,6 @@ export default async function ServerLayout({ params, children }: Props) {
 
   return (
     <ServerContextProvider
-      initialChannelGroups={channelGroups}
       initialServerInfo={clientServer}
       initialRole={member.role}
       initialMembers={members}

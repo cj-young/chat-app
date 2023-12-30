@@ -2,20 +2,78 @@
 import ProfileCard from "@/app/(main)/(home)/components/Sidebar/components/ProfileCard";
 import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
+import usePusherEvent from "@/hooks/usePusherEvent";
+import { apiFetch } from "@/lib/api";
 import PlusSymbol from "@/public/plus-solid.svg";
-import { useMemo } from "react";
+import { IClientChannel } from "@/types/server";
+import { useEffect, useMemo, useState } from "react";
 import AddGroupModal from "../AddGroupModal";
 import ChannelGroup from "../ChannelGroup";
 import ServerCard from "../ServerCard";
 import styles from "./styles.module.scss";
 
+interface IChannelGroup {
+  name: string;
+  uiOrder: number;
+  channels: IClientChannel[];
+}
+
 export default function ServerSidebar() {
-  const { channelGroups, role, serverInfo } = useServer();
+  const [channelGroups, setChannelGroups] = useState<IChannelGroup[]>([]);
+  const { role, serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
 
   const sortedChannelGroups = useMemo(() => {
     return channelGroups.sort((a, b) => a.uiOrder - b.uiOrder);
   }, [channelGroups]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await apiFetch(
+          `/server/channel-group/list/${serverInfo.serverId}`
+        );
+        const { channelGroups } = await res.json();
+        setChannelGroups(channelGroups);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "channelCreated",
+    ({
+      channel,
+      groupUiOrder
+    }: {
+      channel: IClientChannel;
+      groupUiOrder: number;
+    }) => {
+      setChannelGroups((prevGroups) =>
+        prevGroups.map((prevGroup) => {
+          if (prevGroup.uiOrder === groupUiOrder) {
+            return { ...prevGroup, channels: [...prevGroup.channels, channel] };
+          } else {
+            return prevGroup;
+          }
+        })
+      );
+    }
+  );
+
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "channelGroupCreated",
+    ({
+      channelGroup
+    }: {
+      channelGroup: { name: string; channels: []; uiOrder: number };
+    }) => {
+      setChannelGroups((prev) => [...prev, channelGroup]);
+    }
+  );
 
   return (
     <div
