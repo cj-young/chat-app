@@ -19,67 +19,62 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  try {
-    const sessionId = cookies().get("session")?.value;
+  const sessionId = cookies().get("session")?.value;
 
-    if (!sessionId || sessionId[0] !== "1") {
-      redirect("/login");
-    }
-    await dbConnect();
-
-    const user = await getSessionUser(sessionId.slice(1));
-
-    if (!user) {
-      redirect("/login");
-    }
-
-    const profile: IProfile = {
-      ...getUserProfile(user),
-      onlineStatus:
-        user.preferredOnlineStatus === "invisible"
-          ? "offline"
-          : user.preferredOnlineStatus
-    };
-    const friendRequests = user.friendRequests
-      .filter((requester) => requester && requester.id != null)
-      .map((requester) => getUserProfile(requester));
-    const friends = user.friends
-      .filter((friend) => friend && friend.id != null)
-      .map((friend) => getUserProfile(friend));
-    const directMessages = user.directMessages
-      .filter((dm) => dm.user1 && dm.user2)
-      .map((dm) => sterilizeClientDm(dm, user.id));
-    const groupChats = user.groupChats.map((groupChat) =>
-      sterilizeClientGroupChat(groupChat, user.id)
-    );
-    const servers = user.servers
-      .filter((server) => server != null && server.server != null)
-      .map((server) => ({
-        uiOrder: server.uiOrder,
-        server: sterilizeClientServer(server.server)
-      }));
-
-    return (
-      <AuthContextProvider
-        initialProfile={profile}
-        initialFriendRequests={friendRequests}
-        initialFriends={friends}
-        initialDirectMessages={directMessages}
-        initialGroupChats={groupChats}
-        initialServers={servers}
-      >
-        <VoiceCallContextProvider>
-          <div className={styles["app-container"]}>
-            <MainNavbar />
-            {children}
-          </div>
-          <PopupMenuDisplay />
-          <ModalDisplay />
-        </VoiceCallContextProvider>
-      </AuthContextProvider>
-    );
-  } catch (error) {
-    console.error(error);
+  if (!sessionId || sessionId[0] !== "1") {
     redirect("/login");
   }
+  await dbConnect();
+
+  const user = await getSessionUser(sessionId.slice(1));
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const profile: IProfile = {
+    ...getUserProfile(user),
+    onlineStatus:
+      user.preferredOnlineStatus === "invisible"
+        ? "offline"
+        : user.preferredOnlineStatus
+  };
+  const friendRequests = user.friendRequests
+    .filter((requester) => requester && requester.id != null)
+    .map((requester) => getUserProfile(requester));
+  const friends = user.friends
+    .filter((friend) => friend && friend.id != null)
+    .map((friend) => getUserProfile(friend));
+  const directMessages = user.directMessages
+    .filter((dm) => dm.user1 && dm.user2)
+    .map((dm) => sterilizeClientDm(dm, user.id));
+  const groupChats = user.groupChats.map((groupChat) =>
+    sterilizeClientGroupChat(groupChat, user.id)
+  );
+  const servers = user.servers
+    .filter((server) => server != null && server.server != null)
+    .map((server) => ({
+      uiOrder: server.uiOrder,
+      server: sterilizeClientServer(server.server)
+    }));
+
+  return (
+    <AuthContextProvider
+      initialProfile={profile}
+      initialFriendRequests={friendRequests}
+      initialFriends={friends}
+      initialDirectMessages={directMessages}
+      initialGroupChats={groupChats}
+      initialServers={servers}
+    >
+      <VoiceCallContextProvider>
+        <div className={styles["app-container"]}>
+          <MainNavbar />
+          {children}
+        </div>
+        <PopupMenuDisplay />
+        <ModalDisplay />
+      </VoiceCallContextProvider>
+    </AuthContextProvider>
+  );
 }
