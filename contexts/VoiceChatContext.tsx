@@ -17,6 +17,8 @@ interface IVoiceCallContext {
   leaveVoiceCall(): void;
   call: IClientChannel | null;
   connectionStatus: string;
+  toggleMicMuted(): void;
+  isMicMuted: boolean;
 }
 
 interface Props {
@@ -87,6 +89,9 @@ export default function VoiceCallContextProvider({ children }: Props) {
   >(new Map());
   const [connectionStatus, setConnectionStatus] =
     useState<string>("Connecting...");
+  const [isMicMuted, setIsMicMuted] = useState(false);
+  const isMicMutedRef = useRef<boolean>(isMicMuted);
+  isMicMutedRef.current = isMicMuted;
 
   useEffect(() => {
     const statusArray = [...connectionStatuses];
@@ -108,6 +113,11 @@ export default function VoiceCallContextProvider({ children }: Props) {
       return;
     }
   }, [connectionStatuses]);
+
+  useEffect(() => {
+    if (!localStreamRef.current) return;
+    localStreamRef.current.getAudioTracks()[0].enabled = !isMicMuted;
+  }, [isMicMuted]);
 
   function createPeerConnection(otherUserId: string) {
     if (!call) {
@@ -152,9 +162,11 @@ export default function VoiceCallContextProvider({ children }: Props) {
   }
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => (localStreamRef.current = stream));
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      localStreamRef.current = stream;
+      localStreamRef.current.getAudioTracks()[0].enabled =
+        !isMicMutedRef.current;
+    });
   }, []);
 
   useEffect(() => {
@@ -357,9 +369,20 @@ export default function VoiceCallContextProvider({ children }: Props) {
     setCall(channel);
   }
 
+  function toggleMicMuted() {
+    setIsMicMuted((prev) => !prev);
+  }
+
   return (
     <VoiceCallContext.Provider
-      value={{ leaveVoiceCall, joinVoiceCall, call, connectionStatus }}
+      value={{
+        leaveVoiceCall,
+        joinVoiceCall,
+        call,
+        connectionStatus,
+        toggleMicMuted,
+        isMicMuted
+      }}
     >
       {children}
       {[...streams].map(([userId, stream]) => (
