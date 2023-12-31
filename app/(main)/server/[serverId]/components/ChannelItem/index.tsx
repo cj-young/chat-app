@@ -28,7 +28,7 @@ export default function ChannelItem({ channel }: Props) {
       closeMobileNav();
     } else {
       if (channel.type === "voice") {
-        joinVoiceCall(channel.channelId);
+        joinVoiceCall(channel);
       }
       router.push(`/server/${channel.serverId}/${channel.channelId}`);
     }

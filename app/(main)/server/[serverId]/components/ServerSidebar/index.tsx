@@ -1,7 +1,9 @@
 "use client";
 import ProfileCard from "@/app/(main)/components/ProfileCard";
+import VoiceCallControl from "@/app/(main)/components/VoiceCallControl";
 import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import PlusSymbol from "@/public/plus-solid.svg";
@@ -23,6 +25,7 @@ export default function ServerSidebar() {
   const [channelGroups, setChannelGroups] = useState<IChannelGroup[]>([]);
   const { role, serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
+  const { call } = useVoiceCall();
 
   const sortedChannelGroups = useMemo(() => {
     return channelGroups.sort((a, b) => a.uiOrder - b.uiOrder);
@@ -119,6 +122,50 @@ export default function ServerSidebar() {
     }
   );
 
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "userLeftVoiceCall",
+    ({ channelId, userId }: { channelId: string; userId: string }) => {
+      console.log("i see a user left");
+      console.log(channelId);
+      console.log(userId);
+      console.log(channelGroups);
+      setChannelGroups((prev) =>
+        prev.map((prevGroup) => {
+          if (
+            !prevGroup.channels.some(
+              (channel) => channel.channelId === channelId
+            )
+          ) {
+            return prevGroup;
+          } else {
+            const channelIndex = prevGroup.channels.findIndex(
+              (channel) => channel.channelId === channelId
+            );
+            const channel = prevGroup.channels[channelIndex];
+            if (!channel.callMembers || channel.type === "text")
+              return prevGroup;
+            const newChannel = {
+              ...channel,
+              callMembers: channel.callMembers.filter(
+                (member) => member.id !== userId
+              )
+            };
+
+            return {
+              ...prevGroup,
+              channels: [
+                ...prevGroup.channels.slice(0, channelIndex),
+                newChannel,
+                ...prevGroup.channels.slice(channelIndex + 1)
+              ]
+            };
+          }
+        })
+      );
+    }
+  );
+
   return (
     <div
       className={[
@@ -152,6 +199,7 @@ export default function ServerSidebar() {
           )}
         </ul>
       </nav>
+      {call && <VoiceCallControl />}
       <ProfileCard />
     </div>
   );

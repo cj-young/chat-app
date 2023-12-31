@@ -1,5 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/api";
+import { IClientChannel } from "@/types/server";
 import {
   ReactNode,
   createContext,
@@ -12,8 +13,10 @@ import { useAuthContext } from "./AuthContext";
 import { usePusher } from "./PusherContext";
 
 interface IVoiceCallContext {
-  joinVoiceCall(callId: string): void;
+  joinVoiceCall(channel: IClientChannel): void;
   leaveVoiceCall(): void;
+  call: IClientChannel | null;
+  connectionStatus: string;
 }
 
 interface Props {
@@ -70,7 +73,7 @@ async function sendIceCandidate(
 }
 
 export default function VoiceCallContextProvider({ children }: Props) {
-  const [callId, setCallId] = useState<string | null>(null);
+  const [call, setCall] = useState<IClientChannel | null>(null);
   const { subscribeToEvent, unsubscribeFromEvent } = usePusher();
   const { profile } = useAuthContext();
   const peers = useRef<Map<string, RTCPeerConnection>>(new Map());
@@ -79,10 +82,36 @@ export default function VoiceCallContextProvider({ children }: Props) {
   const pendingIceCandidates = useRef<Map<string, RTCIceCandidate[]>>(
     new Map()
   );
+  const [connectionStatuses, setConnectionStatuses] = useState<
+    Map<string, RTCPeerConnectionState>
+  >(new Map());
+  const [connectionStatus, setConnectionStatus] =
+    useState<string>("Connecting...");
+
+  useEffect(() => {
+    const statusArray = [...connectionStatuses];
+    if (statusArray.some(([_id, value]) => value === "connecting")) {
+      setConnectionStatus("Connecting...");
+      return;
+    } else if (statusArray.some(([_id, value]) => value === "disconnected")) {
+      setConnectionStatus("Disconnecting...");
+      return;
+    } else if (
+      statusArray.some(
+        ([_id, value]) => value === "closed" || value === "failed"
+      )
+    ) {
+      setConnectionStatus("Offline");
+      return;
+    } else {
+      setConnectionStatus("Connected");
+      return;
+    }
+  }, [connectionStatuses]);
 
   function createPeerConnection(otherUserId: string) {
-    if (!callId) {
-      throw new Error("'callId' is not defined");
+    if (!call) {
+      throw new Error("'call' is not defined");
     }
     const peerConnection = new RTCPeerConnection(rtcConfig);
 
@@ -100,7 +129,7 @@ export default function VoiceCallContextProvider({ children }: Props) {
 
     peerConnection.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
       if (e.candidate) {
-        sendIceCandidate(e.candidate, otherUserId, callId);
+        sendIceCandidate(e.candidate, otherUserId, call.channelId);
       }
     };
 
@@ -129,9 +158,18 @@ export default function VoiceCallContextProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!callId) return;
+    if (!call) {
+      setStreams(new Map());
+      setConnectionStatuses(new Map());
+      pendingIceCandidates.current = new Map();
+      return;
+    }
 
-    const voiceChannel = pusherClient.subscribe(`presence-voice-${callId}`);
+    setConnectionStatus("Connecting...");
+
+    const voiceChannel = pusherClient.subscribe(
+      `presence-voice-${call.channelId}`
+    );
 
     voiceChannel.bind("pusher:member_added", async ({ id }: { id: string }) => {
       const peerConnection = createPeerConnection(id);
@@ -145,13 +183,24 @@ export default function VoiceCallContextProvider({ children }: Props) {
           if (!sdp) {
             throw new Error("Local description not properly set");
           }
-          await sendPeerOffer(sdp, id, callId);
+          await sendPeerOffer(sdp, id, call.channelId);
           peers.current.set(id, peerConnection);
         } catch (error) {
           console.error(error);
         }
       };
     });
+
+    voiceChannel.bind(
+      "pusher:subscription_succeeded",
+      ({ count }: { count: number }) => {
+        if (count > 1) {
+          setConnectionStatus("Connecting...");
+        } else {
+          setConnectionStatus("Connected");
+        }
+      }
+    );
 
     voiceChannel.bind(
       "pusher:member_removed",
@@ -177,6 +226,17 @@ export default function VoiceCallContextProvider({ children }: Props) {
         const peerConnection = createPeerConnection(userId);
         peers.current.set(userId, peerConnection);
 
+        peerConnection.onconnectionstatechange = (e: Event) => {
+          console.log(
+            "Connection state change: ",
+            peerConnection.connectionState
+          );
+          setConnectionStatuses(
+            (prev) =>
+              new Map([...prev, [userId, peerConnection.connectionState]])
+          );
+        };
+
         await peerConnection.setRemoteDescription(sdp);
 
         const answer = await peerConnection.createAnswer();
@@ -188,7 +248,7 @@ export default function VoiceCallContextProvider({ children }: Props) {
 
         peerConnection.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
           if (e.candidate) {
-            sendIceCandidate(e.candidate, userId, callId);
+            sendIceCandidate(e.candidate, userId, call.channelId);
           }
         };
         for (let candidate of pendingIceCandidates.current.get(userId) ?? []) {
@@ -196,7 +256,7 @@ export default function VoiceCallContextProvider({ children }: Props) {
         }
         pendingIceCandidates.current.delete(userId);
 
-        await sendPeerAnswer(answerSdp, userId, callId);
+        await sendPeerAnswer(answerSdp, userId, call.channelId);
       } catch (error) {
         console.error(error);
       }
@@ -282,22 +342,25 @@ export default function VoiceCallContextProvider({ children }: Props) {
         "rtcIceCandidateSent",
         onRtcIceCandidateSent
       );
-      pusherClient.unsubscribe(`presence-voice-${callId}`);
+      pusherClient.unsubscribe(`presence-voice-${call.channelId}`);
 
       closeAllPeerConnections();
     };
-  }, [callId]);
+  }, [call]);
 
   function leaveVoiceCall() {
-    setCallId(null);
+    setCall(null);
   }
 
-  async function joinVoiceCall(callId: string) {
-    setCallId(callId);
+  async function joinVoiceCall(channel: IClientChannel) {
+    if (channel.type === "text") return;
+    setCall(channel);
   }
 
   return (
-    <VoiceCallContext.Provider value={{ leaveVoiceCall, joinVoiceCall }}>
+    <VoiceCallContext.Provider
+      value={{ leaveVoiceCall, joinVoiceCall, call, connectionStatus }}
+    >
       {children}
       {[...streams].map(([userId, stream]) => (
         <PeerAudio stream={stream} key={userId} />
