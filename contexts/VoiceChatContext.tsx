@@ -1,4 +1,5 @@
 "use client";
+import MessageModal from "@/components/MessageModal";
 import { apiFetch } from "@/lib/api";
 import { IClientChannel } from "@/types/server";
 import {
@@ -11,6 +12,7 @@ import {
 } from "react";
 import { useAuthContext } from "./AuthContext";
 import { usePusher } from "./PusherContext";
+import { useUiContext } from "./UiContext";
 
 interface IVoiceCallContext {
   joinVoiceCall(channel: IClientChannel): void;
@@ -92,6 +94,8 @@ export default function VoiceCallContextProvider({ children }: Props) {
   const [isMicMuted, setIsMicMuted] = useState(false);
   const isMicMutedRef = useRef<boolean>(isMicMuted);
   isMicMutedRef.current = isMicMuted;
+  const didDenyMicrophone = useRef(false);
+  const { addModal } = useUiContext();
 
   useEffect(() => {
     const statusArray = [...connectionStatuses];
@@ -162,11 +166,17 @@ export default function VoiceCallContextProvider({ children }: Props) {
   }
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      localStreamRef.current = stream;
-      localStreamRef.current.getAudioTracks()[0].enabled =
-        !isMicMutedRef.current;
-    });
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        localStreamRef.current = stream;
+        localStreamRef.current.getAudioTracks()[0].enabled =
+          !isMicMutedRef.current;
+      })
+      .catch(() => {
+        setIsMicMuted(true);
+        didDenyMicrophone.current = true;
+      });
   }, []);
 
   useEffect(() => {
@@ -370,7 +380,19 @@ export default function VoiceCallContextProvider({ children }: Props) {
   }
 
   function toggleMicMuted() {
-    setIsMicMuted((prev) => !prev);
+    if (!didDenyMicrophone.current) {
+      setIsMicMuted((prev) => !prev);
+    } else {
+      if (!isMicMuted) {
+        setIsMicMuted(true);
+      }
+      addModal(
+        <MessageModal
+          title="Microphone access denied"
+          message="You cannot unmute yourself because microphone access has been denied. Change this website's access to your microphone in your browser settings to unmute."
+        />
+      );
+    }
   }
 
   return (
