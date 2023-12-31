@@ -1,6 +1,11 @@
 "use client";
 import MessageModal from "@/components/MessageModal";
-import { apiFetch } from "@/lib/api";
+import {
+  rtcConfig,
+  sendIceCandidate,
+  sendPeerAnswer,
+  sendPeerOffer
+} from "@/lib/voiceCall";
 import { IClientChannel } from "@/types/server";
 import {
   ReactNode,
@@ -30,51 +35,6 @@ interface Props {
 const VoiceCallContext = createContext<IVoiceCallContext>(
   {} as IVoiceCallContext
 );
-
-const rtcConfig = {
-  iceServers: [
-    {
-      urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"]
-    }
-  ]
-};
-
-async function sendPeerOffer(
-  sdp: RTCSessionDescription,
-  userId: string,
-  callId: string
-) {
-  await apiFetch(`/server/channel/webrtc/send-offer/${callId}`, "POST", {
-    sdp,
-    receiverId: userId
-  });
-}
-
-async function sendPeerAnswer(
-  sdp: RTCSessionDescription,
-  userId: string,
-  callId: string
-) {
-  await apiFetch(`/server/channel/webrtc/send-answer/${callId}`, "POST", {
-    sdp,
-    receiverId: userId
-  });
-}
-
-async function sendIceCandidate(
-  candidate: RTCIceCandidate,
-  userId: string,
-  callId: string
-) {
-  await apiFetch(
-    `/server/channel/webrtc/send-ice-candidate/${callId}`,
-    "POST",
-    {
-      candidate,
-      receiverId: userId
-    }
-  );
-}
 
 export default function VoiceCallContextProvider({ children }: Props) {
   const [call, setCall] = useState<IClientChannel | null>(null);
