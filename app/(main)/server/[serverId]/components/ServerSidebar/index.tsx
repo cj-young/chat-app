@@ -126,10 +126,6 @@ export default function ServerSidebar() {
     `private-server-${serverInfo.serverId}`,
     "userLeftVoiceCall",
     ({ channelId, userId }: { channelId: string; userId: string }) => {
-      console.log("i see a user left");
-      console.log(channelId);
-      console.log(userId);
-      console.log(channelGroups);
       setChannelGroups((prev) =>
         prev.map((prevGroup) => {
           if (

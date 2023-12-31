@@ -42,7 +42,6 @@ export default function AddUserModal({ alreadyInChat, chatId }: Props) {
           data.message ?? "An error occurred, please try again"
         );
       }
-      console.log(data);
       closeModal();
     } catch (error) {
       setIsLoading(false);

@@ -59,7 +59,6 @@ export async function GET(req: NextRequest) {
               Promise.all(users.map((user) => User.findById<IUser>(user.id)))
             )
             .then((users) => {
-              console.log(users);
               const filteredUsers = users.filter(
                 (user): user is IUser => user !== null
               );

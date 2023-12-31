@@ -43,7 +43,6 @@ export default function ServerContextProvider({
     `private-server-${serverInfo.serverId}`,
     "userJoined",
     (member: IClientMember) => {
-      console.log(member);
       setMembers((prev) => [...prev, member]);
     }
   );
@@ -52,7 +51,6 @@ export default function ServerContextProvider({
     `private-server-${serverInfo.serverId}`,
     "userLeft",
     ({ memberId }: { memberId: string }) => {
-      console.log(memberId);
       setMembers((prev) =>
         prev.filter((prevMember) => prevMember.id !== memberId)
       );

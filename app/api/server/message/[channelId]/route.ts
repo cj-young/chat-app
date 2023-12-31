@@ -40,8 +40,6 @@ export async function POST(req: NextRequest) {
       server: channel.server
     });
 
-    console.log(member);
-
     if (
       !member ||
       !member.channels.some(

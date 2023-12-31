@@ -116,7 +116,6 @@ export async function POST(req: NextRequest) {
         }
 
         if (channel.channelType === "voice") {
-          console.log("Voice left trigger");
           await pusherServer.trigger(
             `private-server-${channel.server.toString()}`,
             "userLeftVoiceCall",

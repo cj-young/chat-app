@@ -82,7 +82,6 @@ export default function PusherContextProvider({ children }: Props) {
 
   function joinAppChannel() {
     pusherClient.subscribe("presence-app");
-    console.log("subscribed to app");
   }
 
   function leaveAppChannel() {

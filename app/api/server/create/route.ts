@@ -77,7 +77,6 @@ export async function POST(req: NextRequest) {
     });
 
     const clientServer = sterilizeClientServer(server);
-    console.log(clientServer);
     await pusherServer.trigger(`private-user-${user.id}`, "serverAdded", {
       server: clientServer,
       uiOrder: serverUiOrder

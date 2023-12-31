@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Delete group chat if no members remain
-    console.log(groupChat);
     if (groupChat.members.length === 0) {
       await GroupChat.findByIdAndDelete(groupChat.id);
     }

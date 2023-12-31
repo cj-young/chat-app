@@ -209,10 +209,6 @@ export default function VoiceCallContextProvider({ children }: Props) {
         peers.current.set(userId, peerConnection);
 
         peerConnection.onconnectionstatechange = (e: Event) => {
-          console.log(
-            "Connection state change: ",
-            peerConnection.connectionState
-          );
           setConnectionStatuses(
             (prev) =>
               new Map([...prev, [userId, peerConnection.connectionState]])

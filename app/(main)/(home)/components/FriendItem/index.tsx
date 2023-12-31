@@ -26,7 +26,6 @@ export default function FriendItem({ user }: Props) {
         receiverId: user.id
       });
       const data = await res.json();
-      console.log(data);
     } catch (error) {
       console.error("An error occurred");
     }
