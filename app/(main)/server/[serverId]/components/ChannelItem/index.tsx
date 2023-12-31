@@ -1,4 +1,5 @@
 "use client";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import TextChannelIcon from "@/public/align-left-solid.svg";
@@ -17,7 +18,8 @@ export default function ChannelItem({ channel }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { closeMobileNav } = useUiContext();
-  const { joinVoiceCall, leaveVoiceCall } = useVoiceCall();
+  const { joinVoiceCall, leaveVoiceCall, call } = useVoiceCall();
+  const { profile } = useAuthContext();
 
   const isBeingViewed = useMemo(() => {
     return pathname.endsWith(channel.channelId);
@@ -54,9 +56,17 @@ export default function ChannelItem({ channel }: Props) {
       </button>
       {channel.type === "voice" && channel.callMembers && (
         <ul className={styles["voice-call-members"]}>
-          {channel.callMembers.map((member) => (
-            <VoiceCallMember user={member} key={member.id} />
-          ))}
+          {channel.callMembers.map(
+            (member) =>
+              (call?.channelId === channel.channelId ||
+                member.id !== profile.id) && (
+                <VoiceCallMember user={member} key={member.id} />
+              )
+          )}
+          {!channel.callMembers.some((member) => member.id === profile.id) &&
+            call?.channelId === channel.channelId && (
+              <VoiceCallMember user={profile} isPreview={true} />
+            )}
         </ul>
       )}
     </li>
