@@ -26,12 +26,23 @@ export default function ChannelItem({ channel }: Props) {
   }, [pathname]);
 
   function handleClick() {
-    if (isBeingViewed) {
-      closeMobileNav();
-    } else {
-      if (channel.type === "voice") {
+    if (channel.type === "text") {
+      if (isBeingViewed) {
+        closeMobileNav();
+      } else {
+        router.push(`/server/${channel.serverId}/${channel.channelId}`);
+      }
+    } else if (channel.type === "voice") {
+      if (call?.channelId === channel.channelId) {
+        router.push(`/server/${channel.serverId}/${channel.channelId}`);
+      } else {
         joinVoiceCall(channel);
       }
+
+      if (isBeingViewed) {
+        closeMobileNav();
+      }
+    } else {
       router.push(`/server/${channel.serverId}/${channel.channelId}`);
     }
   }
