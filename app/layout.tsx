@@ -1,3 +1,4 @@
+import AudioContextProvider from "@/contexts/AudioContext";
 import PusherContextProvider from "@/contexts/PusherContext";
 import UiContextProvider from "@/contexts/UiContext";
 import type { Metadata } from "next";
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={inter.className}>
       <UiContextProvider>
         <PusherContextProvider>
-          <body>{children}</body>
+          <AudioContextProvider>
+            <body>{children}</body>
+          </AudioContextProvider>
         </PusherContextProvider>
       </UiContextProvider>
     </html>
