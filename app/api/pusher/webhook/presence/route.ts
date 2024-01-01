@@ -1,5 +1,6 @@
 import { getUserProfile } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { pusherServer } from "@/lib/pusher";
 import User, { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import { isValidObjectId } from "mongoose";
