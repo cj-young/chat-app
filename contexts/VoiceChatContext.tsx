@@ -8,6 +8,7 @@ import {
 } from "@/lib/voiceCall";
 import { IClientChannel } from "@/types/server";
 import {
+  MutableRefObject,
   ReactNode,
   createContext,
   useContext,
@@ -15,6 +16,7 @@ import {
   useRef,
   useState
 } from "react";
+import { useAudio } from "./AudioContext";
 import { useAuthContext } from "./AuthContext";
 import { usePusher } from "./PusherContext";
 import { useUiContext } from "./UiContext";
@@ -26,6 +28,8 @@ interface IVoiceCallContext {
   connectionStatus: string;
   toggleMicMuted(): void;
   isMicMuted: boolean;
+  streams: Map<string, MediaStream>;
+  localStreamRef: MutableRefObject<MediaStream | null>;
 }
 
 interface Props {
@@ -56,6 +60,7 @@ export default function VoiceCallContextProvider({ children }: Props) {
   isMicMutedRef.current = isMicMuted;
   const didDenyMicrophone = useRef(false);
   const { addModal } = useUiContext();
+  const { setAudioContext, audioContext } = useAudio();
 
   useEffect(() => {
     const statusArray = [...connectionStatuses];
@@ -332,6 +337,9 @@ export default function VoiceCallContextProvider({ children }: Props) {
 
   async function joinVoiceCall(channel: IClientChannel) {
     if (channel.type === "text") return;
+    if (!audioContext) {
+      setAudioContext(new AudioContext());
+    }
     setCall(channel);
   }
 
@@ -359,7 +367,9 @@ export default function VoiceCallContextProvider({ children }: Props) {
         call,
         connectionStatus,
         toggleMicMuted,
-        isMicMuted
+        isMicMuted,
+        streams,
+        localStreamRef
       }}
     >
       {children}
