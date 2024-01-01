@@ -19,6 +19,10 @@
 .display-name {
   font-size: var(--fs-300);
   font-weight: 500;
-  color: var(--text-contrast-100);
+  color: var(--text-contrast-200);
   user-select: none;
+}
+
+.is-speaking {
+  color: var(--text-primary);
 }
