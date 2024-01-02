@@ -24,6 +24,7 @@ export async function getServer(serverId: string) {
     Omit<IServer, "members" | "channelGroups"> & {
       members: (Omit<IMember, "user"> & { user: IUser })[];
       channelGroups: {
+        id: string;
         name: string;
         channels: { channel: IChannel; uiOrder: number }[];
         uiOrder: number;

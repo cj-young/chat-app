@@ -37,7 +37,8 @@ export async function GET(req: NextRequest) {
         sterilizeClientChannel(channel.channel, channel.uiOrder)
       ),
       name: group.name,
-      uiOrder: group.uiOrder
+      uiOrder: group.uiOrder,
+      id: group.id
     }));
 
     const memberPromises = [];

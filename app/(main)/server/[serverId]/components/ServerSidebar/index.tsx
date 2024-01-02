@@ -69,7 +69,7 @@ export default function ServerSidebar() {
     ({
       channelGroup
     }: {
-      channelGroup: { name: string; channels: []; uiOrder: number };
+      channelGroup: { name: string; channels: []; uiOrder: number; id: string };
     }) => {
       setChannelGroups((prev) => [...prev, channelGroup]);
     }

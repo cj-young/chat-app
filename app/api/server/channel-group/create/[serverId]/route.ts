@@ -1,7 +1,7 @@
 import { getSession, invalidSession } from "@/lib/auth";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
-import { isValidObjectId } from "mongoose";
+import { Types, isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -43,7 +43,8 @@ export async function POST(req: NextRequest) {
     const channelGroup = {
       name,
       channels: [],
-      uiOrder: server.channelGroups.length
+      uiOrder: server.channelGroups.length,
+      _id: new Types.ObjectId()
     };
 
     server.channelGroups.push(channelGroup);
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
     await pusherServer.trigger(
       `private-server-${server.id}`,
       "channelGroupCreated",
-      { channelGroup }
+      { channelGroup: { ...channelGroup, id: channelGroup._id } }
     );
 
     return NextResponse.json({ message: "Successfully created channel group" });

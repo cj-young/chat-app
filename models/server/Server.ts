@@ -10,6 +10,8 @@ export interface IServer extends Document {
     name: string;
     channels: { channel: Types.ObjectId; uiOrder: number }[];
     uiOrder: number;
+    _id: Types.ObjectId;
+    id?: string;
   }[];
   imageUrl: string;
   homeChannel?: Types.ObjectId;

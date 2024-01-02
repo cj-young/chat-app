@@ -24,6 +24,7 @@ export interface IClientMember {
 }
 
 export interface IClientChannelGroup {
+  id: string;
   name: string;
   uiOrder: number;
   channels: IClientChannel[];
