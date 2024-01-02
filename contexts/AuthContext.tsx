@@ -34,6 +34,9 @@ interface IAuthContext {
   setGroupChats: Dispatch<SetStateAction<IClientGroupChat[]>>;
   signOut(): Promise<void>;
   servers: { uiOrder: number; server: IClientServer }[];
+  setServers: Dispatch<
+    SetStateAction<{ uiOrder: number; server: IClientServer }[]>
+  >;
 }
 
 interface Props {
@@ -297,7 +300,8 @@ export default function AuthContextProvider({
         signOut,
         groupChats,
         setGroupChats,
-        servers
+        servers,
+        setServers
       }}
     >
       {children}
