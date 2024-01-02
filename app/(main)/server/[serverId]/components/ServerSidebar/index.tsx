@@ -7,7 +7,7 @@ import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
 import PlusSymbol from "@/public/plus-solid.svg";
-import { IClientChannel } from "@/types/server";
+import { IClientChannel, IClientChannelGroup } from "@/types/server";
 import { IProfile } from "@/types/user";
 import { useEffect, useMemo, useState } from "react";
 import AddGroupModal from "../AddGroupModal";
@@ -15,14 +15,8 @@ import ChannelGroup from "../ChannelGroup";
 import ServerCard from "../ServerCard";
 import styles from "./styles.module.scss";
 
-interface IChannelGroup {
-  name: string;
-  uiOrder: number;
-  channels: IClientChannel[];
-}
-
 export default function ServerSidebar() {
-  const [channelGroups, setChannelGroups] = useState<IChannelGroup[]>([]);
+  const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
   const { role, serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
   const { call } = useVoiceCall();
@@ -38,7 +32,7 @@ export default function ServerSidebar() {
           `/server/channel-group/list/${serverInfo.serverId}`
         );
         const { channelGroups } = (await res.json()) as {
-          channelGroups: IChannelGroup[];
+          channelGroups: IClientChannelGroup[];
         };
         setChannelGroups(channelGroups);
       } catch (error) {

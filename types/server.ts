@@ -23,4 +23,10 @@ export interface IClientMember {
   user: IProfile;
 }
 
+export interface IClientChannelGroup {
+  name: string;
+  uiOrder: number;
+  channels: IClientChannel[];
+}
+
 export type TChannelType = "text" | "voice";
