@@ -167,12 +167,7 @@ export default function ServerSidebar() {
       <nav className={styles["nav"]}>
         <ul className={styles["nav-list"]}>
           {sortedChannelGroups.map((group) => (
-            <ChannelGroup
-              name={group.name}
-              channels={group.channels}
-              key={group.uiOrder}
-              uiOrder={group.uiOrder}
-            />
+            <ChannelGroup channelGroup={group} key={group.uiOrder} />
           ))}
           {(role === "admin" || role === "owner") && (
             <li className={styles["add-group-container"]}>

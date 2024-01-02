@@ -3,19 +3,19 @@ import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
 import CaretIcon from "@/public/caret-down-solid.svg";
 import PlusSymbol from "@/public/plus-solid.svg";
-import { IClientChannel } from "@/types/server";
+import { IClientChannelGroup } from "@/types/server";
 import { useMemo, useState } from "react";
 import AddChannelModal from "../AddChannelModal";
 import ChannelItem from "../ChannelItem";
 import styles from "./styles.module.scss";
 
 interface Props {
-  name: string;
-  channels: IClientChannel[];
-  uiOrder: number;
+  channelGroup: IClientChannelGroup;
 }
 
-export default function ChannelGroup({ name, channels, uiOrder }: Props) {
+export default function ChannelGroup({
+  channelGroup: { name, channels, uiOrder }
+}: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
   const { addModal } = useUiContext();
   const { serverInfo, role } = useServer();
