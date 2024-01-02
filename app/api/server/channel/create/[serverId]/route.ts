@@ -19,10 +19,10 @@ export async function POST(req: NextRequest) {
     if (!session || session.isExpired()) return invalidSession();
 
     const { user: userId } = session;
-    const { channelType, name, groupOrder } = (await req.json()) as {
+    const { channelType, name, groupId } = (await req.json()) as {
       channelType: TChannelType;
       name: string;
-      groupOrder: number;
+      groupId: string;
     };
 
     const serverId = req.nextUrl.pathname.slice(
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     let channelUiOrder;
     for (let channelGroup of server.channelGroups) {
-      if (channelGroup.uiOrder === groupOrder) {
+      if (channelGroup.id === groupId) {
         channelUiOrder = channelGroup.channels.length;
         channelGroup.channels.push({
           channel: channel.id,
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       "channelCreated",
       {
         channel: clientChannel,
-        groupUiOrder: groupOrder
+        groupId: groupId
       }
     );
 

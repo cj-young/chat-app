@@ -13,13 +13,13 @@ import styles from "./styles.module.scss";
 
 interface Props {
   groupName: string;
-  groupOrder: number;
+  groupId: string;
   serverId: string;
 }
 
 export default function AddChannelModal({
   groupName,
-  groupOrder,
+  groupId,
   serverId
 }: Props) {
   const { closeModal } = useUiContext();
@@ -37,7 +37,7 @@ export default function AddChannelModal({
     await apiFetch(`/server/channel/create/${serverId}`, "POST", {
       channelType,
       name,
-      groupOrder
+      groupId
     });
     closeModal();
   }

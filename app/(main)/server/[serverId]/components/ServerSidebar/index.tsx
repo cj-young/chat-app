@@ -44,16 +44,10 @@ export default function ServerSidebar() {
   usePusherEvent(
     `private-server-${serverInfo.serverId}`,
     "channelCreated",
-    ({
-      channel,
-      groupUiOrder
-    }: {
-      channel: IClientChannel;
-      groupUiOrder: number;
-    }) => {
+    ({ channel, groupId }: { channel: IClientChannel; groupId: string }) => {
       setChannelGroups((prevGroups) =>
         prevGroups.map((prevGroup) => {
-          if (prevGroup.uiOrder === groupUiOrder) {
+          if (prevGroup.id === groupId) {
             return { ...prevGroup, channels: [...prevGroup.channels, channel] };
           } else {
             return prevGroup;

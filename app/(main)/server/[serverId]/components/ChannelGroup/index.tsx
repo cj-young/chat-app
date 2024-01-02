@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function ChannelGroup({
-  channelGroup: { name, channels, uiOrder }
+  channelGroup: { name, channels, id: groupId }
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
   const { addModal } = useUiContext();
@@ -54,7 +54,7 @@ export default function ChannelGroup({
                 addModal(
                   <AddChannelModal
                     groupName={name}
-                    groupOrder={uiOrder}
+                    groupId={groupId}
                     serverId={serverInfo.serverId}
                   />
                 )
