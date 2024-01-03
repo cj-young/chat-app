@@ -5,6 +5,7 @@ import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import EditableSidebar from "./components/EditableSidebar";
 import ServerSidebar from "./components/ServerSidebar";
 
 interface Props {
@@ -49,7 +50,11 @@ export default async function ServerLayout({ params, children }: Props) {
       initialRole={member.role}
       initialMembers={members}
     >
-      <ServerSidebar />
+      {member.role === "admin" || member.role === "owner" ? (
+        <EditableSidebar />
+      ) : (
+        <ServerSidebar />
+      )}
       {children}
     </ServerContextProvider>
   );

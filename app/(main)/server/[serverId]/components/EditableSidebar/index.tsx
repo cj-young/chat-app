@@ -6,14 +6,16 @@ import { useUiContext } from "@/contexts/UiContext";
 import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
+import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannel, IClientChannelGroup } from "@/types/server";
 import { IProfile } from "@/types/user";
 import { useEffect, useMemo, useState } from "react";
-import ChannelGroup from "../ChannelGroup";
+import AddGroupModal from "../AddGroupModal";
+import EditableChannelGroup from "../EditableChannelGroup";
 import ServerCard from "../ServerCard";
 import styles from "./styles.module.scss";
 
-export default function ServerSidebar() {
+export default function EditableSidebar() {
   const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
   const { role, serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
@@ -159,8 +161,19 @@ export default function ServerSidebar() {
       <nav className={styles["nav"]}>
         <ul className={styles["nav-list"]}>
           {sortedChannelGroups.map((group) => (
-            <ChannelGroup channelGroup={group} key={group.uiOrder} />
+            <EditableChannelGroup channelGroup={group} key={group.uiOrder} />
           ))}
+          <li className={styles["add-group-container"]}>
+            <button
+              className={styles["add-channel"]}
+              onClick={() =>
+                addModal(<AddGroupModal serverId={serverInfo.serverId} />)
+              }
+            >
+              <PlusSymbol />
+              <span>Add new group</span>
+            </button>
+          </li>
         </ul>
       </nav>
       {call && <VoiceCallControl />}

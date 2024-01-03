@@ -1,18 +1,23 @@
-"use client";
+import { useServer } from "@/contexts/ServerContext";
+import { useUiContext } from "@/contexts/UiContext";
 import CaretIcon from "@/public/caret-down-solid.svg";
+import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannelGroup } from "@/types/server";
 import { useMemo, useState } from "react";
-import ChannelItem from "../ChannelItem";
+import AddChannelModal from "../AddChannelModal";
+import EditableChannelItem from "../EditableChannelItem";
 import styles from "./styles.module.scss";
 
 interface Props {
   channelGroup: IClientChannelGroup;
 }
 
-export default function ChannelGroup({
+export default function EditableChannelGroup({
   channelGroup: { name, channels, id: groupId }
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const { addModal } = useUiContext();
+  const { serverInfo } = useServer();
 
   const sortedChannels = useMemo(() => {
     return channels.sort((a, b) => a.uiOrder - b.uiOrder);
@@ -38,8 +43,25 @@ export default function ChannelGroup({
       <ul className={styles["channel-list"]}>
         {isExpanded &&
           sortedChannels.map((channel) => (
-            <ChannelItem channel={channel} key={channel.channelId} />
+            <EditableChannelItem channel={channel} key={channel.channelId} />
           ))}
+        <li className={styles["add-channel-container"]}>
+          <button
+            className={styles["add-channel"]}
+            onClick={() =>
+              addModal(
+                <AddChannelModal
+                  groupName={name}
+                  groupId={groupId}
+                  serverId={serverInfo.serverId}
+                />
+              )
+            }
+          >
+            <PlusSymbol />
+            <span>Add channel</span>
+          </button>
+        </li>
       </ul>
     </li>
   );
