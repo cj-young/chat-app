@@ -16,6 +16,9 @@
   border-radius: var(--br);
   padding: 0.25rem 0.5rem;
   cursor: pointer;
+  overflow: hidden;
+  max-width: 100%;
+  min-width: 0;
 
   svg {
     fill: var(--text-contrast-100);
@@ -35,4 +38,9 @@
   font-size: var(--fs-400);
   color: var(--text-contrast-100);
   line-height: 1.25;
+  text-align: left;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
