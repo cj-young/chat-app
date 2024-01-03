@@ -6,5 +6,5 @@ interface Props {
 }
 
 export default function EditableChannelItem({ channel }: Props) {
-  return <ChannelItem channel={channel} />;
+  return <ChannelItem channel={channel} isEditable={true} />;
 }

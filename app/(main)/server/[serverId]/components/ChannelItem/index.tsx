@@ -3,6 +3,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import TextChannelIcon from "@/public/align-left-solid.svg";
+import GripIcon from "@/public/grip-vertical-solid.svg";
 import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import { IClientChannel } from "@/types/server";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,13 +13,14 @@ import styles from "./styles.module.scss";
 
 interface Props {
   channel: IClientChannel;
+  isEditable?: boolean;
 }
 
-export default function ChannelItem({ channel }: Props) {
+export default function ChannelItem({ channel, isEditable }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { closeMobileNav } = useUiContext();
-  const { joinVoiceCall, leaveVoiceCall, call } = useVoiceCall();
+  const { joinVoiceCall, call } = useVoiceCall();
   const { profile } = useAuthContext();
 
   const isBeingViewed = useMemo(() => {
@@ -64,6 +66,11 @@ export default function ChannelItem({ channel }: Props) {
           <></>
         )}
         <span className={styles["channel-name"]}>{channel.name}</span>
+        {isEditable && (
+          <div className={styles["move-channel-grip"]}>
+            <GripIcon />
+          </div>
+        )}
       </button>
       {channel.type === "voice" && channel.callMembers && (
         <ul className={styles["voice-call-members"]}>
