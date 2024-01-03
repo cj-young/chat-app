@@ -24,8 +24,7 @@ export default function ServerItem({ server, draggedServerRef }: Props) {
     draggedServerRef.current = server.serverId;
     setTimeout(() => {
       setIsBeingDragged(true);
-    }, 1);
-    console.log("drag start");
+    }, 0);
   }
 
   function handleDragEnd() {
