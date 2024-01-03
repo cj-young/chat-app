@@ -1,6 +1,7 @@
 import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
 import CaretIcon from "@/public/caret-down-solid.svg";
+import GripIcon from "@/public/grip-solid.svg";
 import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannelGroup } from "@/types/server";
 import { useMemo, useState } from "react";
@@ -39,11 +40,21 @@ export default function EditableChannelGroup({
           <CaretIcon />
         </button>
         <h3 className={styles["group-name"]}>{name}</h3>
+        <div
+          className={styles["move-group-grip"]}
+          onClick={(e) => e.preventDefault()}
+        >
+          <GripIcon />
+        </div>
       </div>
       <ul className={styles["channel-list"]}>
         {isExpanded &&
           sortedChannels.map((channel) => (
-            <EditableChannelItem channel={channel} key={channel.channelId} />
+            <EditableChannelItem
+              channel={channel}
+              key={channel.channelId}
+              id={channel.channelId}
+            />
           ))}
         <li className={styles["add-channel-container"]}>
           <button
