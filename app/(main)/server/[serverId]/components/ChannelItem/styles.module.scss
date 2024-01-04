@@ -6,6 +6,15 @@
   }
 }
 
+.being-dragged {
+  background-color: var(--bg-main);
+  border-radius: var(--br);
+
+  * {
+    opacity: 0;
+  }
+}
+
 .channel-button {
   display: flex;
   align-items: center;
