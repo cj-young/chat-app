@@ -1,8 +1,20 @@
 .channel-group {
   list-style: none;
+  background-color: var(--bg-contrast-100);
+  border-radius: var(--br);
+  padding: 0.5rem;
 
   & + & {
     margin-top: 0.5rem;
+  }
+}
+
+.being-dragged {
+  background-color: var(--bg-main);
+  border-radius: var(--br);
+
+  * {
+    opacity: 0;
   }
 }
 
@@ -76,5 +88,18 @@
   span {
     color: var(--color);
     font-size: var(--fs-300);
+  }
+}
+
+.move-group-grip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  cursor: move;
+
+  svg {
+    fill: var(--text-contrast-100);
+    width: 1rem;
   }
 }

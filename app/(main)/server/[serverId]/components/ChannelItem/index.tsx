@@ -6,17 +6,34 @@ import TextChannelIcon from "@/public/align-left-solid.svg";
 import GripIcon from "@/public/grip-vertical-solid.svg";
 import VoiceChannelIcon from "@/public/microphone-solid.svg";
 import { IClientChannel } from "@/types/server";
+import { DraggableAttributes } from "@dnd-kit/core";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { CSSProperties, useMemo } from "react";
 import VoiceCallMember from "../VoiceCallMember";
 import styles from "./styles.module.scss";
 
 interface Props {
   channel: IClientChannel;
   isEditable?: boolean;
+  style?: CSSProperties;
+  setNodeRef?(node: HTMLElement | null): void;
+  attributes?: DraggableAttributes;
+  listeners?: SyntheticListenerMap;
+  isDragging?: boolean;
+  setActivatorNodeRef(element: HTMLElement | null): void;
 }
 
-export default function ChannelItem({ channel, isEditable }: Props) {
+export default function ChannelItem({
+  channel,
+  isEditable,
+  setNodeRef,
+  attributes,
+  listeners,
+  isDragging,
+  style,
+  setActivatorNodeRef
+}: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { closeMobileNav } = useUiContext();
@@ -50,7 +67,14 @@ export default function ChannelItem({ channel, isEditable }: Props) {
   }
 
   return (
-    <li className={styles["channel-item"]}>
+    <li
+      className={[
+        styles["channel-item"],
+        isDragging ? styles["being-dragged"] : ""
+      ].join(" ")}
+      style={style}
+      ref={setNodeRef}
+    >
       <button
         className={[
           styles["channel-button"],
@@ -67,7 +91,12 @@ export default function ChannelItem({ channel, isEditable }: Props) {
         )}
         <span className={styles["channel-name"]}>{channel.name}</span>
         {isEditable && (
-          <div className={styles["move-channel-grip"]}>
+          <div
+            className={styles["move-channel-grip"]}
+            {...attributes}
+            {...listeners}
+            ref={setActivatorNodeRef}
+          >
             <GripIcon />
           </div>
         )}
