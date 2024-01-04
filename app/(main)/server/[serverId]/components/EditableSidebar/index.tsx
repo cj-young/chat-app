@@ -172,6 +172,21 @@ export default function EditableSidebar() {
     }
   );
 
+  async function moveChannelGroup(channelGroupId: string, newUiOrder: number) {
+    try {
+      await apiFetch(
+        `server/channel-group/rearrange/${serverInfo.serverId}`,
+        "POST",
+        {
+          channelGroupId,
+          newUiOrder
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function handleDragStart(e: DragStartEvent) {
     if (e.active.data.current?.type === "channelGroup") {
       const activeGroup = channelGroups.find(
@@ -190,8 +205,11 @@ export default function EditableSidebar() {
     const { active, over } = e;
     if (!over) return;
     if (active.data.current?.type === "channelGroup") {
-      const activeGroupId = active.id;
-      const overGroupId = over.id;
+      const activeGroupId = active.id as string;
+      const overGroupId = over.id as string;
+      const overGroup = channelGroups.find(
+        (channelGroup) => channelGroup.id === overGroupId
+      );
       if (activeGroupId === overGroupId) return;
 
       setChannelGroups((prev) => {
@@ -229,6 +247,9 @@ export default function EditableSidebar() {
           }
         });
       });
+      if (overGroup) {
+        moveChannelGroup(activeGroupId, overGroup.uiOrder);
+      }
       setDraggedGroup(null);
     } else if (active.data.current?.type === "channel") {
       if (active.id === over.id) return;
