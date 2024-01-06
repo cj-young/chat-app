@@ -20,7 +20,7 @@ import {
   SortableContext,
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AddGroupModal from "../AddGroupModal";
 import EditableChannelGroup from "../EditableChannelGroup";
 import EditableChannelItem from "../EditableChannelItem";
@@ -38,6 +38,7 @@ export default function EditableSidebar() {
   const [draggedChannel, setDraggedChannel] = useState<IClientChannel | null>(
     null
   );
+  const draggedOriginGroup = useRef<string | null>(null);
 
   const sortedChannelGroups = useMemo(() => {
     return channelGroups.sort((a, b) => a.uiOrder - b.uiOrder);
@@ -175,7 +176,7 @@ export default function EditableSidebar() {
   async function moveChannelGroup(channelGroupId: string, newUiOrder: number) {
     try {
       await apiFetch(
-        `server/channel-group/rearrange/${serverInfo.serverId}`,
+        `/server/channel-group/rearrange/${serverInfo.serverId}`,
         "POST",
         {
           channelGroupId,
@@ -183,7 +184,23 @@ export default function EditableSidebar() {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  }
+
+  async function moveChannel(
+    channelId: string,
+    newUiOrder: number,
+    newGroupId?: string
+  ) {
+    try {
+      await apiFetch(
+        `/server/channel/rearrange/${serverInfo.serverId}`,
+        "POST",
+        { channelId, newUiOrder, newGroupId }
+      );
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -198,6 +215,12 @@ export default function EditableSidebar() {
         .flatMap((channelGroup) => channelGroup.channels)
         .find((channel) => channel.channelId === e.active.id);
       setDraggedChannel(activeChannel ?? null);
+      const group = channelGroups.find((channelGroup) =>
+        channelGroup.channels.some(
+          (channel) => channel.channelId === activeChannel?.channelId
+        )
+      );
+      draggedOriginGroup.current = group?.id ?? null;
     }
   }
 
@@ -252,7 +275,16 @@ export default function EditableSidebar() {
       }
       setDraggedGroup(null);
     } else if (active.data.current?.type === "channel") {
-      if (active.id === over.id) return;
+      const overChannel = channelGroups
+        .flatMap((channelGroup) => channelGroup.channels)
+        .find((channel) => channel.channelId === over.id);
+      const overGroup = channelGroups.find((group) =>
+        group.channels.some((channel) => channel.channelId === over.id)
+      );
+
+      if (active.id === over.id && overGroup?.id === draggedOriginGroup.current)
+        return;
+
       setChannelGroups((prev) => {
         const activeGroup = prev.find((group) =>
           group.channels.some((channel) => channel.channelId === active.id)
@@ -296,7 +328,17 @@ export default function EditableSidebar() {
         });
       });
 
+      let newGroupId;
+      if (overGroup && overGroup?.id !== draggedOriginGroup.current) {
+        newGroupId = overGroup?.id;
+      }
+
+      if (active && overChannel) {
+        moveChannel(active.id as string, overChannel.uiOrder, newGroupId);
+      }
+
       setDraggedChannel(null);
+      draggedOriginGroup.current = null;
     }
   }
 
