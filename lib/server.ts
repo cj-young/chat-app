@@ -65,11 +65,20 @@ export function getDefaultChannelId(server: IServer) {
   if (server.homeChannel) {
     return server.homeChannel.toString();
   } else {
+    console.log(server);
     let minChannelId: string | null = null;
     let minChannelGroupOrder = Number.MAX_VALUE;
     let minChannelOrder = Number.MAX_VALUE;
     for (let channelGroup of server.channelGroups) {
       if (channelGroup.uiOrder <= minChannelGroupOrder) {
+        if (
+          channelGroup.uiOrder < minChannelGroupOrder &&
+          channelGroup.channels.length > 0
+        ) {
+          minChannelId = channelGroup.channels[0].channel.toString();
+          minChannelGroupOrder = channelGroup.uiOrder;
+          minChannelOrder = channelGroup.channels[0].uiOrder;
+        }
         for (let channel of channelGroup.channels) {
           if (channel.uiOrder < minChannelOrder) {
             minChannelId = channel.channel.toString();
