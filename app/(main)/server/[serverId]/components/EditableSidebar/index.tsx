@@ -397,6 +397,41 @@ export default function EditableSidebar() {
           }
         });
       });
+    } else if (
+      active.data.current?.type === "channel" &&
+      over.data.current?.type === "addChannelButton"
+    ) {
+      const overGroupId = (over.id as string).split("-")[1];
+      const activeChannel = channelGroups
+        .flatMap((channelGroup) => channelGroup.channels)
+        .find((channel) => channel.channelId === active.id);
+      if (!activeChannel) return;
+      if (overGroupId !== draggedOriginGroup.current) {
+        setChannelGroups((prev) =>
+          prev.map((prevGroup) => {
+            if (prevGroup.id === overGroupId) {
+              const newChannels = prevGroup.channels.filter(
+                (channel) => channel.channelId !== activeChannel.channelId
+              );
+              newChannels.push({
+                ...activeChannel,
+                uiOrder: prevGroup.channels.length
+              });
+              return {
+                ...prevGroup,
+                channels: newChannels
+              };
+            } else {
+              return {
+                ...prevGroup,
+                channels: prevGroup.channels.filter(
+                  (channel) => channel.channelId !== activeChannel?.channelId
+                )
+              };
+            }
+          })
+        );
+      }
     }
   }
 

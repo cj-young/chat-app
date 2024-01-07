@@ -4,6 +4,7 @@ import CaretIcon from "@/public/caret-down-solid.svg";
 import GripIcon from "@/public/grip-solid.svg";
 import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannelGroup } from "@/types/server";
+import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
@@ -55,6 +56,13 @@ export default function EditableChannelGroup({
     transition
   };
 
+  const { setNodeRef: addChannelSetNodeRef } = useDroppable({
+    id: `add-${groupId}`,
+    data: {
+      type: "addChannelButton"
+    }
+  });
+
   return (
     <li
       className={[
@@ -91,7 +99,10 @@ export default function EditableChannelGroup({
               <EditableChannelItem channel={channel} key={channel.channelId} />
             ))}
         </SortableContext>
-        <li className={styles["add-channel-container"]}>
+        <li
+          className={styles["add-channel-container"]}
+          ref={addChannelSetNodeRef}
+        >
           <button
             className={styles["add-channel"]}
             onClick={() =>
