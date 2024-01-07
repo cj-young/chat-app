@@ -6,6 +6,11 @@ import { useUiContext } from "@/contexts/UiContext";
 import { useVoiceCall } from "@/contexts/VoiceChatContext";
 import usePusherEvent from "@/hooks/usePusherEvent";
 import { apiFetch } from "@/lib/api";
+import {
+  addExplicitlyOrderedElement,
+  moveExplicitlyOrderedElement,
+  removeExplicitlyOrderedElement
+} from "@/lib/clientUtils";
 import PlusSymbol from "@/public/plus-solid.svg";
 import { IClientChannel, IClientChannelGroup } from "@/types/server";
 import { IProfile } from "@/types/user";
@@ -29,7 +34,7 @@ import styles from "./styles.module.scss";
 
 export default function EditableSidebar() {
   const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
-  const { role, serverInfo } = useServer();
+  const { serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
   const { call } = useVoiceCall();
   const [draggedGroup, setDraggedGroup] = useState<IClientChannelGroup | null>(
@@ -227,54 +232,26 @@ export default function EditableSidebar() {
   function handleDragEnd(e: DragEndEvent) {
     const { active, over } = e;
     if (!over) return;
-    if (active.data.current?.type === "channelGroup") {
+    const activeType = active.data.current?.type;
+    if (activeType === "channelGroup") {
       const activeGroupId = active.id as string;
       const overGroupId = over.id as string;
       const overGroup = channelGroups.find(
         (channelGroup) => channelGroup.id === overGroupId
       );
-      if (activeGroupId === overGroupId) return;
-
-      setChannelGroups((prev) => {
-        const activeGroup = channelGroups.find(
-          (channelGroup) => channelGroup.id === activeGroupId
-        );
-        const overGroup = channelGroups.find(
-          (channelGroup) => channelGroup.id === overGroupId
-        );
-        if (!activeGroup || !overGroup) return prev;
-        return prev.map((prevGroup) => {
-          if (prevGroup.id === activeGroup.id) {
-            return {
-              ...prevGroup,
-              uiOrder: overGroup.uiOrder
-            };
-          } else if (
-            prevGroup.uiOrder > activeGroup.uiOrder &&
-            prevGroup.uiOrder <= overGroup.uiOrder
-          ) {
-            return {
-              ...prevGroup,
-              uiOrder: prevGroup.uiOrder - 1
-            };
-          } else if (
-            prevGroup.uiOrder < activeGroup.uiOrder &&
-            prevGroup.uiOrder >= overGroup.uiOrder
-          ) {
-            return {
-              ...prevGroup,
-              uiOrder: prevGroup.uiOrder + 1
-            };
-          } else {
-            return prevGroup;
-          }
-        });
-      });
+      if (activeGroupId === overGroupId || !overGroup) return;
+      setChannelGroups((prev) =>
+        moveExplicitlyOrderedElement(
+          prev,
+          (item) => item.id === activeGroupId,
+          overGroup.uiOrder
+        )
+      );
       if (overGroup) {
         moveChannelGroup(activeGroupId, overGroup.uiOrder);
       }
       setDraggedGroup(null);
-    } else if (active.data.current?.type === "channel") {
+    } else if (activeType === "channel") {
       const overChannel = channelGroups
         .flatMap((channelGroup) => channelGroup.channels)
         .find((channel) => channel.channelId === over.id);
@@ -282,52 +259,27 @@ export default function EditableSidebar() {
         group.channels.some((channel) => channel.channelId === over.id)
       );
 
-      if (active.id === over.id && overGroup?.id === draggedOriginGroup.current)
+      if (!overChannel || !overGroup) return;
+
+      if (active.id === over.id && overGroup.id === draggedOriginGroup.current)
         return;
 
       setChannelGroups((prev) => {
-        const activeGroup = prev.find((group) =>
-          group.channels.some((channel) => channel.channelId === active.id)
-        );
-        const overGroup = prev.find((group) =>
-          group.channels.some((channel) => channel.channelId === over.id)
-        );
-        if (!activeGroup || !overGroup || activeGroup !== overGroup)
-          return prev;
-
-        const activeChannel = activeGroup.channels.find(
-          (channel) => channel.channelId === active.id
-        )!;
-        const overChannel = activeGroup.channels.find(
-          (channel) => channel.channelId === over.id
-        )!;
-
         return prev.map((prevGroup) => {
-          if (prevGroup.id !== activeGroup.id) {
-            return prevGroup;
+          if (prevGroup === overGroup) {
+            return {
+              ...prevGroup,
+              channels: moveExplicitlyOrderedElement(
+                prevGroup.channels,
+                (item) => item.channelId === active.id,
+                overChannel.uiOrder
+              )
+            };
           } else {
-            const newChannels = prevGroup.channels.map((channel) => {
-              if (channel.channelId === active.id) {
-                return { ...channel, uiOrder: overChannel.uiOrder };
-              } else if (
-                channel.uiOrder > activeChannel.uiOrder &&
-                channel.uiOrder <= overChannel.uiOrder
-              ) {
-                return { ...channel, uiOrder: channel.uiOrder - 1 };
-              } else if (
-                channel.uiOrder < activeChannel.uiOrder &&
-                channel.uiOrder >= overChannel.uiOrder
-              ) {
-                return { ...channel, uiOrder: channel.uiOrder + 1 };
-              } else {
-                return channel;
-              }
-            });
-            return { ...prevGroup, channels: newChannels };
+            return prevGroup;
           }
         });
       });
-
       let newGroupId;
       if (overGroup && overGroup?.id !== draggedOriginGroup.current) {
         newGroupId = overGroup?.id;
@@ -347,10 +299,10 @@ export default function EditableSidebar() {
     if (!over) return;
     if (active.id === over.id) return;
 
-    if (
-      active.data.current?.type === "channel" &&
-      over.data.current?.type === "channel"
-    ) {
+    const activeType = active.data.current?.type;
+    const overType = over.data.current?.type;
+
+    if (activeType === "channel" && overType === "channel") {
       setChannelGroups((prev) => {
         const activeGroup = prev.find((group) =>
           group.channels.some((channel) => channel.channelId === active.id)
@@ -372,66 +324,58 @@ export default function EditableSidebar() {
           if (prevGroup.id === activeGroup.id) {
             return {
               ...prevGroup,
-              channels: prevGroup.channels.filter(
-                (channel) => channel.channelId !== activeChannel.channelId
+              channels: removeExplicitlyOrderedElement(
+                prevGroup.channels,
+                (channel) => channel.channelId === active.id
               )
             };
           } else if (prevGroup.id === overGroup.id) {
-            const newChannels = prevGroup.channels.map((channel) => {
-              if (channel.uiOrder >= overChannel.uiOrder) {
-                return {
-                  ...channel,
-                  uiOrder: channel.uiOrder + 1
-                };
-              } else {
-                return channel;
-              }
-            });
-            newChannels.push({
-              ...activeChannel,
-              uiOrder: overChannel.uiOrder
-            });
-            return { ...prevGroup, channels: newChannels };
+            return {
+              ...prevGroup,
+              channels: addExplicitlyOrderedElement(
+                activeChannel,
+                prevGroup.channels,
+                overChannel.uiOrder
+              )
+            };
           } else {
             return prevGroup;
           }
         });
       });
-    } else if (
-      active.data.current?.type === "channel" &&
-      over.data.current?.type === "addChannelButton"
-    ) {
+    } else if (activeType === "channel" && overType === "addChannelButton") {
       const overGroupId = (over.id as string).split("-")[1];
       const activeChannel = channelGroups
         .flatMap((channelGroup) => channelGroup.channels)
         .find((channel) => channel.channelId === active.id);
       if (!activeChannel) return;
-      if (overGroupId !== draggedOriginGroup.current) {
-        setChannelGroups((prev) =>
-          prev.map((prevGroup) => {
-            if (prevGroup.id === overGroupId) {
-              const newChannels = prevGroup.channels.filter(
-                (channel) => channel.channelId !== activeChannel.channelId
-              );
-              newChannels.push({
-                ...activeChannel,
-                uiOrder: prevGroup.channels.length
-              });
-              return {
-                ...prevGroup,
-                channels: newChannels
-              };
-            } else {
-              return {
-                ...prevGroup,
-                channels: prevGroup.channels.filter(
-                  (channel) => channel.channelId !== activeChannel?.channelId
-                )
-              };
-            }
-          })
-        );
-      }
+
+      setChannelGroups((prev) => {
+        console.log(prev);
+        return prev.map((prevGroup) => {
+          if (prevGroup.id === overGroupId) {
+            console.log(prevGroup.channels);
+            let newChannels = removeExplicitlyOrderedElement(
+              prevGroup.channels,
+              (channel) => channel.channelId === activeChannel.channelId,
+              true
+            );
+            newChannels = addExplicitlyOrderedElement(
+              activeChannel,
+              newChannels
+            );
+            return { ...prevGroup, channels: newChannels };
+          } else {
+            return {
+              ...prevGroup,
+              channels: removeExplicitlyOrderedElement(
+                prevGroup.channels,
+                (channel) => channel.channelId === activeChannel.channelId
+              )
+            };
+          }
+        });
+      });
     }
   }
 
