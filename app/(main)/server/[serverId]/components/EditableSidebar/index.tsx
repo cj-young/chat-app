@@ -103,17 +103,17 @@ export default function EditableSidebar() {
     ({ channelId, user }: { channelId: string; user: IProfile }) => {
       setChannelGroups((prev) =>
         prev.map((prevGroup) => {
-          if (
-            !prevGroup.channels.some(
-              (channel) => channel.channelId === channelId
-            )
-          ) {
+          const channels = prevGroup.channels;
+          const isJoinedGroup = channels.some(
+            (channel) => channel.channelId === channelId
+          );
+          if (!isJoinedGroup) {
             return prevGroup;
           } else {
-            const channelIndex = prevGroup.channels.findIndex(
+            const channelIndex = channels.findIndex(
               (channel) => channel.channelId === channelId
             );
-            const channel = prevGroup.channels[channelIndex];
+            const channel = channels[channelIndex];
             if (channel.callMembers?.some((member) => member.id === user.id)) {
               return prevGroup;
             }
@@ -247,10 +247,7 @@ export default function EditableSidebar() {
           overGroup.uiOrder
         )
       );
-      if (overGroup) {
-        moveChannelGroup(activeGroupId, overGroup.uiOrder);
-      }
-      setDraggedGroup(null);
+      moveChannelGroup(activeGroupId, overGroup.uiOrder);
     } else if (activeType === "channel") {
       const overChannel = channelGroups
         .flatMap((channelGroup) => channelGroup.channels)
@@ -285,19 +282,16 @@ export default function EditableSidebar() {
         newGroupId = overGroup?.id;
       }
 
-      if (active && overChannel) {
-        moveChannel(active.id as string, overChannel.uiOrder, newGroupId);
-      }
-
-      setDraggedChannel(null);
-      draggedOriginGroup.current = null;
+      moveChannel(active.id as string, overChannel.uiOrder, newGroupId);
     }
+    setDraggedGroup(null);
+    draggedOriginGroup.current = null;
+    setDraggedChannel(null);
   }
 
   function handleDragOver(e: DragOverEvent) {
     const { active, over } = e;
-    if (!over) return;
-    if (active.id === over.id) return;
+    if (!over || active.id === over.id) return;
 
     const activeType = active.data.current?.type;
     const overType = over.data.current?.type;
@@ -351,10 +345,8 @@ export default function EditableSidebar() {
       if (!activeChannel) return;
 
       setChannelGroups((prev) => {
-        console.log(prev);
         return prev.map((prevGroup) => {
           if (prevGroup.id === overGroupId) {
-            console.log(prevGroup.channels);
             let newChannels = removeExplicitlyOrderedElement(
               prevGroup.channels,
               (channel) => channel.channelId === activeChannel.channelId,
