@@ -16,7 +16,7 @@
     width: 100%;
   }
 
-  &.selected::before {
+  &::before {
     content: "";
     position: absolute;
     right: -0.5rem;
@@ -25,10 +25,17 @@
     bottom: 0;
     background-color: var(--bg-contrast-100);
     display: none;
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale 1000ms ease;
 
     @include large-screen {
       display: block;
     }
+  }
+
+  &.selected::before {
+    scale: 1 1;
   }
 }
 
