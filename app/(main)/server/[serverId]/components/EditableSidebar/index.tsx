@@ -383,12 +383,14 @@ export default function EditableSidebar() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
+        id="EditableSidebarDnDContext"
       >
         <nav className={styles["nav"]}>
           <ul className={styles["nav-list"]}>
             <SortableContext
               items={groupIds}
               strategy={verticalListSortingStrategy}
+              id="EditableSidebarSortableContext"
             >
               {sortedChannelGroups.map((group) => (
                 <EditableChannelGroup
