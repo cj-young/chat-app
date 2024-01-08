@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("received");
     const sessionId = req.cookies.get("session")?.value;
     if (!sessionId) return invalidSession();
 
@@ -70,9 +69,6 @@ export async function POST(req: NextRequest) {
         new: true
       }
     );
-
-    console.log("here it is --");
-    console.log(updated);
 
     return NextResponse.json({ message: "Successfully updated UI order" });
   } catch (error) {

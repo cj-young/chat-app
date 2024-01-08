@@ -7,7 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("api received");
     const sessionId = req.cookies.get("session")?.value;
     if (!sessionId) return invalidSession();
 
@@ -136,11 +135,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      console.log(channel);
       newGroup.channels.push({ channel: channel.channel, uiOrder: newUiOrder });
-      console.log(
-        server.channelGroups.find((group) => group.name === "Text Channels")
-      );
       await server.save();
     }
 

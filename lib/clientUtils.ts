@@ -19,7 +19,7 @@ type TExplicitlyOrderedItem = {
 
 export function removeExplicitlyOrderedElement<
   T extends TExplicitlyOrderedItem
->(arr: T[], toRemoveCallback: (item: T) => boolean, log?: boolean): T[] {
+>(arr: T[], toRemoveCallback: (item: T) => boolean): T[] {
   const itemsToRemove = arr.filter(toRemoveCallback);
   if (itemsToRemove.length === 0) return arr;
   const sortedArray = structuredClone(arr).sort(
@@ -28,8 +28,6 @@ export function removeExplicitlyOrderedElement<
 
   let numRemoved = 0;
   return sortedArray.filter((item) => {
-    if (log) console.log(numRemoved);
-
     if (toRemoveCallback(item)) {
       numRemoved++;
       return false;

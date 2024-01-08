@@ -65,7 +65,6 @@ export function getDefaultChannelId(server: IServer) {
   if (server.homeChannel) {
     return server.homeChannel.toString();
   } else {
-    console.log(server);
     let minChannelId: string | null = null;
     let minChannelGroupOrder = Number.MAX_VALUE;
     let minChannelOrder = Number.MAX_VALUE;

@@ -349,8 +349,7 @@ export default function EditableSidebar() {
           if (prevGroup.id === overGroupId) {
             let newChannels = removeExplicitlyOrderedElement(
               prevGroup.channels,
-              (channel) => channel.channelId === activeChannel.channelId,
-              true
+              (channel) => channel.channelId === activeChannel.channelId
             );
             newChannels = addExplicitlyOrderedElement(
               activeChannel,

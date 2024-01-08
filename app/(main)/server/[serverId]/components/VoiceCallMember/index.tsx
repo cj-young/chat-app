@@ -28,7 +28,6 @@ export default function VoiceCallMember({ user, isPreview }: Props) {
   useEffect(() => {
     const interval = setInterval(() => {
       setIsSpeaking(smoothedVolume.current >= IS_SPEAKING_MINIMUM_VOLUME);
-      console.log(smoothedVolume.current);
     }, 100);
 
     return () => {
@@ -74,8 +73,6 @@ export default function VoiceCallMember({ user, isPreview }: Props) {
           MOVING_AVERAGE_WINDOW_MS;
 
       smoothedVolume.current = newSmoothedVolume;
-      // console.log(newSmoothedVolume);
-      // console.log(currentVolume);
       lastAnimationFrame.current = Date.now();
     }
 
