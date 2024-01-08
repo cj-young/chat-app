@@ -8,7 +8,10 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
-  DragStartEvent
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -26,7 +29,6 @@ export default function MainNavbar() {
   const { mobileNavExpanded, closeMobileNav } = useUiContext();
   const { servers, setServers } = useAuthContext();
   const pathname = usePathname();
-  const draggedServerRef = useRef<string | null>(null);
   const currentServerId: string | null = useMemo(() => {
     const splitPath = pathname
       .split("/")
@@ -47,6 +49,14 @@ export default function MainNavbar() {
   const serverIds = useMemo(() => {
     return sortedServers.map((server) => server.server.serverId);
   }, [sortedServers]);
+
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 10
+    }
+  });
+
+  const sensors = useSensors(pointerSensor);
 
   useEffect(() => {
     closeMobileNav();
@@ -118,6 +128,7 @@ export default function MainNavbar() {
       <DndContext
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        sensors={sensors}
         id="NavbarDnDContext"
       >
         <ul className={styles["nav-list"]} ref={navListRef}>
