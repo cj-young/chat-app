@@ -1,5 +1,14 @@
-.profile-picture {
+.wrapper {
   width: 2rem;
   height: 2rem;
   flex: 0 0 2rem;
+}
+
+.wrapper-always {
+  position: relative;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
 }

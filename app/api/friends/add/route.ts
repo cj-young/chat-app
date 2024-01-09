@@ -8,9 +8,12 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { receiverUsername } = await req.json();
+    const { receiverUsername, receiverId } = (await req.json()) as {
+      receiverUsername?: string;
+      receiverId?: string;
+    };
 
-    if (!receiverUsername) {
+    if (!receiverUsername && !receiverId) {
       return NextResponse.json(
         { message: "User does not exist" },
         { status: 404 }
@@ -54,8 +57,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    let receiverQuery;
+    if (receiverId) {
+      receiverQuery = { _id: receiverId } as const;
+    } else {
+      receiverQuery = { username: receiverUsername! } as const;
+    }
+
     const receiver = await User.findOneAndUpdate<IUser>(
-      { username: receiverUsername },
+      receiverQuery,
       {
         $addToSet: {
           friendRequests: session.user
@@ -78,7 +88,7 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({
-      message: `Friend request sent to ${receiverUsername}`
+      message: `Friend request sent to ${receiver.username}`
     });
   } catch (error) {
     return NextResponse.json(
