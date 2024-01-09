@@ -1,0 +1,10 @@
+@import "@/styles/mixins";
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 1rem;
+  font-size: var(--fs-500);
+}

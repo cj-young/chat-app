@@ -1,0 +1,38 @@
+@import "@/styles/mixins";
+
+.nav {
+  background-color: var(--bg-contrast-100);
+  flex: 1;
+  height: 100%;
+  padding: 1rem;
+
+  @include large-screen {
+    flex: 0 0 15rem;
+    width: 15rem;
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 1rem;
+  font-size: var(--fs-500);
+}
+
+.nav-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+
+  @include large-screen {
+    display: block;
+  }
+}

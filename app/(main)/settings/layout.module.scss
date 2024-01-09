@@ -1,0 +1,25 @@
+@import "@/styles/mixins";
+
+.settings {
+  display: flex;
+  background-color: var(--bg-main);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-settings {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none;
+
+  @include large-screen {
+    display: flex;
+  }
+}
