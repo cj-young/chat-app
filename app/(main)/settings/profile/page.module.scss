@@ -14,10 +14,18 @@
   align-items: center;
   gap: 2rem;
   flex-wrap: wrap;
+  border-radius: var(--br);
+  padding: 1rem;
+  background-color: var(--bg-contrast-200);
+  width: fit-content;
 }
 
 .names {
   width: 20rem;
+  padding: 1rem;
+  background-color: var(--bg-contrast-100);
+  border-radius: var(--br);
+  height: 100%;
 }
 
 .info-container {
