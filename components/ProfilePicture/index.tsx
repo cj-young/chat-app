@@ -21,7 +21,7 @@ export default function ProfilePicture({
   user,
   status,
   className,
-  clickOpensMenu = true
+  clickOpensMenu = false
 }: Props) {
   const statusMaskId = useId();
   const noStatusMaskId = useId();
@@ -39,6 +39,9 @@ export default function ProfilePicture({
         className ?? styles["wrapper"],
         styles["wrapper-always"]
       ].join(" ")}
+      style={{
+        cursor: clickOpensMenu ? "pointer" : "default"
+      }}
     >
       <svg
         className={styles["profile-picture"]}
