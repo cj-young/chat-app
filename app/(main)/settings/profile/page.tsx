@@ -2,11 +2,18 @@
 import MobileNavToggle from "@/components/MobileNavToggle";
 import ProfilePicture from "@/components/ProfilePicture";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useUiContext } from "@/contexts/UiContext";
 import EditIcon from "@/public/pen-to-square-solid.svg";
+import EditDisplayName from "../components/EditDisplayName";
 import styles from "./page.module.scss";
 
 export default function ProfileSettings() {
   const { profile } = useAuthContext();
+  const { addModal } = useUiContext();
+
+  function editDisplayname() {
+    addModal(<EditDisplayName />);
+  }
 
   return (
     <>
@@ -22,7 +29,10 @@ export default function ProfileSettings() {
               <span className={styles["display-name"]}>
                 {profile.displayName}
               </span>
-              <button className={styles["edit-button"]}>
+              <button
+                className={styles["edit-button"]}
+                onClick={editDisplayname}
+              >
                 <EditIcon />
               </button>
             </div>

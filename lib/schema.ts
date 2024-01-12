@@ -53,3 +53,25 @@ export const createGroupSchema = z.object({
 });
 
 export type CreateGroupInfo = z.infer<typeof createGroupSchema>;
+
+export const displayNameSchema = z.object({
+  displayName: z
+    .string()
+    .min(1, "Display name must be at least 1 character long")
+    .max(40, "Display name cannot be more than 40 characters long")
+});
+
+export type DisplayNameInfo = z.infer<typeof displayNameSchema>;
+
+export const usernameSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters long")
+    .max(25, "Username cannot be more than 25 characters long")
+    .regex(
+      /^[a-zA-Z0-9_]*$/,
+      "Username may only contain letters, numbers, and underscores"
+    )
+});
+
+export type UsernameInfo = z.infer<typeof usernameSchema>;
