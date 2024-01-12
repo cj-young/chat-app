@@ -22,6 +22,7 @@ import { usePusher } from "./PusherContext";
 
 interface IAuthContext {
   profile: IProfile;
+  setProfile: Dispatch<SetStateAction<IProfile>>;
   friendRequests: IProfile[];
   fulfillFriendRequest(
     userId: string,
@@ -292,6 +293,7 @@ export default function AuthContextProvider({
     <AuthContext.Provider
       value={{
         profile,
+        setProfile,
         friendRequests,
         fulfillFriendRequest,
         friends,

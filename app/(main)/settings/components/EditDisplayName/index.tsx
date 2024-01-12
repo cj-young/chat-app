@@ -2,6 +2,7 @@ import Input from "@/components/Input";
 import LoaderButton from "@/components/LoaderButton";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { apiFetch } from "@/lib/api";
 import { DisplayNameInfo, displayNameSchema } from "@/lib/schema";
 import XIcon from "@/public/xmark-solid.svg";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +13,7 @@ import styles from "./styles.module.scss";
 export default function EditDisplayName() {
   const { closeModal } = useUiContext();
   const [value, setValue] = useState("");
-  const { profile } = useAuthContext();
+  const { profile, setProfile } = useAuthContext();
 
   const {
     register,
@@ -28,7 +29,35 @@ export default function EditDisplayName() {
 
   const displayNameRegister = register("displayName");
 
-  async function submitData({ displayName }: DisplayNameInfo) {}
+  async function submitData({ displayName }: DisplayNameInfo) {
+    try {
+      const res = await apiFetch("/user/display-name", "POST", {
+        newDisplayName: displayName
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setFieldError("displayName", {
+          type: "custom",
+          message:
+            data.message ?? "An error occurred changing your display name"
+        });
+        return;
+      }
+
+      setProfile((prev) => ({
+        ...prev,
+        displayName
+      }));
+      closeModal();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      setFieldError("displayName", {
+        type: "custom",
+        message: "An error occurred changing your display name"
+      });
+    }
+  }
 
   return (
     <div className={styles["modal"]}>
