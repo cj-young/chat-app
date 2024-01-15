@@ -47,7 +47,7 @@ export default function GroupChatItem({ groupChat }: Props) {
       );
 
       if (isBeingViewedRef.current) {
-        apiFetch(`/gc/reset-unread/${groupChat.chatId}`);
+        apiFetch(`/group-chat/reset-unread/${groupChat.chatId}`);
       }
     }
   );
