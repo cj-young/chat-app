@@ -15,6 +15,7 @@
   &:disabled {
     background-color: var(--bg-contrast-100);
     cursor: default;
+    color: var(--text-contrast-200);
   }
 }
 
