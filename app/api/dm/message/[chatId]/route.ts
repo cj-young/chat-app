@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     const clientMessage = sterilizeClientMessage({
       ...message.toObject(),
       id: message.id,
-      sender: session.user.id
+      sender: user
     });
 
     await pusherServer.trigger(
