@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { getReqSession, isVerifiedReqSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,17 +8,14 @@ export async function POST(req: NextRequest) {
     const socketId = data.get("socket_id") as string;
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return authFailed();
-
-    const { query, userType } = getSession(sessionId);
-    if (!query || userType !== "verified") return authFailed();
-    const session = await query;
-    if (!session) return authFailed();
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return authFailed();
+    const {
+      session: { user }
+    } = reqSession;
 
     const authResponse = pusherServer.authenticateUser(socketId, {
-      id: userId.toString()
+      id: user.id
     });
     return NextResponse.json(authResponse);
   } catch (error) {

@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import GroupChat from "@/models/GroupChat";
 import { isValidObjectId } from "mongoose";
@@ -8,16 +12,11 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
     if (!isValidObjectId(chatId))
@@ -30,7 +29,7 @@ export async function GET(req: NextRequest) {
           "members.$[elem].unreadMessages": 0
         }
       },
-      { arrayFilters: [{ "elem.user": userId }] }
+      { arrayFilters: [{ "elem.user": user.id }] }
     );
 
     return NextResponse.json({ message: "Unread messages reset to 0" });

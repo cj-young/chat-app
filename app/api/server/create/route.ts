@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { uploadServerImage } from "@/lib/firebase";
 import { sterilizeClientServer } from "@/lib/server";
@@ -12,16 +16,11 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session?.user) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const formData = await req.formData();
     const serverImage: File | undefined = formData.get("serverImage") as File;
@@ -42,15 +41,15 @@ export async function POST(req: NextRequest) {
       imageUrl
     })) as IServer;
 
-    const user = await User.findById<IUser>(userId);
-    if (!user)
+    const workingUser = await User.findById<IUser>(user.id);
+    if (!workingUser)
       return NextResponse.json({ message: "Invalid session" }, { status: 401 });
-    const serverUiOrder = user.servers.length;
-    user.servers.push({
+    const serverUiOrder = workingUser.servers.length;
+    workingUser.servers.push({
       server: server.id,
       uiOrder: serverUiOrder
     });
-    await user.save();
+    await workingUser.save();
 
     const defaultChannel = (await Channel.create({
       server: server.id,

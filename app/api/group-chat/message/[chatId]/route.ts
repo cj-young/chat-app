@@ -1,4 +1,10 @@
-import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  getSession,
+  getUserProfile,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import {
   MESSAGE_COUNT,
@@ -8,13 +14,18 @@ import {
 import { pusherServer } from "@/lib/pusher";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
 import Message, { IMessage } from "@/models/Message";
-import { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await dbConnect();
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
 
     const { content, tempId } = (await req.json()) as {
@@ -27,15 +38,8 @@ export async function POST(req: NextRequest) {
     const { query, userType } = getSession(taggedSessionId);
     if (!query || userType !== "verified") return invalidSession();
 
-    await dbConnect();
+    const groupChat = await GroupChat.findById<IGroupChat>(chatId);
 
-    const [session, groupChat] = await Promise.all([
-      query.populate<{ user: IUser }>("user"),
-      GroupChat.findById<IGroupChat>(chatId)
-    ]);
-
-    if (!session || !groupChat) return invalidSession();
-    const { user } = session;
     if (
       !groupChat ||
       !groupChat.members.some((member) => member.user.toString() === user.id)
@@ -48,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     const message = (await Message.create<IMessage>({
       content,
-      sender: session.user.id,
+      sender: user.id,
       chatRef: "GroupChat",
       chat: groupChat.id
     })) as IMessage;
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
     const clientMessage = sterilizeClientMessage({
       ...message.toObject(),
       id: message.id,
-      sender: session.user
+      sender: user.id
     });
 
     await pusherServer.trigger(`private-groupChat-${chatId}`, "messageSent", {

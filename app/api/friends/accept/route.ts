@@ -1,4 +1,9 @@
-import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  getUserProfile,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { sterilizeClientDm } from "@/lib/directMessages";
 import { pusherServer } from "@/lib/pusher";
@@ -10,15 +15,11 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query.populate<{ user: IUser }>("user");
-    if (!session?.user) return invalidSession();
-    const { user } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const { receiverId } = (await req.json()) as { receiverId: string };
 

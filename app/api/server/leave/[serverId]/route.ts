@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import { serverRolePriorities } from "@/lib/clientUtils";
 import User from "@/models/User";
 import Member, { IMember } from "@/models/server/Member";
@@ -8,16 +12,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { userType, query } = getSession(sessionId);
-    if (!query || userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session || session.isExpired()) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
     const serverId = req.nextUrl.pathname.slice(
       req.nextUrl.pathname.lastIndexOf("/") + 1
     );
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest) {
     if (!isValidObjectId(serverId))
       return NextResponse.json({ message: "Invalid server ID" });
     const member = await Member.findOneAndDelete<IMember>({
-      user: userId,
+      user: user.id,
       server: serverId
     });
     if (!member) return invalidSession();
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
       Server.findByIdAndUpdate<IServer>(serverId, {
         $pull: { members: member.id }
       }).populate<{ members: IMember[] }>("members"),
-      await User.findByIdAndUpdate(userId, {
+      await User.findByIdAndUpdate(user.id, {
         $pull: { servers: { server: serverId } }
       })
     ]);
@@ -55,7 +54,7 @@ export async function POST(req: NextRequest) {
       pusherServer.trigger(`private-server-${server.id}`, "userLeft", {
         memberId: member.id
       }),
-      pusherServer.trigger(`private-user-${userId}`, "serverRemoved", {
+      pusherServer.trigger(`private-user-${user.id}`, "serverRemoved", {
         serverId: server.id
       })
     ]);

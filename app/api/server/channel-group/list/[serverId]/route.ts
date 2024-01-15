@@ -1,4 +1,9 @@
-import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  getUserProfile,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import { getMember, getServer, sterilizeClientChannel } from "@/lib/server";
 import User, { IUser } from "@/models/User";
 import { isValidObjectId } from "mongoose";
@@ -6,16 +11,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { userType, query } = getSession(sessionId);
-    if (!query || userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session || session.isExpired()) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const serverId = req.nextUrl.pathname.slice(
       req.nextUrl.pathname.lastIndexOf("/") + 1
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
 
     const [server, member] = await Promise.all([
       getServer(serverId),
-      getMember(serverId, userId.toString())
+      getMember(serverId, user.id)
     ]);
     if (!member || !server) return invalidSession();
 

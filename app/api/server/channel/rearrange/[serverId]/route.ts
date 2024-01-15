@@ -1,5 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
-import { IUser } from "@/models/User";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
 import { isValidObjectId } from "mongoose";
@@ -7,17 +10,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query.populate<{ user: IUser }>("user");
-    if (!session || session.isExpired() || !session.user)
-      return invalidSession();
-
-    const { user } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const serverId = req.nextUrl.pathname.slice(
       req.nextUrl.pathname.lastIndexOf("/") + 1

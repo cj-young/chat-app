@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import DirectMessage from "@/models/DirectMessage";
 import { isValidObjectId } from "mongoose";
@@ -8,16 +12,11 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
     if (!isValidObjectId(chatId))
@@ -25,11 +24,11 @@ export async function GET(req: NextRequest) {
 
     await Promise.all([
       DirectMessage.findOneAndUpdate(
-        { _id: chatId, user1: userId },
+        { _id: chatId, user1: user.id },
         { user1Unread: 0 }
       ),
       DirectMessage.findOneAndUpdate(
-        { _id: chatId, user2: userId },
+        { _id: chatId, user2: user.id },
         { user2Unread: 0 }
       )
     ]);

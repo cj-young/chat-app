@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import { sterilizeClientChannel } from "@/lib/server";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
@@ -9,16 +13,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { userType, query } = getSession(sessionId);
-    if (!query || userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session || session.isExpired()) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
     const { channelType, name, groupId } = (await req.json()) as {
       channelType: TChannelType;
       name: string;
@@ -32,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid server ID" });
 
     const member = await Member.findOne<IMember>({
-      user: userId,
+      user: user.id,
       server: serverId
     });
     if (!member || !(member.role === "admin" || member.role === "owner"))

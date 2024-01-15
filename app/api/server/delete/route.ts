@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import Message from "@/models/Message";
 import User from "@/models/User";
 import Channel from "@/models/server/Channel";
@@ -9,15 +13,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session) return invalidSession();
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const { serverId } = (await req.json()) as { serverId: string };
     if (!isValidObjectId(serverId))
@@ -27,7 +27,7 @@ export async function DELETE(req: NextRequest) {
       );
 
     const [member, server] = await Promise.all([
-      Member.findOne<IMember>({ user: userId, server: serverId }),
+      Member.findOne<IMember>({ user: user.id, server: serverId }),
       Server.findById<IServer>(serverId)
     ]);
     if (!server) return NextResponse.json({ message: "Invalid server ID" });

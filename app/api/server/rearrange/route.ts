@@ -1,21 +1,19 @@
-import { getSession, invalidSession } from "@/lib/auth";
-import User, { IUser } from "@/models/User";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
+import User from "@/models/User";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { userType, query } = getSession(sessionId);
-    if (!query || userType !== "verified") return invalidSession();
-
-    const session = await query.populate<{ user: IUser }>("user");
-    if (!session || session.isExpired() || !session.user)
-      return invalidSession();
-
-    const { user } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const { serverId, newUiOrder } = (await req.json()) as {
       serverId: string;
@@ -42,7 +40,7 @@ export async function POST(req: NextRequest) {
       );
     const oldUiOrder = serverObject.uiOrder;
 
-    const updated = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       user.id,
       {
         $inc: { "servers.$[case1].uiOrder": -1, "servers.$[case2].uiOrder": 1 },

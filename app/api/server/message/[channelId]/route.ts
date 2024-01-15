@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import {
   MESSAGE_COUNT,
@@ -6,7 +10,6 @@ import {
   sterilizeClientMessage
 } from "@/lib/message";
 import Message, { IMessage } from "@/models/Message";
-import { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import { isValidObjectId } from "mongoose";
@@ -20,20 +23,17 @@ export async function POST(req: NextRequest) {
       content: string;
       tempId: string;
     };
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (!query || userType !== "verified") return invalidSession();
 
     await dbConnect();
 
-    const [session, channel] = await Promise.all([
-      query.populate<{ user: IUser }>("user"),
+    const [reqSession, channel] = await Promise.all([
+      getReqSession(req),
       Channel.findById<IChannel>(channelId)
     ]);
 
-    if (!session || !channel) return invalidSession();
+    if (!isVerifiedReqSession(reqSession) || !channel) return invalidSession();
+
+    const { session } = reqSession;
 
     const member = await Member.findOne<IMember>({
       user: session.user.id,

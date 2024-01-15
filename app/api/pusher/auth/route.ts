@@ -1,9 +1,8 @@
-import { getSession } from "@/lib/auth";
+import { getReqSession, isVerifiedReqSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
-import { IUser } from "@/models/User";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -19,13 +18,9 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
 
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return authFailed();
-
-    const { query, userType } = getSession(sessionId);
-    if (!query || userType !== "verified") return authFailed();
-    const session = await query.populate<{ user: IUser }>("user");
-    if (!session) return authFailed();
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return authFailed();
+    const { session } = reqSession;
 
     const splitChannel = channelName.split("-");
     if (splitChannel[0] === "private") {

@@ -1,4 +1,8 @@
-import { getSession, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import { getInviteLink } from "@/lib/server";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -10,16 +14,11 @@ const INVITE_CODE_EXPIRY_TIME = 1000 * 60 * 60 * 24 * 5; // 5 days
 
 export async function GET(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return invalidSession();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return invalidSession();
-
-    const session = await query;
-    if (!session?.user) return invalidSession();
-
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return invalidSession();
+    const {
+      session: { user }
+    } = reqSession;
 
     const serverId = req.nextUrl.pathname.slice(
       req.nextUrl.pathname.lastIndexOf("/") + 1
@@ -28,7 +27,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Invalid server ID" });
     const [server, member] = await Promise.all([
       Server.findById<IServer>(serverId),
-      Member.findOne<IMember>({ user: userId, server: serverId })
+      Member.findOne<IMember>({ user: user.id, server: serverId })
     ]);
     if (!server) return NextResponse.json({ message: "Invalid server ID" });
     if (!member) return invalidSession();

@@ -3,7 +3,7 @@ import Session, { ISession } from "@/models/Session";
 import SignupSession, { ISignupSession } from "@/models/SignupSession";
 import User, { IUser } from "@/models/User";
 import { IProfile } from "@/types/user";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "./db";
 
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
@@ -99,12 +99,12 @@ export function getSession(sessionId: string) {
   if (sessionId[0] === "0") {
     return {
       query: SignupSession.findById<ISignupSession>(sessionId.slice(1)),
-      userType: "signingUp"
+      userType: "signingUp" as const
     };
   } else if (sessionId[0] === "1") {
     return {
       query: Session.findById<ISession>(sessionId.slice(1)),
-      userType: "verified"
+      userType: "verified" as const
     };
   } else {
     throw new Error("Invalid session ID: prefix of '1' or '0' not provided");
@@ -113,4 +113,50 @@ export function getSession(sessionId: string) {
 
 export function invalidSession() {
   return NextResponse.json({ message: "Invalid session" }, { status: 401 });
+}
+
+type TSignupSession = {
+  userType: "signingUp";
+  session: ISignupSession;
+};
+
+type TVerifiedReqSession = {
+  userType: "verified";
+  session: Omit<ISession, "user"> & {
+    user: IUser;
+  };
+};
+
+type TReqSession = TSignupSession | TVerifiedReqSession | null;
+
+export async function getReqSession(req: NextRequest): Promise<TReqSession> {
+  const sessionId = req.cookies.get("session")?.value;
+  if (!sessionId) return null;
+
+  const { query, userType } = getSession(sessionId);
+
+  if (userType === "verified") {
+    const session = await query.populate<{ user: IUser }>("user");
+    if (!session || session.isExpired()) return null;
+    return {
+      userType,
+      session
+    };
+  } else if (userType === "signingUp") {
+    const session = await query;
+
+    if (!session || session.isExpired()) return null;
+    return {
+      userType,
+      session
+    };
+  } else {
+    return null;
+  }
+}
+
+export function isVerifiedReqSession(
+  reqSession: TReqSession
+): reqSession is TVerifiedReqSession {
+  return reqSession !== null && reqSession?.userType === "verified";
 }

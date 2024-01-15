@@ -1,4 +1,9 @@
-import { getSession, getUserProfile, invalidSession } from "@/lib/auth";
+import {
+  getReqSession,
+  getUserProfile,
+  invalidSession,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import {
   MESSAGE_COUNT,
@@ -8,32 +13,26 @@ import {
 import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
-import { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await dbConnect();
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
-
     const { content, tempId } = (await req.json()) as {
       content: string;
       tempId: string;
     };
-    const taggedSessionId = req.cookies.get("session")?.value;
-    if (!taggedSessionId) return invalidSession();
 
-    const { query, userType } = getSession(taggedSessionId);
-    if (!query || userType !== "verified") return invalidSession();
-
-    await dbConnect();
-
-    const [session, directMessage] = await Promise.all([
-      query.populate<{ user: IUser }>("user"),
+    const [reqSession, directMessage] = await Promise.all([
+      getReqSession(req),
       DirectMessage.findById<IDirectMessage>(chatId)
     ]);
-    if (!session || !directMessage) return invalidSession();
+    if (!isVerifiedReqSession(reqSession) || !directMessage)
+      return invalidSession();
+    const { session } = reqSession;
     if (
       !directMessage ||
       (directMessage.user1.toString() !== session.user.id &&
@@ -79,7 +78,7 @@ export async function POST(req: NextRequest) {
     const clientMessage = sterilizeClientMessage({
       ...message.toObject(),
       id: message.id,
-      sender: session.user
+      sender: session.user.id
     });
 
     await pusherServer.trigger(

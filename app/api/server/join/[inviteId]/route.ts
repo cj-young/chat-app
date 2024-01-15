@@ -1,4 +1,8 @@
-import { getSession, getUserProfile } from "@/lib/auth";
+import {
+  getReqSession,
+  getUserProfile,
+  isVerifiedReqSession
+} from "@/lib/auth";
 import User, { IUser } from "@/models/User";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
@@ -8,15 +12,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const sessionId = req.cookies.get("session")?.value;
-    if (!sessionId) return joinFailed();
-
-    const { query, userType } = getSession(sessionId);
-    if (userType !== "verified") return joinFailed();
-
-    const session = await query;
-    if (!session?.user) return joinFailed();
-    const { user: userId } = session;
+    const reqSession = await getReqSession(req);
+    if (!isVerifiedReqSession(reqSession)) return joinFailed();
+    const {
+      session: { user }
+    } = reqSession;
 
     const inviteId = req.nextUrl.pathname.slice(
       req.nextUrl.pathname.lastIndexOf("/") + 1
@@ -25,9 +25,7 @@ export async function GET(req: NextRequest) {
       "inviteCode.code": inviteId
     });
     if (!server) return joinFailed();
-    if (
-      server.members.some((member) => member.toString() === userId.toString())
-    ) {
+    if (server.members.some((member) => member.toString() === user.id)) {
       return NextResponse.redirect(
         new URL(`/server/${server.id}`, process.env.BASE_URL)
       );
@@ -41,7 +39,7 @@ export async function GET(req: NextRequest) {
     }
 
     const member = (await Member.create({
-      user: userId,
+      user: user.id,
       server: server.id,
       role: "guest",
       channels: channels.map((channel) => ({ channel, unreadMessages: 0 }))
@@ -53,21 +51,24 @@ export async function GET(req: NextRequest) {
       $addToSet: { members: member.id }
     });
 
-    const user = await User.findById<IUser>(userId);
-    if (!user) return joinFailed();
+    const workingUser = await User.findById<IUser>(user.id);
+    if (!workingUser) return joinFailed();
 
     if (
-      !user.servers.some(
+      !workingUser.servers.some(
         (prevServer) => prevServer.server.toString() === server.id
       )
     ) {
-      user.servers.push({ server: server.id, uiOrder: user.servers.length });
-      await user.save();
+      workingUser.servers.push({
+        server: server.id,
+        uiOrder: workingUser.servers.length
+      });
+      await workingUser.save();
     }
 
     const clientMember: IClientMember = {
       role: member.role,
-      user: getUserProfile(user),
+      user: getUserProfile(workingUser),
       id: member.id
     };
     await pusherServer.trigger(
