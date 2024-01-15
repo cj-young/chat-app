@@ -5,6 +5,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import EditIcon from "@/public/pen-to-square-solid.svg";
 import EditDisplayName from "../components/EditDisplayName";
+import EditProfilePicture from "../components/EditProfilePicture";
 import EditUsername from "../components/EditUsername";
 import styles from "./page.module.scss";
 
@@ -18,6 +19,10 @@ export default function ProfileSettings() {
 
   function editUsername() {
     addModal(<EditUsername />);
+  }
+
+  function editProfilePicture() {
+    addModal(<EditProfilePicture />);
   }
 
   return (
@@ -57,7 +62,10 @@ export default function ProfileSettings() {
             user={profile}
             className={styles["profile-picture"]}
           />
-          <button className={styles["change-profile-picture"]}>
+          <button
+            className={styles["change-profile-picture"]}
+            onClick={editProfilePicture}
+          >
             Edit Picture
           </button>
         </div>

@@ -30,3 +30,15 @@ export async function uploadServerImage(serverFile: File) {
   const downloadUrl = await getDownloadURL(serverImageRef);
   return downloadUrl;
 }
+
+export async function uploadProfilePicture(pictureFile: File) {
+  const bytes = await pictureFile.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const image = await sharp(buffer).resize(400, 400).jpeg().toBuffer();
+  const metadata = { contentType: "image/jpeg" };
+
+  const imageRef = ref(storage, `profile-pictures/${v4()}`);
+  const snapshot = await uploadBytes(imageRef, image, metadata);
+  const downloadUrl = await getDownloadURL(imageRef);
+  return downloadUrl;
+}
