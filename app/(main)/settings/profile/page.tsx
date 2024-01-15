@@ -5,14 +5,19 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import EditIcon from "@/public/pen-to-square-solid.svg";
 import EditDisplayName from "../components/EditDisplayName";
+import EditUsername from "../components/EditUsername";
 import styles from "./page.module.scss";
 
 export default function ProfileSettings() {
   const { profile } = useAuthContext();
   const { addModal } = useUiContext();
 
-  function editDisplayname() {
+  function editDisplayName() {
     addModal(<EditDisplayName />);
+  }
+
+  function editUsername() {
+    addModal(<EditUsername />);
   }
 
   return (
@@ -31,7 +36,7 @@ export default function ProfileSettings() {
               </span>
               <button
                 className={styles["edit-button"]}
-                onClick={editDisplayname}
+                onClick={editDisplayName}
               >
                 <EditIcon />
               </button>
@@ -41,7 +46,7 @@ export default function ProfileSettings() {
             <h3 className={styles["info-subtitle"]}>Username</h3>
             <div className={styles["info"]}>
               <span className={styles["username"]}>{profile.username}</span>
-              <button className={styles["edit-button"]}>
+              <button className={styles["edit-button"]} onClick={editUsername}>
                 <EditIcon />
               </button>
             </div>
