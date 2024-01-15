@@ -69,4 +69,9 @@
   &.muted svg {
     fill: var(--clr-error);
   }
+
+  &.settings-button svg {
+    width: 1.375rem;
+    fill: var(--text-contrast-100);
+  }
 }
