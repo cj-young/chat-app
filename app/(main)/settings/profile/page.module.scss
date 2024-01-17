@@ -62,6 +62,12 @@
   white-space: nowrap;
 }
 
+.online-status {
+  font-size: var(--fs-400);
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .edit-button {
   width: 1rem;
   height: 1rem;
