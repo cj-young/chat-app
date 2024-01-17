@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     } = reqSession;
 
     const { newOnlineStatus } = (await req.json()) as {
-      newOnlineStatus: string;
+      newOnlineStatus: "invisible" | "online" | "doNotDisturb" | "idle";
     };
     const parsedData = onlineStatusSchema.safeParse({
       onlineStatus: newOnlineStatus
@@ -27,6 +27,13 @@ export async function POST(req: NextRequest) {
 
     await User.findByIdAndUpdate(user.id, {
       preferredOnlineStatus: newOnlineStatus
+    });
+
+    const cleanOnlineStatus =
+      newOnlineStatus === "invisible" ? "offline" : newOnlineStatus;
+
+    await pusherServer.trigger(`profile-${user.id}`, "onlineStatusChanged", {
+      onlineStatus: cleanOnlineStatus
     });
 
     return NextResponse.json({
