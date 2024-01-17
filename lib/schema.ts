@@ -75,3 +75,9 @@ export const usernameSchema = z.object({
 });
 
 export type UsernameInfo = z.infer<typeof usernameSchema>;
+
+export const onlineStatusSchema = z.object({
+  onlineStatus: z.enum(["online", "invisible", "doNotDisturb", "idle"])
+});
+
+export type OnlineStatusInfo = z.infer<typeof onlineStatusSchema>;

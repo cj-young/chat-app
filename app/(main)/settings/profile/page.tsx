@@ -10,6 +10,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { formatOnlineStatus } from "@/lib/user";
 import EditIcon from "@/public/pen-to-square-solid.svg";
 import EditDisplayName from "../components/EditDisplayName";
+import EditOnlineStatus from "../components/EditOnlineStatus";
 import EditProfilePicture from "../components/EditProfilePicture";
 import EditUsername from "../components/EditUsername";
 import styles from "./page.module.scss";
@@ -28,6 +29,10 @@ export default function ProfileSettings() {
 
   function editProfilePicture() {
     addModal(<EditProfilePicture />);
+  }
+
+  function editOnlineStatus() {
+    addModal(<EditOnlineStatus />);
   }
 
   return (
@@ -74,9 +79,14 @@ export default function ProfileSettings() {
                 <OfflineIcon className={styles["status-icon"]} />
               )}
               <span className={styles["online-status"]}>
-                {formatOnlineStatus(profile.onlineStatus)}
+                {profile.onlineStatus === "offline"
+                  ? "Invisible"
+                  : formatOnlineStatus(profile.onlineStatus)}
               </span>
-              <button className={styles["edit-button"]} onClick={undefined}>
+              <button
+                className={styles["edit-button"]}
+                onClick={editOnlineStatus}
+              >
                 <EditIcon />
               </button>
             </div>
