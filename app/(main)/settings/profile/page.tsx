@@ -1,8 +1,13 @@
 "use client";
 import MobileNavToggle from "@/components/MobileNavToggle";
 import ProfilePicture from "@/components/ProfilePicture";
+import DoNotDisturbIcon from "@/components/svgs/DoNotDisturbIcon";
+import IdleIcon from "@/components/svgs/IdleIcon";
+import OfflineIcon from "@/components/svgs/OfflineIcon";
+import OnlineIcon from "@/components/svgs/OnlineIcon";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { formatOnlineStatus } from "@/lib/user";
 import EditIcon from "@/public/pen-to-square-solid.svg";
 import EditDisplayName from "../components/EditDisplayName";
 import EditProfilePicture from "../components/EditProfilePicture";
@@ -32,7 +37,7 @@ export default function ProfileSettings() {
         <h2>Profile</h2>
       </div>
       <section className={styles["profile-info"]}>
-        <div className={styles["names"]}>
+        <div className={styles["left-info"]}>
           <div className={styles["info-container"]}>
             <h3 className={styles["info-subtitle"]}>Display Name</h3>
             <div className={styles["info"]}>
@@ -52,6 +57,26 @@ export default function ProfileSettings() {
             <div className={styles["info"]}>
               <span className={styles["username"]}>{profile.username}</span>
               <button className={styles["edit-button"]} onClick={editUsername}>
+                <EditIcon />
+              </button>
+            </div>
+          </div>
+          <div className={styles["info-container"]}>
+            <h3 className={styles["info-subtitle"]}>Online Status</h3>
+            <div className={styles["info"]}>
+              {profile.onlineStatus === "online" ? (
+                <OnlineIcon className={styles["status-icon"]} />
+              ) : profile.onlineStatus === "doNotDisturb" ? (
+                <DoNotDisturbIcon className={styles["status-icon"]} />
+              ) : profile.onlineStatus === "idle" ? (
+                <IdleIcon className={styles["status-icon"]} />
+              ) : (
+                <OfflineIcon className={styles["status-icon"]} />
+              )}
+              <span className={styles["online-status"]}>
+                {formatOnlineStatus(profile.onlineStatus)}
+              </span>
+              <button className={styles["edit-button"]} onClick={undefined}>
                 <EditIcon />
               </button>
             </div>
