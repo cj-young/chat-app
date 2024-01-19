@@ -20,7 +20,8 @@ type TButton = "message" | "removeFriend" | "addFriend" | "blockUser";
 
 export default function ProfileModal({ user }: Props) {
   const { closeModal } = useUiContext();
-  const { friends, profile, directMessages } = useAuthContext();
+  const { friends, profile, directMessages, blockedUsers, setBlockedUsers } =
+    useAuthContext();
   const [loadingButton, setLoadingButton] = useState<TButton | null>(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,6 +34,10 @@ export default function ProfileModal({ user }: Props) {
   const isClientUser = useMemo(() => {
     return user.id === profile.id;
   }, [user]);
+
+  const isBlocked = useMemo(() => {
+    return blockedUsers.some((blockedUser) => blockedUser.id === user.id);
+  }, [blockedUsers]);
 
   function resolveAsError(errorMessage?: string) {
     setErrorMessage(errorMessage ?? "An error occurred, please try again");
@@ -106,6 +111,55 @@ export default function ProfileModal({ user }: Props) {
     }
   }
 
+  async function handleBlockUser() {
+    try {
+      const res = await apiFetch("/user/block", "POST", {
+        blockedUserId: user.id
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return setErrorMessage(
+          data.message ?? "An error occurred while blocking this user"
+        );
+      }
+
+      if (data.user) {
+        return setBlockedUsers((prev) => [
+          ...prev.filter((prevUser) => prevUser.id !== data.user.id),
+          data.user
+        ]);
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("An error occurred while blocking this user");
+    }
+  }
+
+  async function handleUnblockUser() {
+    try {
+      const res = await apiFetch("/user/unblock", "POST", {
+        unblockedUserId: user.id
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return setErrorMessage(
+          data.message ?? "An error occurred while unblocking this user"
+        );
+      }
+
+      setBlockedUsers((prev) =>
+        prev.filter((prevBlockedUser) => prevBlockedUser.id !== user.id)
+      );
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("An error occurred while unblocking this user");
+    }
+  }
+
   return (
     <div className={styles["profile-menu"]}>
       <button className={styles["exit-modal"]} onClick={closeModal}>
@@ -154,8 +208,9 @@ export default function ProfileModal({ user }: Props) {
               " "
             )}
             loading={loadingButton === "blockUser"}
+            onClick={isBlocked ? handleUnblockUser : handleBlockUser}
           >
-            Block User
+            {isBlocked ? "Unblock User" : "Block User"}
           </LoaderButton>
         </div>
       )}
