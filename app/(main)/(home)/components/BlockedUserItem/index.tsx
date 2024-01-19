@@ -1,5 +1,7 @@
 "use client";
 import ProfilePicture from "@/components/ProfilePicture";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { apiFetch } from "@/lib/api";
 import { formatOnlineStatus } from "@/lib/user";
 import { IProfile } from "@/types/user";
 import styles from "./styles.module.scss";
@@ -9,6 +11,19 @@ interface Props {
 }
 
 export default function BlockedUserItem({ user }: Props) {
+  const { setBlockedUsers } = useAuthContext();
+
+  async function handleUnblockUser() {
+    try {
+      setBlockedUsers((prev) =>
+        prev.filter((prevBlockedUser) => prevBlockedUser.id !== user.id)
+      );
+      await apiFetch("/user/unblock", "POST", { unblockedUserId: user.id });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles["friend-item"]}>
       <div className={styles["left"]}>
@@ -21,7 +36,7 @@ export default function BlockedUserItem({ user }: Props) {
         </div>
       </div>
       <div className={styles["right"]}>
-        <button className={styles["button"]} onClick={(e) => {}}>
+        <button className={styles["button"]} onClick={handleUnblockUser}>
           Unblock
         </button>
       </div>
