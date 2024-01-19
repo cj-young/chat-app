@@ -57,6 +57,9 @@ export default async function RootLayout({
       uiOrder: server.uiOrder,
       server: sterilizeClientServer(server.server)
     }));
+  const blockedUsers = user.blockedUsers
+    .filter((blockedUser) => !!blockedUser)
+    .map((blockedUser) => getUserProfile(blockedUser));
 
   return (
     <AuthContextProvider
@@ -66,6 +69,7 @@ export default async function RootLayout({
       initialDirectMessages={directMessages}
       initialGroupChats={groupChats}
       initialServers={servers}
+      initialBlockedUsers={blockedUsers}
     >
       <VoiceCallContextProvider>
         <div className={styles["app-container"]}>

@@ -38,6 +38,8 @@ interface IAuthContext {
   setServers: Dispatch<
     SetStateAction<{ uiOrder: number; server: IClientServer }[]>
   >;
+  blockedUsers: IProfile[];
+  setBlockedUsers: Dispatch<SetStateAction<IProfile[]>>;
 }
 
 interface Props {
@@ -48,6 +50,7 @@ interface Props {
   initialDirectMessages: IClientDm[];
   initialGroupChats: IClientGroupChat[];
   initialServers: { uiOrder: number; server: IClientServer }[];
+  initialBlockedUsers: IProfile[];
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -59,7 +62,8 @@ export default function AuthContextProvider({
   initialFriends,
   initialDirectMessages,
   initialGroupChats,
-  initialServers
+  initialServers,
+  initialBlockedUsers
 }: Props) {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [friendRequests, setFriendRequests] = useState<IProfile[]>(
@@ -72,6 +76,7 @@ export default function AuthContextProvider({
   const [groupChats, setGroupChats] =
     useState<IClientGroupChat[]>(initialGroupChats);
   const [servers, setServers] = useState(initialServers);
+  const [blockedUsers, setBlockedUsers] = useState(initialBlockedUsers);
   const router = useRouter();
   const {
     joinAppChannel,
@@ -303,7 +308,9 @@ export default function AuthContextProvider({
         groupChats,
         setGroupChats,
         servers,
-        setServers
+        setServers,
+        blockedUsers,
+        setBlockedUsers
       }}
     >
       {children}

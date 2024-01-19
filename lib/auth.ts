@@ -26,7 +26,12 @@ export async function getSessionUser(sessionId: string) {
   const session = await Session.findById<ISession>(sessionId).populate<{
     user: Omit<
       IUser,
-      "friends" | "friendRequests" | "directMessages" | "groupChats" | "servers"
+      | "friends"
+      | "friendRequests"
+      | "directMessages"
+      | "groupChats"
+      | "servers"
+      | "blockedUsers"
     > & {
       friends: IUser[];
       friendRequests: IUser[];
@@ -38,6 +43,7 @@ export async function getSessionUser(sessionId: string) {
         members: { user: IUser; unreadMessages: number }[];
       })[];
       servers: { server: IServer; uiOrder: number }[];
+      blockedUsers: IUser[];
     };
   }>({
     path: "user",
@@ -46,6 +52,7 @@ export async function getSessionUser(sessionId: string) {
       "friends",
       "friendRequests",
       "servers.server",
+      "blockedUsers",
       {
         path: "directMessages",
         model: DirectMessage,

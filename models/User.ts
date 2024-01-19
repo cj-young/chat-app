@@ -16,6 +16,7 @@ export interface IUser extends Document {
   servers: { uiOrder: number; server: mongoose.Types.ObjectId }[];
   directMessages: mongoose.Types.ObjectId[];
   groupChats: mongoose.Types.ObjectId[];
+  blockedUsers: mongoose.Types.ObjectId[];
   imageUrl: string;
   preferredOnlineStatus: Exclude<TOnlineStatus, "offline"> | "invisible";
   isOnline: boolean;
@@ -100,6 +101,16 @@ const userSchema = new Schema<IUser>(
         {
           type: Schema.Types.ObjectId,
           ref: "GroupChat",
+          required: true
+        }
+      ],
+      default: []
+    },
+    blockedUsers: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
           required: true
         }
       ],
