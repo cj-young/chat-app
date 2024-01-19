@@ -1,5 +1,6 @@
 import {
   getReqSession,
+  getUserProfile,
   invalidSession,
   isVerifiedReqSession,
   serverError
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    return NextResponse.json({ user: blockedUser });
+    return NextResponse.json({ user: getUserProfile(blockedUser) });
   } catch (error) {
     console.error(error);
     return serverError();
