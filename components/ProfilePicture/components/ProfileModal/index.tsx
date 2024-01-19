@@ -113,50 +113,52 @@ export default function ProfileModal({ user }: Props) {
 
   async function handleBlockUser() {
     try {
+      setSuccessMessage("");
+      setErrorMessage("");
+      setLoadingButton("blockUser");
       const res = await apiFetch("/user/block", "POST", {
         blockedUserId: user.id
       });
       const data = await res.json();
       if (!res.ok) {
-        return setErrorMessage(
-          data.message ?? "An error occurred while blocking this user"
-        );
+        return resolveAsError(data.message);
       }
 
       if (data.user) {
-        return setBlockedUsers((prev) => [
+        setBlockedUsers((prev) => [
           ...prev.filter((prevUser) => prevUser.id !== data.user.id),
           data.user
         ]);
       }
-
-      console.log(data);
+      setSuccessMessage("User blocked");
+      setErrorMessage("");
+      return setLoadingButton(null);
     } catch (error) {
-      console.error(error);
-      setErrorMessage("An error occurred while blocking this user");
+      return resolveAsError();
     }
   }
 
   async function handleUnblockUser() {
     try {
+      setSuccessMessage("");
+      setErrorMessage("");
+      setLoadingButton("blockUser");
       const res = await apiFetch("/user/unblock", "POST", {
         unblockedUserId: user.id
       });
       const data = await res.json();
       if (!res.ok) {
-        return setErrorMessage(
-          data.message ?? "An error occurred while unblocking this user"
-        );
+        return resolveAsError(data.message);
       }
 
       setBlockedUsers((prev) =>
         prev.filter((prevBlockedUser) => prevBlockedUser.id !== user.id)
       );
-
-      console.log(data);
+      setSuccessMessage("User unblocked");
+      setErrorMessage("");
+      return setLoadingButton(null);
     } catch (error) {
-      console.error(error);
-      setErrorMessage("An error occurred while unblocking this user");
+      return resolveAsError();
     }
   }
 
