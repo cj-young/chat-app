@@ -27,13 +27,14 @@ export async function POST(req: NextRequest) {
     if (userType !== "verified") return invalidSession();
 
     const session = await query.populate<{
-      user: Omit<IUser, "friends"> & {
+      user: Omit<IUser, "friends" | "blockedUsers"> & {
         friends: IUser[];
+        blockedUsers: IUser[];
       };
     }>({
       path: "user",
       model: User,
-      populate: "friends"
+      populate: ["friends", "blockedUsers"]
     });
     if (!session?.user) return invalidSession();
 
@@ -57,6 +58,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (
+      session.user.blockedUsers.some(
+        (blockedUser) => blockedUser.username === receiverUsername
+      )
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            "You have blocked this user, so you can't add them as a friend"
+        },
+        { status: 400 }
+      );
+    }
+
     let receiverQuery;
     if (receiverId) {
       receiverQuery = { _id: receiverId } as const;
@@ -64,7 +79,24 @@ export async function POST(req: NextRequest) {
       receiverQuery = { username: receiverUsername! } as const;
     }
 
-    const receiver = await User.findOneAndUpdate<IUser>(
+    const receiver = await User.findOne<IUser>(receiverQuery);
+    if (!receiver) {
+      return NextResponse.json(
+        { message: "User does not exist" },
+        { status: 404 }
+      );
+    }
+    if (
+      receiver.blockedUsers.some(
+        (blockedUser) => blockedUser.toString() === session.user.id
+      )
+    ) {
+      return NextResponse.json({
+        message: `Friend request sent to ${receiver.username}`
+      });
+    }
+
+    const updatedReceiver = await User.findOneAndUpdate<IUser>(
       receiverQuery,
       {
         $addToSet: {
@@ -74,7 +106,7 @@ export async function POST(req: NextRequest) {
       { new: true }
     );
 
-    if (!receiver) {
+    if (!updatedReceiver) {
       return NextResponse.json(
         { message: "User does not exist" },
         { status: 404 }
@@ -82,13 +114,13 @@ export async function POST(req: NextRequest) {
     }
 
     await pusherServer.trigger(
-      `private-user-${receiver.id}`,
+      `private-user-${updatedReceiver.id}`,
       "friendRequest",
       getUserProfile(session.user)
     );
 
     return NextResponse.json({
-      message: `Friend request sent to ${receiver.username}`
+      message: `Friend request sent to ${updatedReceiver.username}`
     });
   } catch (error) {
     return NextResponse.json(
