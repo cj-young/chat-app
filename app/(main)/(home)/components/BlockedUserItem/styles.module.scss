@@ -1,0 +1,70 @@
+.friend-item {
+  height: 4rem;
+  min-height: 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--bg-contrast-100);
+  max-width: 100%;
+  gap: 1.5rem;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.display-name {
+  font-weight: bold;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--fs-400);
+}
+
+.online-status {
+  line-height: 1;
+  color: var(--text-contrast-200);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--fs-400);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.button {
+  padding: 0.5rem;
+  background-color: var(--bg-contrast-200);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: var(--br);
+  cursor: pointer;
+  transition: background-color 100ms ease;
+  position: relative;
+  font-size: var(--fs-300);
+  color: var(--text-contrast-100);
+  font-weight: bold;
+
+  svg {
+    width: 1.5rem;
+    fill: var(--text-primary);
+  }
+}

@@ -5,6 +5,7 @@ import { FriendPage } from "@/types/friends";
 import { useState } from "react";
 import AddFriend from "./components/AddFriend";
 import AllFriends from "./components/AllFriends";
+import BlockedUsers from "./components/BlockedUsers";
 import FriendRequests from "./components/FriendRequests";
 import FriendsNavbar from "./components/FriendsNavbar";
 import OnlineFriends from "./components/OnlineFriends";
@@ -31,8 +32,10 @@ export default function Home() {
         <AllFriends />
       ) : friendPage === "online" ? (
         <OnlineFriends />
+      ) : friendPage === "blocked" ? (
+        <BlockedUsers />
       ) : (
-        ""
+        <></>
       )}
     </main>
   );
