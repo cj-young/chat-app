@@ -16,6 +16,7 @@ export default function Message({ message, isFirst, isTemp }: Props) {
         <ProfilePicture
           user={message.sender}
           className={styles["profile-picture"]}
+          clickOpensMenu={true}
         />
       ) : (
         <span className={styles["sent-at"]}>
