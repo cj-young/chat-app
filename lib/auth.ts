@@ -122,6 +122,13 @@ export function invalidSession() {
   return NextResponse.json({ message: "Invalid session" }, { status: 401 });
 }
 
+export function serverError() {
+  return NextResponse.json(
+    { message: "Internal server error" },
+    { status: 500 }
+  );
+}
+
 type TSignupSession = {
   userType: "signingUp";
   session: ISignupSession;
