@@ -1,5 +1,6 @@
 "use client";
 import MessageModal from "@/components/MessageModal";
+import useLocalStorage from "@/hooks/useLocalStorage";
 import {
   rtcConfig,
   sendIceCandidate,
@@ -55,7 +56,7 @@ export default function VoiceCallContextProvider({ children }: Props) {
   >(new Map());
   const [connectionStatus, setConnectionStatus] =
     useState<string>("Connecting...");
-  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isMicMuted, setIsMicMuted] = useLocalStorage("isMicMuted", false);
   const isMicMutedRef = useRef<boolean>(isMicMuted);
   isMicMutedRef.current = isMicMuted;
   const didDenyMicrophone = useRef(false);
