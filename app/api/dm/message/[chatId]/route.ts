@@ -13,6 +13,7 @@ import {
 import { pusherServer } from "@/lib/pusher";
 import DirectMessage, { IDirectMessage } from "@/models/DirectMessage";
 import Message, { IMessage } from "@/models/Message";
+import User, { IUser } from "@/models/User";
 import { IClientMessage } from "@/types/user";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,14 +47,28 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
+    const isUser1 = user.id === directMessage.user1;
+    const otherUser = await User.findById<IUser>(
+      isUser1 ? directMessage.user2 : directMessage.user1
+    );
+    if (
+      !otherUser ||
+      otherUser.blockedUsers.some(
+        (blockedUserId) => blockedUserId.toString() === user.id
+      )
+    ) {
+      return NextResponse.json(
+        { message: "Access denied, message failed to send" },
+        { status: 403 }
+      );
+    }
+
     const message = (await Message.create<IMessage>({
       content,
       sender: session.user.id,
       chatRef: "DirectMessage",
       chat: directMessage.id
     })) as IMessage;
-
-    const isUser1 = user.id === directMessage.user1;
 
     let dmUpdateInfo;
     if (isUser1) {
