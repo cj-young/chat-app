@@ -41,12 +41,23 @@ export default async function DmChat({ params }: Props) {
       redirect("/");
     }
 
+    const otherUser = isUser1 ? directMessage.user2 : directMessage.user1;
+    let canSendMessages = true;
+    if (
+      otherUser.blockedUsers.some(
+        (blockedUser) => blockedUser.toString() === user.id
+      )
+    ) {
+      canSendMessages = false;
+    }
+
     return (
       <DmChatContainer
         directMessageChat={sterilizeClientDm(
           directMessage,
           isUser1 ? directMessage.user1.id : directMessage.user2.id
         )}
+        canSendMessages={canSendMessages}
       />
     );
   } catch (error) {

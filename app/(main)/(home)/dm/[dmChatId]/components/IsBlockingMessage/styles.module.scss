@@ -1,0 +1,22 @@
+.message-wrapper {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  gap: 0.5rem;
+  background-color: var(--bg-main);
+}
+
+.message {
+  background-color: var(--bg-contrast-100);
+  width: 100%;
+  border-radius: var(--br);
+  outline: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  color: var(--text-contrast-100);
+
+  &:placeholder-shown {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

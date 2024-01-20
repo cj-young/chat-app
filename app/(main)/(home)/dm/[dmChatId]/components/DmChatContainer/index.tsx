@@ -1,22 +1,34 @@
 "use client";
+import CannotMessage from "@/components/CannotMessage";
 import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
 import { IClientDm, ITempMessage } from "@/types/user";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DmNavbar from "../DmNavbar";
+import IsBlockingMessage from "../IsBlockingMessage";
 import styles from "./styles.module.scss";
 
 interface Props {
   directMessageChat: IClientDm;
+  canSendMessages?: boolean;
 }
 
-export default function DmChatContainer({ directMessageChat }: Props) {
+export default function DmChatContainer({
+  directMessageChat,
+  canSendMessages = true
+}: Props) {
   const { mobileNavExpanded } = useUiContext();
-  const { setDirectMessages, profile } = useAuthContext();
+  const { setDirectMessages, blockedUsers } = useAuthContext();
   const [tempMessages, setTempMessages] = useState<ITempMessage[]>([]);
+
+  const isBlockingUser = useMemo(() => {
+    return blockedUsers.some(
+      (blockedUser) => blockedUser.id === directMessageChat.user.id
+    );
+  }, [blockedUsers]);
 
   useEffect(() => {
     apiFetch(`/dm/reset-unread/${directMessageChat.chatId}`);
@@ -54,13 +66,19 @@ export default function DmChatContainer({ directMessageChat }: Props) {
         }}
         chatType="directMessage"
       />
-      <ChatInput
-        chatName={directMessageChat.user.displayName}
-        submitRoute={`/dm/message/${directMessageChat.chatId}`}
-        addTempMessage={(message: ITempMessage) => {
-          setTempMessages((prev) => [...prev, message]);
-        }}
-      />
+      {isBlockingUser ? (
+        <IsBlockingMessage dmChat={directMessageChat} />
+      ) : !canSendMessages ? (
+        <CannotMessage />
+      ) : (
+        <ChatInput
+          chatName={directMessageChat.user.displayName}
+          submitRoute={`/dm/message/${directMessageChat.chatId}`}
+          addTempMessage={(message: ITempMessage) => {
+            setTempMessages((prev) => [...prev, message]);
+          }}
+        />
+      )}
     </main>
   );
 }
