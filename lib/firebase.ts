@@ -22,7 +22,11 @@ export const storage = getStorage(app);
 export async function uploadServerImage(serverFile: File) {
   const bytes = await serverFile.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const serverImage = await sharp(buffer).resize(400, 400).jpeg().toBuffer();
+  const serverImage = await sharp(buffer)
+    .resize(400, 400)
+    .jpeg()
+    .withMetadata()
+    .toBuffer();
   const metadata = { contentType: "image/jpeg" };
 
   const serverImageRef = ref(storage, `server-pictures/${v4()}`);
@@ -34,7 +38,11 @@ export async function uploadServerImage(serverFile: File) {
 export async function uploadProfilePicture(pictureFile: File) {
   const bytes = await pictureFile.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const image = await sharp(buffer).resize(400, 400).jpeg().toBuffer();
+  const image = await sharp(buffer)
+    .resize(400, 400)
+    .jpeg()
+    .withMetadata()
+    .toBuffer();
   const metadata = { contentType: "image/jpeg" };
 
   const imageRef = ref(storage, `profile-pictures/${v4()}`);
@@ -46,7 +54,7 @@ export async function uploadProfilePicture(pictureFile: File) {
 export async function uploadMessageImage(imageFile: File) {
   const bytes = await imageFile.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const image = await sharp(buffer).jpeg().toBuffer();
+  const image = await sharp(buffer).jpeg().withMetadata().toBuffer();
   const metadata = { contentType: "image/jpeg" };
 
   const imageRef = ref(storage, `message-media/images/${v4()}`);
