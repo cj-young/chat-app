@@ -42,3 +42,15 @@ export async function uploadProfilePicture(pictureFile: File) {
   const downloadUrl = await getDownloadURL(imageRef);
   return downloadUrl;
 }
+
+export async function uploadMessageImage(imageFile: File) {
+  const bytes = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const image = await sharp(buffer).jpeg().toBuffer();
+  const metadata = { contentType: "image/jpeg" };
+
+  const imageRef = ref(storage, `message-media/images/${v4()}`);
+  const snapshop = await uploadBytes(imageRef, image, metadata);
+  const downloadUrl = await getDownloadURL(imageRef);
+  return downloadUrl;
+}
