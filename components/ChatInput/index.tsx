@@ -4,7 +4,7 @@ import PlusCircleIcon from "@/public/circle-plus-solid.svg";
 import SendIcon from "@/public/paper-plane-solid.svg";
 import { TMediaType, TMessageMedia } from "@/types/message";
 import { ITempMessage } from "@/types/user";
-import { FormEvent, KeyboardEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, KeyboardEvent, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import TextareaAutosize from "react-textarea-autosize";
 import { v4 } from "uuid";
@@ -54,7 +54,6 @@ export default function ChatInput({
   const { onClick: handleFileClick, ...rootProps } = getRootProps();
 
   function handleDrop(acceptedFiles: File[]) {
-    console.log(acceptedFiles);
     const parsedFiles = acceptedFiles
       .map((file) => {
         const fileType = file.type.split("/")[0];
@@ -75,10 +74,6 @@ export default function ChatInput({
 
     setMediaFiles((prev) => [...prev, ...parsedFiles]);
   }
-
-  useEffect(() => {
-    console.log(mediaPreviews);
-  }, [mediaPreviews]);
 
   async function sendMessage(e?: FormEvent) {
     if (e) e.preventDefault();
