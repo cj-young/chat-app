@@ -1,3 +1,4 @@
+import { TMessageMedia } from "@/types/message";
 import { Document, Schema, Types, model, models } from "mongoose";
 
 import "server-only";
@@ -9,6 +10,7 @@ export interface IMessage extends Document {
   chat: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  media: TMessageMedia[];
 }
 
 const messageSchema = new Schema<IMessage>(
@@ -31,6 +33,20 @@ const messageSchema = new Schema<IMessage>(
       type: Schema.Types.ObjectId,
       refPath: "chatRef",
       required: true
+    },
+    media: {
+      type: [
+        {
+          type: {
+            type: String,
+            required: true
+          },
+          mediaUrl: {
+            type: String,
+            required: true
+          }
+        }
+      ]
     }
   },
   { timestamps: true }
