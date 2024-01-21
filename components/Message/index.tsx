@@ -1,6 +1,7 @@
 import { IClientMessage, ITempMessage } from "@/types/user";
 import Linkify from "linkify-react";
 import ProfilePicture from "../ProfilePicture";
+import MessageImage from "./components/MediaImage";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -53,17 +54,39 @@ export default function Message({ message, isFirst, isTemp }: Props) {
           >
             {message.content}
           </Linkify>
+          {message.media && message.media.length > 0 && (
+            <ul className={styles["media-images"]}>
+              {message.media.map((media) =>
+                media.type === "image" ? (
+                  <MessageImage image={media} key={media.mediaUrl} />
+                ) : null
+              )}
+            </ul>
+          )}
         </div>
       ) : (
-        <Linkify
-          as="span"
-          className={[
-            styles["content"],
-            isTemp ? styles["temp-content"] : ""
-          ].join(" ")}
-        >
-          {message.content}
-        </Linkify>
+        <div className={styles["content-container"]}>
+          <Linkify
+            as="span"
+            className={[
+              styles["content"],
+              isTemp ? styles["temp-content"] : ""
+            ].join(" ")}
+          >
+            {message.content}
+          </Linkify>
+          {message.media && message.media.length > 0 && (
+            <ul className={styles["media-images"]}>
+              {message.media.map((media) =>
+                media.type === "image" ? (
+                  <MessageImage image={media} key={media.mediaUrl} />
+                ) : (
+                  <></>
+                )
+              )}
+            </ul>
+          )}
+        </div>
       )}
     </li>
   );

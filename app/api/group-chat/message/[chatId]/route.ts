@@ -6,6 +6,7 @@ import {
   isVerifiedReqSession
 } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { uploadMessageImage } from "@/lib/firebase";
 import {
   MESSAGE_COUNT,
   getMessages,
@@ -28,10 +29,11 @@ export async function POST(req: NextRequest) {
     } = reqSession;
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
 
-    const { content, tempId } = (await req.json()) as {
-      content: string;
-      tempId: string;
-    };
+    const formData = await req.formData();
+    const content: string | undefined = formData.get("content") as string;
+    const tempId: string | undefined = formData.get("tempId") as string;
+    const media = formData.getAll("media") as File[];
+
     const taggedSessionId = req.cookies.get("session")?.value;
     if (!taggedSessionId) return invalidSession();
 
@@ -50,11 +52,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const images = media.filter((file) => file.type.split("/")[0] === "image");
+    const imageUrls = await Promise.all(images.map(uploadMessageImage));
+
     const message = (await Message.create<IMessage>({
       content,
       sender: user.id,
       chatRef: "GroupChat",
-      chat: groupChat.id
+      chat: groupChat.id,
+      media: [
+        ...imageUrls.map((url) => ({
+          type: "image",
+          mediaUrl: url
+        }))
+      ]
     })) as IMessage;
 
     if (!message)

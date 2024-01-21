@@ -1,0 +1,13 @@
+.image-container {
+  list-style: none;
+  overflow: hidden;
+  border-radius: var(--br);
+  display: flex;
+}
+
+.image {
+  max-height: 10rem;
+  min-width: 4rem;
+  max-width: 100%;
+  width: auto;
+}

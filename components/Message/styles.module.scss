@@ -54,6 +54,12 @@
   flex: 1;
 }
 
+.content-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 .content {
   color: var(--text-contrast-100);
   white-space: break-spaces;
@@ -89,4 +95,12 @@
 
 .temp-content {
   opacity: 50%;
+}
+
+.media-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.25rem;
 }
