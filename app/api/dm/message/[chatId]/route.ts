@@ -65,7 +65,6 @@ export async function POST(req: NextRequest) {
 
     const images = media.filter((file) => file.type.split("/")[0] === "image");
     const imageUrls = await Promise.all(images.map(uploadMessageImage));
-    console.log(imageUrls);
 
     const message = (await Message.create<IMessage>({
       content,
