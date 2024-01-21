@@ -1,10 +1,10 @@
 import {
   getReqSession,
-  getUserProfile,
   invalidSession,
   isVerifiedReqSession
 } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import { uploadMessageImage } from "@/lib/firebase";
 import {
   MESSAGE_COUNT,
   getMessages,
@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
-    const { content, tempId } = (await req.json()) as {
-      content: string;
-      tempId: string;
-    };
+    const formData = await req.formData();
+    const content: string | undefined = formData.get("content") as string;
+    const tempId: string | undefined = formData.get("tempId") as string;
+    const media = formData.getAll("media") as File[];
 
     const [reqSession, directMessage] = await Promise.all([
       getReqSession(req),
@@ -63,11 +63,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const images = media.filter((file) => file.type.split("/")[0] === "image");
+    const imageUrls = await Promise.all(images.map(uploadMessageImage));
+    console.log(imageUrls);
+
     const message = (await Message.create<IMessage>({
       content,
       sender: session.user.id,
       chatRef: "DirectMessage",
-      chat: directMessage.id
+      chat: directMessage.id,
+      media: [
+        ...imageUrls.map((url) => ({
+          type: "image",
+          mediaUrl: url
+        }))
+      ]
     })) as IMessage;
 
     let dmUpdateInfo;
@@ -136,13 +146,7 @@ export async function GET(req: NextRequest) {
 
   const messages = await getMessages(chatId, "DirectMessage", lastMessage);
 
-  const clientMessages: IClientMessage[] = messages.map((message) => ({
-    content: message.content,
-    sender: getUserProfile(message.sender),
-    chatId: message.chat.toString(),
-    timestamp: message.createdAt,
-    id: message.id
-  }));
+  const clientMessages: IClientMessage[] = messages.map(sterilizeClientMessage);
 
   return NextResponse.json({
     messages: clientMessages,
