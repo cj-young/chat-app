@@ -4,11 +4,12 @@ import PlusCircleIcon from "@/public/circle-plus-solid.svg";
 import SendIcon from "@/public/paper-plane-solid.svg";
 import { TMediaType, TMessageMedia } from "@/types/message";
 import { ITempMessage } from "@/types/user";
-import { FormEvent, KeyboardEvent, useMemo, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import TextareaAutosize from "react-textarea-autosize";
 import { v4 } from "uuid";
 import ImagePreview from "./components/ImagePreview";
+import VideoPreview from "./components/VideoPreview";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -47,7 +48,8 @@ export default function ChatInput({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
     accept: {
-      "image/*": []
+      "image/*": [],
+      "video/*": []
     }
   });
 
@@ -114,6 +116,10 @@ export default function ChatInput({
     setMediaFiles((prev) => prev.filter((file) => file.id !== id));
   }
 
+  useEffect(() => {
+    console.log(mediaFiles);
+  }, [mediaFiles]);
+
   return (
     <form
       className={styles["input-form"]}
@@ -133,13 +139,21 @@ export default function ChatInput({
                     (preview) =>
                       preview.type === "image" || preview.type === "video"
                   )
-                  .map((preview) => (
-                    <ImagePreview
-                      imageUrl={preview.mediaUrl}
-                      remove={() => removeFile(preview.id)}
-                      key={preview.id}
-                    />
-                  ))}
+                  .map((preview) =>
+                    preview.type === "image" ? (
+                      <ImagePreview
+                        imageUrl={preview.mediaUrl}
+                        remove={() => removeFile(preview.id)}
+                        key={preview.id}
+                      />
+                    ) : (
+                      <VideoPreview
+                        videoUrl={preview.mediaUrl}
+                        remove={() => removeFile(preview.id)}
+                        key={preview.id}
+                      />
+                    )
+                  )}
               </ul>
             )}
           </div>
