@@ -38,7 +38,7 @@ export async function getMessages(
 export function sterilizeClientMessage(
   message: Pick<
     Omit<IMessage, "sender"> & { sender: IUser },
-    "content" | "sender" | "chat" | "createdAt" | "id"
+    "content" | "sender" | "chat" | "createdAt" | "id" | "media"
   >
 ): IClientMessage {
   return {
@@ -46,6 +46,7 @@ export function sterilizeClientMessage(
     sender: getUserProfile(message.sender),
     chatId: message.chat.toString(),
     timestamp: message.createdAt,
-    id: message.id
+    id: message.id,
+    media: message.media
   };
 }

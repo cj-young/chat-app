@@ -1,3 +1,5 @@
+import { TMessageMedia } from "./message";
+
 export interface IProfile {
   email: string;
   username: string;
@@ -22,6 +24,7 @@ export interface IClientMessage {
   chatId: string;
   timestamp: Date;
   id: string;
+  media?: TMessageMedia[];
 }
 
 export interface ITempMessage {
@@ -29,6 +32,7 @@ export interface ITempMessage {
   sender: IProfile;
   timestamp: Date;
   id: string;
+  media?: TMessageMedia[];
 }
 
 export interface IClientGroupChat {

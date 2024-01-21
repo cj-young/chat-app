@@ -10,7 +10,7 @@ export interface IMessage extends Document {
   chat: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  media: TMessageMedia[];
+  media?: TMessageMedia[];
 }
 
 const messageSchema = new Schema<IMessage>(
@@ -39,7 +39,8 @@ const messageSchema = new Schema<IMessage>(
         {
           type: {
             type: String,
-            required: true
+            required: true,
+            enum: ["video", "audio", "image"]
           },
           mediaUrl: {
             type: String,
