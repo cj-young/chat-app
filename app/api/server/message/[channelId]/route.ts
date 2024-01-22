@@ -4,15 +4,16 @@ import {
   isVerifiedReqSession
 } from "@/lib/auth";
 import dbConnect from "@/lib/db";
-import { uploadMessageImage } from "@/lib/firebase";
 import {
   MESSAGE_COUNT,
+  createMessageMediaFromFile,
   getMessages,
   sterilizeClientMessage
 } from "@/lib/message";
 import Message, { IMessage } from "@/models/Message";
 import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
+import { TMessageMedia } from "@/types/message";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -53,20 +54,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const images = media.filter((file) => file.type.split("/")[0] === "image");
-    const imageUrls = await Promise.all(images.map(uploadMessageImage));
+    const mediaObjects = (
+      await Promise.all(media.map(createMessageMediaFromFile))
+    ).filter((mediaObject): mediaObject is TMessageMedia => !!mediaObject);
 
     const message = (await Message.create<IMessage>({
       content,
       sender: session.user.id,
       chatRef: "Channel",
       chat: channel.id,
-      media: [
-        ...imageUrls.map((url) => ({
-          type: "image",
-          mediaUrl: url
-        }))
-      ]
+      media: mediaObjects
     })) as IMessage;
 
     if (!message)
