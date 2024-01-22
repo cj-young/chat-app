@@ -1,8 +1,11 @@
 import Message, { IMessage } from "@/models/Message";
 import { IUser } from "@/models/User";
+import { TMessageMedia } from "@/types/message";
 import { IClientMessage } from "@/types/user";
+import "server-only";
 import { getUserProfile } from "./auth";
 import dbConnect from "./db";
+import { uploadMessageImage, uploadMessageVideo } from "./firebase";
 
 export const MESSAGE_COUNT = 64;
 
@@ -48,5 +51,27 @@ export function sterilizeClientMessage(
     timestamp: message.createdAt,
     id: message.id,
     media: message.media
+  };
+}
+
+export async function createMessageMediaFromFile(
+  file: File
+): Promise<TMessageMedia | null> {
+  const fileType = file.type.split("/")[0];
+  if (fileType !== "image" && fileType !== "video" && fileType !== "audio") {
+    return null;
+  }
+  let downloadUrl;
+  if (fileType === "image") {
+    downloadUrl = await uploadMessageImage(file);
+  } else if (fileType === "video") {
+    downloadUrl = await uploadMessageVideo(file);
+  } else {
+    return null;
+  }
+
+  return {
+    type: fileType,
+    mediaUrl: downloadUrl
   };
 }

@@ -2,6 +2,7 @@ import { IClientMessage, ITempMessage } from "@/types/user";
 import Linkify from "linkify-react";
 import ProfilePicture from "../ProfilePicture";
 import MessageImage from "./components/MediaImage";
+import MessageVideo from "./components/MediaVideo";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -59,6 +60,11 @@ export default function Message({ message, isFirst, isTemp }: Props) {
               {message.media.map((media) =>
                 media.type === "image" ? (
                   <MessageImage image={media} key={media.mediaUrl} />
+                ) : media.type === "video" ? (
+                  <MessageVideo
+                    videoUrl={media.mediaUrl}
+                    key={media.mediaUrl}
+                  />
                 ) : null
               )}
             </ul>
@@ -80,9 +86,12 @@ export default function Message({ message, isFirst, isTemp }: Props) {
               {message.media.map((media) =>
                 media.type === "image" ? (
                   <MessageImage image={media} key={media.mediaUrl} />
-                ) : (
-                  <></>
-                )
+                ) : media.type === "video" ? (
+                  <MessageVideo
+                    videoUrl={media.mediaUrl}
+                    key={media.mediaUrl}
+                  />
+                ) : null
               )}
             </ul>
           )}

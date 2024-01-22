@@ -62,3 +62,14 @@ export async function uploadMessageImage(imageFile: File) {
   const downloadUrl = await getDownloadURL(imageRef);
   return downloadUrl;
 }
+
+export async function uploadMessageVideo(videoFile: File) {
+  const bytes = await videoFile.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const metadata = { contentType: videoFile.type };
+
+  const videoRef = ref(storage, `message-media/videos/${v4()}`);
+  const snapshop = await uploadBytes(videoRef, buffer, metadata);
+  const downloadUrl = await getDownloadURL(videoRef);
+  return downloadUrl;
+}
