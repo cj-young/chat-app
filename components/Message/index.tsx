@@ -1,5 +1,6 @@
 import { IClientMessage, ITempMessage } from "@/types/user";
 import Linkify from "linkify-react";
+import AudioPlayer from "../AudioPlayer";
 import ProfilePicture from "../ProfilePicture";
 import MessageImage from "./components/MediaImage";
 import MessageVideo from "./components/MediaVideo";
@@ -56,18 +57,27 @@ export default function Message({ message, isFirst, isTemp }: Props) {
             {message.content}
           </Linkify>
           {message.media && message.media.length > 0 && (
-            <ul className={styles["media-images"]}>
-              {message.media.map((media) =>
-                media.type === "image" ? (
-                  <MessageImage image={media} key={media.mediaUrl} />
-                ) : media.type === "video" ? (
-                  <MessageVideo
-                    videoUrl={media.mediaUrl}
-                    key={media.mediaUrl}
-                  />
-                ) : null
-              )}
-            </ul>
+            <>
+              <ul className={styles["media-images"]}>
+                {message.media.map((media) =>
+                  media.type === "image" ? (
+                    <MessageImage image={media} key={media.mediaUrl} />
+                  ) : media.type === "video" ? (
+                    <MessageVideo
+                      videoUrl={media.mediaUrl}
+                      key={media.mediaUrl}
+                    />
+                  ) : null
+                )}
+              </ul>
+              <ul className={styles["media-audio"]}>
+                {message.media.map((media) =>
+                  media.type === "audio" ? (
+                    <AudioPlayer url={media.mediaUrl} key={media.mediaUrl} />
+                  ) : null
+                )}
+              </ul>
+            </>
           )}
         </div>
       ) : (
@@ -82,18 +92,36 @@ export default function Message({ message, isFirst, isTemp }: Props) {
             {message.content}
           </Linkify>
           {message.media && message.media.length > 0 && (
-            <ul className={styles["media-images"]}>
-              {message.media.map((media) =>
-                media.type === "image" ? (
-                  <MessageImage image={media} key={media.mediaUrl} />
-                ) : media.type === "video" ? (
-                  <MessageVideo
-                    videoUrl={media.mediaUrl}
-                    key={media.mediaUrl}
-                  />
-                ) : null
+            <>
+              {message.media.some(
+                (mediaObject) =>
+                  mediaObject.type === "image" || mediaObject.type === "video"
+              ) && (
+                <ul className={styles["media-images"]}>
+                  {message.media.map((media) =>
+                    media.type === "image" ? (
+                      <MessageImage image={media} key={media.mediaUrl} />
+                    ) : media.type === "video" ? (
+                      <MessageVideo
+                        videoUrl={media.mediaUrl}
+                        key={media.mediaUrl}
+                      />
+                    ) : null
+                  )}
+                </ul>
               )}
-            </ul>
+              {message.media.some(
+                (mediaObject) => mediaObject.type === "audio"
+              ) && (
+                <ul className={styles["media-audio"]}>
+                  {message.media.map((media) =>
+                    media.type === "audio" ? (
+                      <AudioPlayer url={media.mediaUrl} key={media.mediaUrl} />
+                    ) : null
+                  )}
+                </ul>
+              )}
+            </>
           )}
         </div>
       )}
