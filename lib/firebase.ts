@@ -73,3 +73,14 @@ export async function uploadMessageVideo(videoFile: File) {
   const downloadUrl = await getDownloadURL(videoRef);
   return downloadUrl;
 }
+
+export async function uploadMessageAudio(audioFile: File) {
+  const bytes = await audioFile.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const metadata = { contentType: audioFile.type };
+
+  const audioRef = ref(storage, `message-media/audio/${v4()}`);
+  const snapshop = await uploadBytes(audioRef, buffer, metadata);
+  const downloadUrl = await getDownloadURL(audioRef);
+  return downloadUrl;
+}

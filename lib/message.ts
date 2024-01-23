@@ -5,7 +5,11 @@ import { IClientMessage } from "@/types/user";
 import "server-only";
 import { getUserProfile } from "./auth";
 import dbConnect from "./db";
-import { uploadMessageImage, uploadMessageVideo } from "./firebase";
+import {
+  uploadMessageAudio,
+  uploadMessageImage,
+  uploadMessageVideo
+} from "./firebase";
 
 export const MESSAGE_COUNT = 64;
 
@@ -67,7 +71,7 @@ export async function createMessageMediaFromFile(
   } else if (fileType === "video") {
     downloadUrl = await uploadMessageVideo(file);
   } else {
-    return null;
+    downloadUrl = await uploadMessageAudio(file);
   }
 
   return {
