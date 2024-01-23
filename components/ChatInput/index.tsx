@@ -49,7 +49,8 @@ export default function ChatInput({
     onDrop: handleDrop,
     accept: {
       "image/*": [],
-      "video/*": []
+      "video/*": [],
+      "audio/*": []
     }
   });
 
