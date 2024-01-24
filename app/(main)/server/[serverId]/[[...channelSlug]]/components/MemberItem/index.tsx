@@ -9,11 +9,12 @@ interface Props {
   member: IClientMember;
 }
 
-export default function ServerMemberItem({ member: { user } }: Props) {
+export default function ServerMemberItem({ member }: Props) {
   const { addModal } = useUiContext();
+  const { user } = member;
 
   function handleClick() {
-    addModal(<ProfileModal user={user} />);
+    addModal(<ProfileModal user={user} member={member} />);
   }
 
   return (

@@ -3,9 +3,11 @@ import LoaderButton from "@/components/LoaderButton";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
+import { formattedServerRoles } from "@/lib/clientUtils";
 import CheckSymbol from "@/public/check-solid.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import XIcon from "@/public/xmark-solid.svg";
+import { IClientMember } from "@/types/server";
 import { IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -14,11 +16,12 @@ import styles from "./styles.module.scss";
 
 interface Props {
   user: IProfile;
+  member?: IClientMember;
 }
 
 type TButton = "message" | "removeFriend" | "addFriend" | "blockUser";
 
-export default function ProfileModal({ user }: Props) {
+export default function ProfileModal({ user, member }: Props) {
   const { closeModal } = useUiContext();
   const { friends, profile, directMessages, blockedUsers, setBlockedUsers } =
     useAuthContext();
@@ -162,6 +165,8 @@ export default function ProfileModal({ user }: Props) {
     }
   }
 
+  console.log("member", member);
+
   return (
     <div className={styles["profile-menu"]}>
       <button className={styles["exit-modal"]} onClick={closeModal}>
@@ -170,7 +175,14 @@ export default function ProfileModal({ user }: Props) {
       <div className={styles["top-section"]}>
         <ProfilePicture user={user} className={styles["profile-picture"]} />
         <div className={styles["names"]}>
-          <h3 className={styles["display-name"]}>{user.displayName}</h3>
+          <div className={styles["display-name-container"]}>
+            <h3 className={styles["display-name"]}>{user.displayName}</h3>
+            {member && (
+              <div className={styles["server-role"]}>
+                {formattedServerRoles.get(member.role)}
+              </div>
+            )}
+          </div>
           <p className={styles["username"]}>@{user.username}</p>
         </div>
       </div>
