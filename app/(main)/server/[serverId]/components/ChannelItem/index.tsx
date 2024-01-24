@@ -21,7 +21,7 @@ interface Props {
   attributes?: DraggableAttributes;
   listeners?: SyntheticListenerMap;
   isDragging?: boolean;
-  setActivatorNodeRef(element: HTMLElement | null): void;
+  setActivatorNodeRef?(element: HTMLElement | null): void;
 }
 
 export default function ChannelItem({
