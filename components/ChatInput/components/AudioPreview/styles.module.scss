@@ -1,0 +1,27 @@
+.audio-preview {
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.remove-button {
+  background-color: var(--bg-contrast-200);
+  border: none;
+  border-radius: 1000vmax;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.5rem;
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  right: 0;
+  cursor: pointer;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--clr-error);
+  }
+}

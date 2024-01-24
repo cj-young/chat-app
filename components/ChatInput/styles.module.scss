@@ -22,6 +22,12 @@
   flex-wrap: wrap;
 }
 
+.audio-previews {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .input-container {
   background-color: var(--bg-contrast-100);
   border-radius: var(--br);

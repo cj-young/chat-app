@@ -8,6 +8,7 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import TextareaAutosize from "react-textarea-autosize";
 import { v4 } from "uuid";
+import AudioPreview from "./components/AudioPreview";
 import ImagePreview from "./components/ImagePreview";
 import VideoPreview from "./components/VideoPreview";
 import styles from "./styles.module.scss";
@@ -155,6 +156,19 @@ export default function ChatInput({
                       />
                     )
                   )}
+              </ul>
+            )}
+            {mediaPreviews.some((preview) => preview.type === "audio") && (
+              <ul className={styles["audio-previews"]}>
+                {mediaPreviews
+                  .filter((preview) => preview.type === "audio")
+                  .map((preview) => (
+                    <AudioPreview
+                      audioUrl={preview.mediaUrl}
+                      remove={() => removeFile(preview.id)}
+                      key={preview.id}
+                    />
+                  ))}
               </ul>
             )}
           </div>
