@@ -30,20 +30,29 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  max-width: calc(100% - 2rem);
 }
 
 .names {
-  max-width: calc(100% - 2rem);
+  min-width: 0;
 }
 
 .display-name {
   font-size: var(--fs-500);
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .username {
   font-size: var(--fs-400);
   font-weight: regular;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .profile-picture {
