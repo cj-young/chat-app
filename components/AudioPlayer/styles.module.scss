@@ -39,6 +39,7 @@
   border-radius: 1000vmax;
   background-color: var(--text-contrast-200);
   position: relative;
+  margin-right: 0.5rem;
 }
 
 .slider-handle {
@@ -61,4 +62,17 @@
   top: 0;
   bottom: 0;
   right: 0;
+}
+
+.time-display {
+  display: grid;
+  grid-template-columns: 2.5rem 0.5rem 2.5rem;
+}
+
+.time-separator,
+.current-time-display,
+.duration-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

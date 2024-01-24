@@ -1,4 +1,5 @@
 "use client";
+import { getFormattedTimeFromSeconds } from "@/lib/clientUtils";
 import PauseIcon from "@/public/pause-solid.svg";
 import PlayIcon from "@/public/play-solid.svg";
 import {
@@ -140,6 +141,15 @@ export default function AudioPlayer({ url }: Props) {
             right: `${100 - progressPercent}%`
           }}
         ></div>
+      </div>
+      <div className={styles["time-display"]}>
+        <span className={styles["current-time-display"]}>
+          {getFormattedTimeFromSeconds(Math.floor(currentTime))}
+        </span>{" "}
+        <span className={styles["time-separator"]}>/</span>
+        <span className={styles["duration-display"]}>
+          {getFormattedTimeFromSeconds(Math.floor(duration))}
+        </span>
       </div>
     </div>
   );

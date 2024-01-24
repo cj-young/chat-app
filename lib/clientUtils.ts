@@ -94,3 +94,17 @@ export function moveExplicitlyOrderedElement<T extends TExplicitlyOrderedItem>(
     }
   });
 }
+
+export function getFormattedTimeFromSeconds(totalSeconds: number) {
+  const hours = Math.floor(totalSeconds / (60 * 60));
+  const minutes = Math.floor((totalSeconds - hours * 60 * 60) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
+  } else {
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  }
+}
