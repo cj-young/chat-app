@@ -4,7 +4,7 @@ import ChatInput from "@/components/ChatInput";
 import { useUiContext } from "@/contexts/UiContext";
 import { IClientChannel } from "@/types/server";
 import { ITempMessage } from "@/types/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChannelNavbar from "../ChannelNavbar";
 import ServerMemberList from "../MemberList";
 import styles from "./styles.module.scss";
@@ -21,6 +21,8 @@ export default function ChannelChatContainer({ channel }: Props) {
   function toggleMembersShown() {
     setMembersShown((prev) => !prev);
   }
+
+  useEffect(() => {}, []);
 
   return (
     <main

@@ -25,6 +25,7 @@ import {
   SortableContext,
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AddGroupModal from "../AddGroupModal";
 import EditableChannelGroup from "../EditableChannelGroup";
@@ -34,9 +35,12 @@ import styles from "./styles.module.scss";
 
 export default function EditableSidebar() {
   const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
+  const [channelGroupsLoading, setChannelGroupsLoading] = useState(true);
   const { serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
   const { call } = useVoiceCall();
+  const router = useRouter();
+  const pathname = usePathname();
   const [draggedGroup, setDraggedGroup] = useState<IClientChannelGroup | null>(
     null
   );
@@ -55,6 +59,7 @@ export default function EditableSidebar() {
 
   useEffect(() => {
     (async () => {
+      setChannelGroupsLoading(true);
       try {
         const res = await apiFetch(
           `/server/channel-group/list/${serverInfo.serverId}`
@@ -63,11 +68,27 @@ export default function EditableSidebar() {
           channelGroups: IClientChannelGroup[];
         };
         setChannelGroups(channelGroups);
+        setChannelGroupsLoading(false);
       } catch (error) {
         console.error(error);
+        setChannelGroupsLoading(false);
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (channelGroupsLoading) return;
+    const splitPath = pathname.split("/");
+    const currentChannelId = splitPath[splitPath.length - 1];
+    if (
+      !channelGroups.some((group) =>
+        group.channels.some((channel) => channel.channelId === currentChannelId)
+      )
+    ) {
+      // Channel has been removed
+      router.push(`/server/${serverInfo.serverId}`);
+    }
+  }, [channelGroups, channelGroupsLoading]);
 
   usePusherEvent(
     `private-server-${serverInfo.serverId}`,
