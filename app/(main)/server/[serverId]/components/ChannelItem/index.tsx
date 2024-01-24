@@ -86,7 +86,6 @@ export default function ChannelItem({
   }
 
   async function confirmDelete() {
-    if (onDelete) onDelete();
     try {
       const res = await apiFetch(
         `/server/channel/delete/${channel.serverId}`,
@@ -103,6 +102,8 @@ export default function ChannelItem({
     } catch (error) {
       console.error(error);
     }
+
+    onDelete && onDelete();
     closeModal();
   }
 
