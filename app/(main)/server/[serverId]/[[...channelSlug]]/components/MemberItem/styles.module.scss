@@ -12,4 +12,7 @@
 .member-name {
   font-weight: 500;
   user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
