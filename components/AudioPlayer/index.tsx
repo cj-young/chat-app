@@ -86,14 +86,6 @@ export default function AudioPlayer({ url }: Props) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log("duration", duration);
-  // }, [duration]);
-
-  // useEffect(() => {
-  //   console.log("currentTime", currentTime);
-  // }, [currentTime]);
-
   useEffect(() => {
     if (!audioRef.current) return;
     const onTimeUpdate = () => {
