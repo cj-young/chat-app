@@ -3,9 +3,17 @@
   background-color: var(--bg-contrast-100);
   border-radius: var(--br);
   padding: 0.5rem;
+  --grip-margin: auto;
 
   & + & {
     margin-top: 0.5rem;
+  }
+
+  &:hover {
+    .delete-group-button {
+      display: flex;
+    }
+    --grip-margin: 0.25rem;
   }
 }
 
@@ -91,11 +99,23 @@
   }
 }
 
+.delete-group-button {
+  display: none;
+  margin-left: auto;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    fill: var(--text-contrast-100);
+  }
+}
+
 .move-group-grip {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: auto;
+  margin-left: var(--grip-margin);
   cursor: move;
 
   svg {

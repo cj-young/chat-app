@@ -1,13 +1,16 @@
+import ConfirmationModal from "@/components/ConfirmationModal";
 import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { apiFetch } from "@/lib/api";
 import CaretIcon from "@/public/caret-down-solid.svg";
 import GripIcon from "@/public/grip-solid.svg";
 import PlusSymbol from "@/public/plus-solid.svg";
+import TrashIcon from "@/public/trash-solid.svg";
 import { IClientChannelGroup } from "@/types/server";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import AddChannelModal from "../AddChannelModal";
 import EditableChannelItem from "../EditableChannelItem";
 import styles from "./styles.module.scss";
@@ -24,7 +27,7 @@ export default function EditableChannelGroup({
   onDeleteGroup
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const { addModal } = useUiContext();
+  const { addModal, closeModal } = useUiContext();
   const { serverInfo } = useServer();
 
   const sortedChannels = useMemo(() => {
@@ -67,6 +70,37 @@ export default function EditableChannelGroup({
     }
   });
 
+  async function confirmDeleteGroup() {
+    try {
+      const res = await apiFetch(
+        `/server/channel-group/delete/${serverInfo.serverId}`,
+        "DELETE",
+        { groupId }
+      );
+      const data = await res.json();
+      console.log(data.message ?? "no message :(");
+    } catch (error) {
+      console.error(error);
+    }
+
+    onDeleteGroup && onDeleteGroup();
+    closeModal();
+  }
+
+  function handleDeleteGroup(e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    addModal(
+      <ConfirmationModal
+        title={`Are you sure you want to delete group '${name}'`}
+        confirmMessage="Yes, delete"
+        cancelMessage="No, cancel"
+        confirmCallback={confirmDeleteGroup}
+      />
+    );
+  }
+
   return (
     <li
       className={[
@@ -86,6 +120,12 @@ export default function EditableChannelGroup({
           <CaretIcon />
         </button>
         <h3 className={styles["group-name"]}>{name}</h3>
+        <button
+          className={styles["delete-group-button"]}
+          onClick={handleDeleteGroup}
+        >
+          <TrashIcon />
+        </button>
         <div
           className={styles["move-group-grip"]}
           onClick={(e) => e.preventDefault()}
