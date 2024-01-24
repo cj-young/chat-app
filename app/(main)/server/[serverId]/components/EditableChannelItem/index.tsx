@@ -5,9 +5,10 @@ import ChannelItem from "../ChannelItem";
 
 interface Props {
   channel: IClientChannel;
+  onDelete?(): void;
 }
 
-export default function EditableChannelItem({ channel }: Props) {
+export default function EditableChannelItem({ channel, onDelete }: Props) {
   const {
     setNodeRef,
     attributes,
@@ -39,7 +40,8 @@ export default function EditableChannelItem({ channel }: Props) {
         attributes,
         listeners,
         isDragging,
-        setActivatorNodeRef
+        setActivatorNodeRef,
+        onDelete
       }}
     />
   );

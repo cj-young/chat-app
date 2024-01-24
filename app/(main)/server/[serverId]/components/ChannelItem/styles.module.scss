@@ -29,11 +29,6 @@
   max-width: 100%;
   min-width: 0;
 
-  svg {
-    fill: var(--text-contrast-100);
-    height: 100%;
-  }
-
   &:hover {
     background-color: var(--clr-hover);
 
@@ -44,6 +39,39 @@
 
   &.selected {
     background-color: var(--clr-select);
+  }
+}
+
+.channel-icon,
+.editable-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    fill: var(--text-contrast-100);
+    height: 100%;
+  }
+}
+
+.editable-icon:hover {
+  .main-icon {
+    display: none;
+  }
+
+  .delete-button {
+    display: flex;
+  }
+}
+
+.delete-button {
+  display: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+
+  svg {
+    fill: var(--clr-error);
   }
 }
 

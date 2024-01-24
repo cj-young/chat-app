@@ -14,10 +14,14 @@ import styles from "./styles.module.scss";
 
 interface Props {
   channelGroup: IClientChannelGroup;
+  onDeleteChannel?(channelId: string): void;
+  onDeleteGroup?(): void;
 }
 
 export default function EditableChannelGroup({
-  channelGroup: { name, channels, id: groupId }
+  channelGroup: { name, channels, id: groupId },
+  onDeleteChannel,
+  onDeleteGroup
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
   const { addModal } = useUiContext();
@@ -96,7 +100,13 @@ export default function EditableChannelGroup({
         <SortableContext items={channelIds}>
           {isExpanded &&
             sortedChannels.map((channel) => (
-              <EditableChannelItem channel={channel} key={channel.channelId} />
+              <EditableChannelItem
+                channel={channel}
+                key={channel.channelId}
+                onDelete={() =>
+                  onDeleteChannel && onDeleteChannel(channel.channelId)
+                }
+              />
             ))}
         </SortableContext>
         <li

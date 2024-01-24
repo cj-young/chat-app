@@ -1,15 +1,18 @@
 "use client";
+import ConfirmationModal from "@/components/ConfirmationModal";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { useVoiceCall } from "@/contexts/VoiceChatContext";
+import { apiFetch } from "@/lib/api";
 import TextChannelIcon from "@/public/align-left-solid.svg";
 import GripIcon from "@/public/grip-vertical-solid.svg";
 import VoiceChannelIcon from "@/public/microphone-solid.svg";
+import TrashIcon from "@/public/trash-solid.svg";
 import { IClientChannel } from "@/types/server";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { usePathname, useRouter } from "next/navigation";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties, MouseEvent, useMemo } from "react";
 import VoiceCallMember from "../VoiceCallMember";
 import styles from "./styles.module.scss";
 
@@ -22,6 +25,7 @@ interface Props {
   listeners?: SyntheticListenerMap;
   isDragging?: boolean;
   setActivatorNodeRef?(element: HTMLElement | null): void;
+  onDelete?(): void;
 }
 
 export default function ChannelItem({
@@ -32,11 +36,12 @@ export default function ChannelItem({
   listeners,
   isDragging,
   style,
-  setActivatorNodeRef
+  setActivatorNodeRef,
+  onDelete
 }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const { closeMobileNav } = useUiContext();
+  const { closeMobileNav, addModal, closeModal } = useUiContext();
   const { joinVoiceCall, call } = useVoiceCall();
   const { profile } = useAuthContext();
 
@@ -66,6 +71,41 @@ export default function ChannelItem({
     }
   }
 
+  function handleDelete(e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!isEditable) return;
+    addModal(
+      <ConfirmationModal
+        title={`Are you sure you want to delete ${channel.name}?`}
+        confirmMessage="Yes, delete"
+        cancelMessage="No, cancel"
+        confirmCallback={confirmDelete}
+      />
+    );
+  }
+
+  async function confirmDelete() {
+    if (onDelete) onDelete();
+    try {
+      const res = await apiFetch(
+        `/server/channel/delete/${channel.serverId}`,
+        "DELETE",
+        {
+          channelId: channel.channelId
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.message ?? "ERROR :(");
+      }
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+    closeModal();
+  }
+
   return (
     <li
       className={[
@@ -82,13 +122,20 @@ export default function ChannelItem({
         ].join(" ")}
         onClick={handleClick}
       >
-        {channel.type === "text" ? (
-          <TextChannelIcon />
-        ) : channel.type === "voice" ? (
-          <VoiceChannelIcon />
-        ) : (
-          <></>
-        )}
+        <div className={isEditable ? styles["editable-icon"] : styles["icon"]}>
+          {channel.type === "text" ? (
+            <TextChannelIcon className={styles["main-icon"]} />
+          ) : channel.type === "voice" ? (
+            <VoiceChannelIcon className={styles["main-icon"]} />
+          ) : (
+            <></>
+          )}
+          {isEditable && (
+            <div className={styles["delete-button"]} onClick={handleDelete}>
+              <TrashIcon />
+            </div>
+          )}
+        </div>
         <span className={styles["channel-name"]}>{channel.name}</span>
         {isEditable && (
           <div

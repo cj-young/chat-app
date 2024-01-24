@@ -370,6 +370,25 @@ export default function EditableSidebar() {
     }
   }
 
+  function handleDeleteChannel(channelId: string) {
+    setChannelGroups((prev) =>
+      prev.map((prevGroup) => {
+        if (
+          prevGroup.channels.some((channel) => channel.channelId === channelId)
+        ) {
+          return {
+            ...prevGroup,
+            channels: prevGroup.channels.filter(
+              (channel) => channel.channelId !== channelId
+            )
+          };
+        } else {
+          return prevGroup;
+        }
+      })
+    );
+  }
+
   return (
     <div
       className={[
@@ -395,6 +414,7 @@ export default function EditableSidebar() {
                 <EditableChannelGroup
                   channelGroup={group}
                   key={group.uiOrder}
+                  onDeleteChannel={handleDeleteChannel}
                 />
               ))}
             </SortableContext>
