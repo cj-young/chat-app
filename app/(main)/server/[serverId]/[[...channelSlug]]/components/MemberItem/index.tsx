@@ -23,7 +23,9 @@ export default function ServerMemberItem({ member }: Props) {
         member={member}
         canEditRole={role === "owner" && member.role !== "owner"}
         server={serverInfo}
-        onEditRole={() => addModal(<EditRoleModal member={member} />)}
+        onEditRole={() =>
+          addModal(<EditRoleModal member={member} server={serverInfo} />)
+        }
       />
     );
   }

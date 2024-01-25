@@ -1,21 +1,21 @@
 "use client";
 import LoaderButton from "@/components/LoaderButton";
-import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
+import { apiFetch } from "@/lib/api";
 import { ServerRoleInfo, serverRoleSchema } from "@/lib/schema";
 import XIcon from "@/public/xmark-solid.svg";
-import { IClientMember } from "@/types/server";
+import { IClientMember, IClientServer } from "@/types/server";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import styles from "./styles.module.scss";
 
 interface Props {
   member: IClientMember;
+  server: IClientServer;
 }
 
-export default function EditRoleModal({ member }: Props) {
+export default function EditRoleModal({ member, server }: Props) {
   const { closeModal } = useUiContext();
-  const { serverInfo } = useServer();
   const {
     register,
     watch,
@@ -29,7 +29,17 @@ export default function EditRoleModal({ member }: Props) {
   });
   const watchRole = watch("role");
 
-  async function submitData({ role }: ServerRoleInfo) {}
+  async function submitData({ role }: ServerRoleInfo) {
+    if (role === "owner" || role === member.role) return;
+    try {
+      await apiFetch(`/server/change-role/${server.serverId}`, "POST", {
+        memberToEditId: member.id,
+        newRole: role
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <div className={styles["modal"]}>
