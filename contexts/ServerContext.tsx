@@ -57,6 +57,18 @@ export default function ServerContextProvider({
     }
   );
 
+  usePusherEvent(
+    `private-server-${serverInfo.serverId}`,
+    "memberRoleChanged",
+    ({ memberId, newRole }: { memberId: string; newRole: TRole }) => {
+      setMembers((prev) =>
+        prev.map((member) =>
+          member.id === memberId ? { ...member, role: newRole } : member
+        )
+      );
+    }
+  );
+
   useEffect(() => {
     const memberCallbacks = new Map<string, Function>();
     for (let member of members) {

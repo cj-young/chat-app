@@ -47,9 +47,20 @@ export async function POST(req: NextRequest) {
       );
     if (!member || member.role !== "owner") return invalidSession();
 
-    await Member.findByIdAndUpdate(memberToEditId, {
+    const updatedMember = await Member.findByIdAndUpdate(memberToEditId, {
       role: newRole
     });
+    if (!updatedMember)
+      return NextResponse.json(
+        { message: "Invalid member ID" },
+        { status: 400 }
+      );
+
+    await pusherServer.trigger(
+      `private-server-${server.id}`,
+      "memberRoleChanged",
+      { memberId: updatedMember.id, newRole }
+    );
 
     return NextResponse.json({ message: "Successfully updated member's role" });
   } catch (error) {
