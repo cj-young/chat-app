@@ -81,3 +81,9 @@ export const onlineStatusSchema = z.object({
 });
 
 export type OnlineStatusInfo = z.infer<typeof onlineStatusSchema>;
+
+export const serverRoleSchema = z.object({
+  role: z.enum(["owner", "admin", "guest"])
+});
+
+export type ServerRoleInfo = z.infer<typeof serverRoleSchema>;
