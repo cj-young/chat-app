@@ -8,7 +8,7 @@ import CheckSymbol from "@/public/check-solid.svg";
 import EditIcon from "@/public/pen-to-square-solid.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import XIcon from "@/public/xmark-solid.svg";
-import { IClientMember } from "@/types/server";
+import { IClientMember, IClientServer } from "@/types/server";
 import { IProfile } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -19,6 +19,8 @@ interface Props {
   user: IProfile;
   member?: IClientMember;
   canEditRole?: boolean;
+  server?: IClientServer;
+  onEditRole?(): void;
 }
 
 type TButton = "message" | "removeFriend" | "addFriend" | "blockUser";
@@ -26,9 +28,10 @@ type TButton = "message" | "removeFriend" | "addFriend" | "blockUser";
 export default function ProfileModal({
   user,
   member,
-  canEditRole = false
+  canEditRole = false,
+  onEditRole
 }: Props) {
-  const { closeModal } = useUiContext();
+  const { closeModal, addModal } = useUiContext();
   const { friends, profile, directMessages, blockedUsers, setBlockedUsers } =
     useAuthContext();
   const [loadingButton, setLoadingButton] = useState<TButton | null>(null);
@@ -185,7 +188,10 @@ export default function ProfileModal({
               <div className={styles["server-role"]}>
                 {formattedServerRoles.get(member.role)}
                 {canEditRole && (
-                  <button className={styles["edit-role-button"]}>
+                  <button
+                    className={styles["edit-role-button"]}
+                    onClick={onEditRole}
+                  >
                     <EditIcon />
                   </button>
                 )}
