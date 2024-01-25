@@ -36,6 +36,7 @@ export default function EditRoleModal({ member, server }: Props) {
         memberToEditId: member.id,
         newRole: role
       });
+      closeModal();
     } catch (error) {
       console.error(error);
     }
