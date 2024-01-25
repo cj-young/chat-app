@@ -5,6 +5,7 @@ import { useUiContext } from "@/contexts/UiContext";
 import { apiFetch } from "@/lib/api";
 import { formattedServerRoles } from "@/lib/clientUtils";
 import CheckSymbol from "@/public/check-solid.svg";
+import EditIcon from "@/public/pen-to-square-solid.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import XIcon from "@/public/xmark-solid.svg";
 import { IClientMember } from "@/types/server";
@@ -17,11 +18,16 @@ import styles from "./styles.module.scss";
 interface Props {
   user: IProfile;
   member?: IClientMember;
+  canEditRole?: boolean;
 }
 
 type TButton = "message" | "removeFriend" | "addFriend" | "blockUser";
 
-export default function ProfileModal({ user, member }: Props) {
+export default function ProfileModal({
+  user,
+  member,
+  canEditRole = false
+}: Props) {
   const { closeModal } = useUiContext();
   const { friends, profile, directMessages, blockedUsers, setBlockedUsers } =
     useAuthContext();
@@ -165,8 +171,6 @@ export default function ProfileModal({ user, member }: Props) {
     }
   }
 
-  console.log("member", member);
-
   return (
     <div className={styles["profile-menu"]}>
       <button className={styles["exit-modal"]} onClick={closeModal}>
@@ -180,6 +184,11 @@ export default function ProfileModal({ user, member }: Props) {
             {member && (
               <div className={styles["server-role"]}>
                 {formattedServerRoles.get(member.role)}
+                {canEditRole && (
+                  <button className={styles["edit-role-button"]}>
+                    <EditIcon />
+                  </button>
+                )}
               </div>
             )}
           </div>

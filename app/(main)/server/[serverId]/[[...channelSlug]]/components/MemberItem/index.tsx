@@ -1,6 +1,7 @@
 "use client";
 import ProfilePicture from "@/components/ProfilePicture";
 import ProfileModal from "@/components/ProfilePicture/components/ProfileModal";
+import { useServer } from "@/contexts/ServerContext";
 import { useUiContext } from "@/contexts/UiContext";
 import { IClientMember } from "@/types/server";
 import styles from "./styles.module.scss";
@@ -12,9 +13,16 @@ interface Props {
 export default function ServerMemberItem({ member }: Props) {
   const { addModal } = useUiContext();
   const { user } = member;
+  const { role } = useServer();
 
   function handleClick() {
-    addModal(<ProfileModal user={user} member={member} />);
+    addModal(
+      <ProfileModal
+        user={user}
+        member={member}
+        canEditRole={role === "owner" && member.role !== "owner"}
+      />
+    );
   }
 
   return (
