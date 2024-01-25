@@ -12,7 +12,7 @@ export default async function InvitePage({ params: { inviteCode } }: Props) {
   const server = await Server.findOne<IServer>({
     "inviteCode.code": inviteCode
   });
-  if (!server) {
+  if (!server || server.inviteCode.expiresAt.getTime() < Date.now()) {
     notFound();
   }
 
