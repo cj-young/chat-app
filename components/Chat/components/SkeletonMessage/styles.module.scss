@@ -1,0 +1,47 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  place-content: center;
+  column-gap: 1rem;
+  border-radius: var(--br);
+}
+
+.first-of-group {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.profile-picture {
+  width: 2.5rem;
+  height: 2.5rem;
+  justify-self: end;
+  margin-top: 0.25rem;
+  border-radius: 1000vmax;
+  background-color: var(--clr-hover);
+}
+
+.name {
+  width: 6rem;
+  height: 1.25rem;
+  border-radius: var(--br);
+  background-color: var(--clr-select);
+}
+
+.content {
+  width: min(calc(100% - 1rem), 32rem);
+  overflow: hidden;
+  height: 1.25rem;
+  background-color: var(--bg-contrast-100);
+  border-radius: var(--br);
+  margin-top: 0.5rem;
+}
+
+.dummy + .content {
+  margin-top: 0;
+}

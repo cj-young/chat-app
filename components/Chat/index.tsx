@@ -10,11 +10,11 @@ import {
   IClientMessage,
   ITempMessage
 } from "@/types/user";
-import { useCallback, useMemo, useState } from "react";
-import Loader from "../Loader";
+import { useCallback, useMemo, useRef, useState } from "react";
 import DirectMessageBanner from "./banners/DirectMessageBanner";
 import GroupChatBanner from "./banners/GroupChatBanner";
 import ServerChannelBanner from "./banners/ServerChannelBanner";
+import ChatLoadingState from "./components/LoadingState";
 import styles from "./styles.module.scss";
 
 interface Props {
@@ -38,9 +38,9 @@ export default function Chat({
   groupChat,
   serverChannel
 }: Props) {
-  const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [messages, setMessages] = useState<IClientMessage[]>([]);
   const [allLoaded, setAllLoaded] = useState(false);
+  const isLoadingMessages = useRef(false);
 
   usePusherEvent(
     `private-${
@@ -70,8 +70,8 @@ export default function Chat({
 
   const loadMoreMessages = useCallback(async () => {
     try {
-      if (isLoadingMessage) return;
-      setIsLoadingMessage(true);
+      if (isLoadingMessages.current) return;
+      isLoadingMessages.current = true;
       const qs =
         messages.length > 0
           ? `?lastMessage=${
@@ -103,13 +103,14 @@ export default function Chat({
         newMessage.timestamp = new Date(newMessage.timestamp);
       }
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-      setIsLoadingMessage(false);
+      isLoadingMessages.current = false;
     } catch (error) {
-      setIsLoadingMessage(false);
+      isLoadingMessages.current = false;
     }
   }, [messages]);
 
   const { scrollRef } = useScroll(loadMoreMessages);
+  const { scrollRef: loadingScrollRef } = useScroll(loadMoreMessages);
 
   const reversedMessages = useMemo(() => {
     return [...messages].reverse();
@@ -125,7 +126,8 @@ export default function Chat({
         {allLoaded && serverChannel && (
           <ServerChannelBanner channel={serverChannel} />
         )}
-        {!allLoaded && <Loader className={styles["message-loader"]} />}
+        {/* {!allLoaded && <Loader className={styles["message-loader"]} />} */}
+        {!allLoaded && <ChatLoadingState innerRef={loadingScrollRef} />}
         <ul className={styles["chat-list"]}>
           {reversedMessages.map((message, i) => {
             let isInGroup = false;
@@ -170,15 +172,15 @@ export default function Chat({
               />
             );
           })}
+          {!allLoaded && (
+            <div
+              className={styles["scroll-dummy"]}
+              aria-hidden="true"
+              ref={scrollRef}
+              style={{ height: MESSAGE_FETCH_SCROLL_BUFFER }}
+            ></div>
+          )}
         </ul>
-        {!allLoaded && (
-          <div
-            className={styles["scroll-dummy"]}
-            aria-hidden="true"
-            ref={scrollRef}
-            style={{ height: MESSAGE_FETCH_SCROLL_BUFFER }}
-          ></div>
-        )}
       </div>
     </div>
   );
