@@ -31,11 +31,12 @@ import AddGroupModal from "../AddGroupModal";
 import EditableChannelGroup from "../EditableChannelGroup";
 import EditableChannelItem from "../EditableChannelItem";
 import ServerCard from "../ServerCard";
+import SidebarChannelsLoading from "../SidebarChannelsLoading";
 import styles from "./styles.module.scss";
 
 export default function EditableSidebar() {
   const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
-  const [channelGroupsLoading, setChannelGroupsLoading] = useState(true);
+  const [isLoadingChannelGroups, setIsLoadingChannelGroups] = useState(true);
   const { serverInfo } = useServer();
   const { mobileNavExpanded, addModal } = useUiContext();
   const { call } = useVoiceCall();
@@ -59,7 +60,7 @@ export default function EditableSidebar() {
 
   useEffect(() => {
     (async () => {
-      setChannelGroupsLoading(true);
+      setIsLoadingChannelGroups(true);
       try {
         const res = await apiFetch(
           `/server/channel-group/list/${serverInfo.serverId}`
@@ -68,16 +69,16 @@ export default function EditableSidebar() {
           channelGroups: IClientChannelGroup[];
         };
         setChannelGroups(channelGroups);
-        setChannelGroupsLoading(false);
+        setIsLoadingChannelGroups(false);
       } catch (error) {
         console.error(error);
-        setChannelGroupsLoading(false);
+        setIsLoadingChannelGroups(false);
       }
     })();
   }, []);
 
   useEffect(() => {
-    if (channelGroupsLoading) return;
+    if (isLoadingChannelGroups) return;
     const splitPath = pathname.split("/");
     const currentChannelId = splitPath[splitPath.length - 1];
     if (
@@ -88,7 +89,7 @@ export default function EditableSidebar() {
       // Channel has been removed
       router.push(`/server/${serverInfo.serverId}`);
     }
-  }, [channelGroups, channelGroupsLoading]);
+  }, [channelGroups, isLoadingChannelGroups]);
 
   usePusherEvent(
     `private-server-${serverInfo.serverId}`,
@@ -422,49 +423,53 @@ export default function EditableSidebar() {
       ].join(" ")}
     >
       <ServerCard />
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        id="EditableSidebarDnDContext"
-      >
-        <nav className={styles["nav"]}>
-          <ul className={styles["nav-list"]}>
-            <SortableContext
-              items={groupIds}
-              strategy={verticalListSortingStrategy}
-              id="EditableSidebarSortableContext"
-            >
-              {sortedChannelGroups.map((group) => (
-                <EditableChannelGroup
-                  channelGroup={group}
-                  key={group.uiOrder}
-                  onDeleteChannel={handleDeleteChannel}
-                  onDeleteGroup={() => handleDeleteGroup(group.id)}
-                />
-              ))}
-            </SortableContext>
-            <li className={styles["add-group-container"]}>
-              <button
-                className={styles["add-channel"]}
-                onClick={() =>
-                  addModal(<AddGroupModal serverId={serverInfo.serverId} />)
-                }
+      {isLoadingChannelGroups ? (
+        <SidebarChannelsLoading />
+      ) : (
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          id="EditableSidebarDnDContext"
+        >
+          <nav className={styles["nav"]}>
+            <ul className={styles["nav-list"]}>
+              <SortableContext
+                items={groupIds}
+                strategy={verticalListSortingStrategy}
+                id="EditableSidebarSortableContext"
               >
-                <PlusSymbol />
-                <span>Add new group</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <DragOverlay>
-          {draggedGroup ? (
-            <EditableChannelGroup channelGroup={draggedGroup} />
-          ) : draggedChannel ? (
-            <EditableChannelItem channel={draggedChannel} />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
+                {sortedChannelGroups.map((group) => (
+                  <EditableChannelGroup
+                    channelGroup={group}
+                    key={group.uiOrder}
+                    onDeleteChannel={handleDeleteChannel}
+                    onDeleteGroup={() => handleDeleteGroup(group.id)}
+                  />
+                ))}
+              </SortableContext>
+              <li className={styles["add-group-container"]}>
+                <button
+                  className={styles["add-channel"]}
+                  onClick={() =>
+                    addModal(<AddGroupModal serverId={serverInfo.serverId} />)
+                  }
+                >
+                  <PlusSymbol />
+                  <span>Add new group</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+          <DragOverlay>
+            {draggedGroup ? (
+              <EditableChannelGroup channelGroup={draggedGroup} />
+            ) : draggedChannel ? (
+              <EditableChannelItem channel={draggedChannel} />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      )}
       {call && <VoiceCallControl />}
       <ProfileCard />
     </div>

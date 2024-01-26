@@ -11,13 +11,15 @@ import { IProfile } from "@/types/user";
 import { useEffect, useMemo, useState } from "react";
 import ChannelGroup from "../ChannelGroup";
 import ServerCard from "../ServerCard";
+import SidebarChannelsLoading from "../SidebarChannelsLoading";
 import styles from "./styles.module.scss";
 
 export default function ServerSidebar() {
   const [channelGroups, setChannelGroups] = useState<IClientChannelGroup[]>([]);
-  const { role, serverInfo } = useServer();
-  const { mobileNavExpanded, addModal } = useUiContext();
+  const { serverInfo } = useServer();
+  const { mobileNavExpanded } = useUiContext();
   const { call } = useVoiceCall();
+  const [isLoadingChannels, setIsLoadingChannels] = useState(true);
 
   const sortedChannelGroups = useMemo(() => {
     return channelGroups.sort((a, b) => a.uiOrder - b.uiOrder);
@@ -26,6 +28,7 @@ export default function ServerSidebar() {
   useEffect(() => {
     (async () => {
       try {
+        setIsLoadingChannels(true);
         const res = await apiFetch(
           `/server/channel-group/list/${serverInfo.serverId}`
         );
@@ -33,7 +36,9 @@ export default function ServerSidebar() {
           channelGroups: IClientChannelGroup[];
         };
         setChannelGroups(channelGroups);
+        setIsLoadingChannels(false);
       } catch (error) {
+        setIsLoadingChannels(false);
         console.error(error);
       }
     })();
@@ -156,13 +161,17 @@ export default function ServerSidebar() {
       ].join(" ")}
     >
       <ServerCard />
-      <nav className={styles["nav"]}>
-        <ul className={styles["nav-list"]}>
-          {sortedChannelGroups.map((group) => (
-            <ChannelGroup channelGroup={group} key={group.uiOrder} />
-          ))}
-        </ul>
-      </nav>
+      {isLoadingChannels ? (
+        <SidebarChannelsLoading />
+      ) : (
+        <nav className={styles["nav"]}>
+          <ul className={styles["nav-list"]}>
+            {sortedChannelGroups.map((group) => (
+              <ChannelGroup channelGroup={group} key={group.uiOrder} />
+            ))}
+          </ul>
+        </nav>
+      )}
       {call && <VoiceCallControl />}
       <ProfileCard />
     </div>

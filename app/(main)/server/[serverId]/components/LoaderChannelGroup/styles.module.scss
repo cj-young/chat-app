@@ -1,0 +1,30 @@
+.channel-group {
+  list-style: none;
+  padding: 0.5rem;
+
+  & + & {
+    margin-top: 0.5rem;
+  }
+}
+
+.group-name {
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--clr-select);
+  border-radius: var(--br);
+}
+
+.channel-list {
+  padding-left: 1rem;
+  padding-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.channel {
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--clr-hover);
+  border-radius: var(--br);
+}
