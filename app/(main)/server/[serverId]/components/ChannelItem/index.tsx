@@ -123,7 +123,11 @@ export default function ChannelItem({
         ].join(" ")}
         onClick={handleClick}
       >
-        <div className={isEditable ? styles["editable-icon"] : styles["icon"]}>
+        <div
+          className={
+            isEditable ? styles["editable-icon"] : styles["channel-icon"]
+          }
+        >
           {channel.type === "text" ? (
             <TextChannelIcon className={styles["main-icon"]} />
           ) : channel.type === "voice" ? (
