@@ -14,6 +14,7 @@ export default function AddFriend() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setFormError("");
+    setSuccessMessage("");
     setIsLoading(true);
     try {
       const res = await apiFetch("/friends/add", "POST", {
