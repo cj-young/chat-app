@@ -65,10 +65,17 @@ export default function EditableSidebar() {
         const res = await apiFetch(
           `/server/channel-group/list/${serverInfo.serverId}`
         );
-        const { channelGroups } = (await res.json()) as {
+        const data = await res.json();
+        if (!res.ok) {
+          console.error(data.message);
+          return;
+        }
+        const { channelGroups } = data as {
           channelGroups: IClientChannelGroup[];
         };
-        setChannelGroups(channelGroups);
+        if (channelGroups) {
+          setChannelGroups(channelGroups);
+        }
         setIsLoadingChannelGroups(false);
       } catch (error) {
         console.error(error);

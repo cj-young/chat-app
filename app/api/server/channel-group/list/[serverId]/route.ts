@@ -75,6 +75,7 @@ export async function GET(req: NextRequest) {
     await Promise.all(memberPromises);
     return NextResponse.json({ channelGroups });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
