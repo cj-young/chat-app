@@ -119,6 +119,7 @@ export default function GroupChatItem({ groupChat }: Props) {
           <img
             src={groupChat.imageUrl}
             className={styles["group-chat-image"]}
+            alt=""
           />
           <div className={styles["names"]}>
             <span className={styles["display-name"]}>
