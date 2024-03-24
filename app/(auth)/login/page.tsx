@@ -84,7 +84,8 @@ export default function Login() {
       <form
         className={styles["login-form"]}
         onSubmit={handleSubmit(submitData)}
-        aria-disabled={loading}
+        // gets around TS's lack of inert propery support
+        {...{ inert: loading ? "" : undefined }}
       >
         <Input
           type="text"
