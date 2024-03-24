@@ -27,7 +27,6 @@ export default function ProfileCard() {
         </div>
       </div>
       <div className={styles["buttons"]}>
-        {/* TODO: add buttons for settings and sound */}
         <button
           className={[
             styles["microphone-mute-toggle"],
