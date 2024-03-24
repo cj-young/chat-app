@@ -8,20 +8,29 @@ import GoogleLogo from "@/public/google-logo.svg";
 import ErrorSymbol from "@/public/triangle-exclamation-solid.svg";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import DemoAccountPopup, {
+  DemoAccountInfo
+} from "./components/DemoAccountPopup";
 import styles from "./page.module.scss";
 
 export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [demoAccountInfo, setDemoAccountInfo] = useState<DemoAccountInfo>({
+    username: null,
+    password: null
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError: setFieldError
+    setError: setFieldError,
+    setValue,
+    trigger
   } = useForm<LoginCredentials>({
     resolver: zodResolver(loginSchema)
   });
@@ -31,6 +40,26 @@ export default function Login() {
   const fieldNames = new Set(["identifier", "password"]);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setDemoAccountInfo({
+        username: searchParams.get("demoUsername"),
+        password: searchParams.get("demoPassword")
+      });
+    }, 500);
+  }, []);
+
+  async function applyDemoInfo() {
+    setValue("identifier", demoAccountInfo.username ?? "");
+    setValue("password", demoAccountInfo.password ?? "");
+    const isValid = await trigger();
+
+    if (isValid) {
+      handleSubmit(submitData)();
+    }
+  }
 
   async function logIn({ identifier, password }: LoginCredentials) {
     try {
@@ -79,6 +108,11 @@ export default function Login() {
 
   return (
     <div className={styles.login}>
+      <DemoAccountPopup
+        username={demoAccountInfo.username}
+        password={demoAccountInfo.password}
+        onApply={applyDemoInfo}
+      />
       <h1>Log In</h1>
 
       <form
