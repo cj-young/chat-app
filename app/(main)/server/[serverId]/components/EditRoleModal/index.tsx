@@ -47,7 +47,9 @@ export default function EditRoleModal({ member, server }: Props) {
       <button className={styles["exit-modal"]} onClick={closeModal}>
         <XIcon />
       </button>
-      <h2 className={styles["title"]}>Edit {member.user.displayName}'s role</h2>
+      <h2 className={styles["title"]}>
+        Edit {member.user.displayName}&apos;s role
+      </h2>
       <form onSubmit={handleSubmit(submitData)} className={styles["form"]}>
         <label
           htmlFor="role-admin"

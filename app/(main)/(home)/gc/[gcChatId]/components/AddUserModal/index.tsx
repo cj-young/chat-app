@@ -111,7 +111,7 @@ export default function AddUserModal({ alreadyInChat, chatId }: Props) {
         </form>
       ) : (
         <p className={styles["no-friends"]}>
-          You don't have any more friends to add to this conversation
+          You don&apos;t have any more friends to add to this conversation
         </p>
       )}
     </div>

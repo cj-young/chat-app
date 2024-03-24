@@ -131,7 +131,7 @@ export default function Login() {
           <span>Log in with Google</span>
         </button>
         <span className={styles["sign-up"]}>
-          Don't have an account? <Link href={"/signup"}>Sign Up</Link>
+          Don&apos;t have an account? <Link href={"/signup"}>Sign Up</Link>
         </span>
       </form>
     </div>

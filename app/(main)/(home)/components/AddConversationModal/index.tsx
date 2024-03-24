@@ -104,7 +104,7 @@ export default function AddConversationModal() {
         </form>
       ) : (
         <p className={styles["no-friends"]}>
-          You don't have any friends to add to a conversation
+          You don&apos;t have any friends to add to a conversation
         </p>
       )}
     </div>
