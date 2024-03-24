@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
 
     console.log("sessionId", sessionId);
     if (!sessionId) {
-      return NextResponse.json({ message: "Already signed out" });
+      return NextResponse.json(
+        { message: "Already signed out" },
+        { status: 400 }
+      );
     }
 
     const sessionTag = sessionId[0];
