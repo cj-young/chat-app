@@ -26,7 +26,9 @@ export default async function RootLayout({
   }
   await dbConnect();
 
+  console.log("sessionId", sessionId);
   const user = await getSessionUser(sessionId.slice(1));
+  console.log("user", user);
 
   if (!user) {
     redirect("/login");
