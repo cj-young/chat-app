@@ -4,6 +4,7 @@ import SignupSession from "@/models/SignupSession";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  console.log("SIGN OUT REQUEST RECEIVED");
   try {
     const sessionId = req.cookies.get("session")?.value;
 
