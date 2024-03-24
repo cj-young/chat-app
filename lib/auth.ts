@@ -66,7 +66,6 @@ export async function getSessionUser(sessionId: string) {
     ]
   });
 
-  console.log("session", session);
   return !session || session.isExpired() ? null : session.user;
 }
 
