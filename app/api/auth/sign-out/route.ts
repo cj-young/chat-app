@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const sessionId = req.cookies.get("session")?.value;
 
+    console.log("sessionId", sessionId);
     if (!sessionId) {
       return NextResponse.json({ message: "Already signed out" });
     }
