@@ -29,7 +29,8 @@ interface IGoogleUser {
 
 export async function GET(req: NextRequest) {
   try {
-    const code = req.nextUrl.searchParams.get("code");
+    const code = "askdjlaklsjd";
+    // const code = req.nextUrl.searchParams.get("code");
     if (!code) {
       redirect("/login");
     }
