@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error(error);
     return NextResponse.json({ response: "response 4" }, { status: 400 });
-    redirect("/login");
+    // redirect("/login");
   }
 }
 
