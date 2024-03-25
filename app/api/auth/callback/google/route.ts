@@ -1,6 +1,5 @@
 import { createSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
-import Message from "@/models/Message";
 import { SESSION_EXPIRY_SECONDS } from "@/models/Session";
 import SignupSession, {
   ISignupSession,
@@ -31,13 +30,6 @@ interface IGoogleUser {
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-    await Message.create({
-      content: "this is coming from the callback",
-      sender: "6572618ca7f7e2ff875afc9b",
-      chatRef: "DirectMessage",
-      chat: "657e46bc1bc6db8efca604b7"
-    });
-
     const code = req.nextUrl.searchParams.get("code");
     if (!code) {
       return NextResponse.json({ response: "response 1" }, { status: 400 });
