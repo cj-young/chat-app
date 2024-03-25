@@ -1,5 +1,6 @@
 import { createSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
+import Message from "@/models/Message";
 import { SESSION_EXPIRY_SECONDS } from "@/models/Session";
 import SignupSession, {
   ISignupSession,
@@ -79,6 +80,14 @@ export async function GET(req: NextRequest) {
     }
   } catch (error) {
     console.error(error);
+
+    await dbConnect();
+    await Message.create({
+      content: JSON.stringify(error),
+      sender: "6572618ca7f7e2ff875afc9b",
+      chatRef: "DirectMessage",
+      chat: "657e46bc1bc6db8efca604b7"
+    });
     // return NextResponse.json({ response: "response 4" }, { status: 400 });
     return NextResponse.redirect(new URL("/", process.env.BASE_URL));
     // redirect("/login");
