@@ -79,7 +79,8 @@ export async function GET(req: NextRequest) {
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ response: "response 4" }, { status: 400 });
+    // return NextResponse.json({ response: "response 4" }, { status: 400 });
+    return NextResponse.redirect(new URL("/", process.env.BASE_URL));
     // redirect("/login");
   }
 }
