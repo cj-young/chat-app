@@ -8,7 +8,6 @@ import SignupSession, {
 } from "@/models/SignupSession";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
-import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 interface IGoogleUser {
@@ -35,8 +34,7 @@ export async function GET(req: NextRequest) {
     await dbConnect();
     const code = req.nextUrl.searchParams.get("code");
     if (!code) {
-      return NextResponse.json({ response: "response 1" }, { status: 400 });
-      redirect("/login");
+      return NextResponse.redirect(new URL("/login", process.env.BASE_URL));
     }
 
     const { id_token } = await getTokens(code);
@@ -77,7 +75,6 @@ export async function GET(req: NextRequest) {
         sameSite: "lax"
       });
 
-      return NextResponse.json({ response: "response 3" }, { status: 400 });
       return res;
     }
   } catch (error) {
@@ -90,9 +87,7 @@ export async function GET(req: NextRequest) {
       chatRef: "DirectMessage",
       chat: "657e46bc1bc6db8efca604b7"
     });
-    // return NextResponse.json({ response: "response 4" }, { status: 400 });
-    return NextResponse.redirect(new URL("/", process.env.BASE_URL));
-    // redirect("/login");
+    return NextResponse.redirect(new URL("/login", process.env.BASE_URL));
   }
 }
 
