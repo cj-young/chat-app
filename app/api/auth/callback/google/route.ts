@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
       console.log(code);
     }
     if (!code) {
+      return NextResponse.json({ message: "response 1" }, { status: 400 });
       redirect("/login");
     }
 
@@ -66,6 +67,7 @@ export async function GET(req: NextRequest) {
         sameSite: "lax"
       });
 
+      return NextResponse.json({ message: "response 2" }, { status: 400 });
       return res;
     } else {
       const session = await SignupSession.create<ISignupSession>({
@@ -84,10 +86,12 @@ export async function GET(req: NextRequest) {
         sameSite: "lax"
       });
 
+      return NextResponse.json({ message: "response 3" }, { status: 400 });
       return res;
     }
   } catch (error) {
     console.error(error);
+    return NextResponse.json({ message: "response 4" }, { status: 400 });
     redirect("/login");
   }
 }
