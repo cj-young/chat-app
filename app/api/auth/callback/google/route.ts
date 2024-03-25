@@ -87,10 +87,10 @@ export async function GET(req: NextRequest) {
       });
       logsList.push("a12");
 
-      return NextResponse.json(
-        { response: "response 2", message: JSON.stringify(logsList) },
-        { status: 400 }
-      );
+      // return NextResponse.json(
+      //   { response: "response 2", message: JSON.stringify(logsList) },
+      //   { status: 400 }
+      // );
       return res;
     } else {
       logsList.push("b10");
