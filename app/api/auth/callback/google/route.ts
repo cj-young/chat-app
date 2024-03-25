@@ -31,6 +31,9 @@ export async function GET(req: NextRequest) {
   try {
     const code = "askdjlaklsjd";
     // const code = req.nextUrl.searchParams.get("code");
+    if (code.length > 4) {
+      throw new Error("thi si an error");
+    }
     if (!code) {
       redirect("/login");
     }
