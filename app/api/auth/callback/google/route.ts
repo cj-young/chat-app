@@ -41,17 +41,20 @@ export async function GET(req: NextRequest) {
     });
     logsList.push("2");
 
-    const code = "askdjlaklsjd";
+    const code = req.nextUrl.searchParams.get("code");
+    logsList.push(code);
     logsList.push("3");
 
-    // const code = req.nextUrl.searchParams.get("code");
-    if (code.length > 4) {
+    if (code) {
       console.log(code);
     }
     logsList.push("4");
 
     if (!code) {
-      return NextResponse.json({ message: "response 1" }, { status: 400 });
+      return NextResponse.json(
+        { response: "response 1", message: JSON.stringify(logsList) },
+        { status: 400 }
+      );
       redirect("/login");
     }
     logsList.push("5");
@@ -84,7 +87,10 @@ export async function GET(req: NextRequest) {
       });
       logsList.push("a12");
 
-      return NextResponse.json({ message: "response 2" }, { status: 400 });
+      return NextResponse.json(
+        { response: "response 2", message: JSON.stringify(logsList) },
+        { status: 400 }
+      );
       return res;
     } else {
       logsList.push("b10");
@@ -109,13 +115,16 @@ export async function GET(req: NextRequest) {
       });
       logsList.push("b13");
 
-      return NextResponse.json({ message: "response 3" }, { status: 400 });
+      return NextResponse.json(
+        { response: "response 3", message: JSON.stringify(logsList) },
+        { status: 400 }
+      );
       return res;
     }
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: JSON.stringify(logsList) },
+      { response: "response 4", message: JSON.stringify(logsList) },
       { status: 400 }
     );
     redirect("/login");
