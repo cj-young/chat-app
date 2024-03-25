@@ -29,54 +29,31 @@ interface IGoogleUser {
 }
 
 export async function GET(req: NextRequest) {
-  let logsList = [];
   try {
     await dbConnect();
-    logsList.push("1");
     await Message.create({
       content: "this is coming from the callback",
       sender: "6572618ca7f7e2ff875afc9b",
       chatRef: "DirectMessage",
       chat: "657e46bc1bc6db8efca604b7"
     });
-    logsList.push("2");
 
     const code = req.nextUrl.searchParams.get("code");
-    logsList.push(code);
-    logsList.push("3");
-
-    if (code) {
-      console.log(code);
-    }
-    logsList.push("4");
-
     if (!code) {
-      return NextResponse.json(
-        { response: "response 1", message: JSON.stringify(logsList) },
-        { status: 400 }
-      );
+      return NextResponse.json({ response: "response 1" }, { status: 400 });
       redirect("/login");
     }
-    logsList.push("5");
 
     const { id_token } = await getTokens(code);
-    logsList.push("6");
 
     const googleUser = jwt.decode(id_token) as IGoogleUser;
-    logsList.push("7");
-
     const googleId = googleUser.sub;
-    logsList.push("8");
-
     const existingUser = await User.findOne({ googleId });
-    logsList.push("9");
 
     if (existingUser) {
       const session = await createSession(existingUser);
-      logsList.push("a10");
 
       const res = NextResponse.redirect(new URL("/", process.env.BASE_URL));
-      logsList.push("a11");
 
       res.cookies.set({
         name: "session",
@@ -85,26 +62,17 @@ export async function GET(req: NextRequest) {
         expires: new Date(Date.now() + 1000 * SESSION_EXPIRY_SECONDS),
         sameSite: "lax"
       });
-      logsList.push("a12");
 
-      // return NextResponse.json(
-      //   { response: "response 2", message: JSON.stringify(logsList) },
-      //   { status: 400 }
-      // );
       return res;
     } else {
-      logsList.push("b10");
-
       const session = await SignupSession.create<ISignupSession>({
         email: googleUser.email,
         googleId
       });
-      logsList.push("b11");
 
       const res = NextResponse.redirect(
         new URL("/signup", process.env.BASE_URL)
       );
-      logsList.push("b12");
 
       res.cookies.set({
         name: "session",
@@ -113,20 +81,13 @@ export async function GET(req: NextRequest) {
         expires: new Date(Date.now() + 1000 * SIGNUP_SESSION_EXPIRY_SECONDS),
         sameSite: "lax"
       });
-      logsList.push("b13");
 
-      return NextResponse.json(
-        { response: "response 3", message: JSON.stringify(logsList) },
-        { status: 400 }
-      );
+      return NextResponse.json({ response: "response 3" }, { status: 400 });
       return res;
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { response: "response 4", message: JSON.stringify(logsList) },
-      { status: 400 }
-    );
+    return NextResponse.json({ response: "response 4" }, { status: 400 });
     redirect("/login");
   }
 }
