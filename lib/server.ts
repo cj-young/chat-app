@@ -3,7 +3,7 @@ import { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
 import { IClientChannel, IClientServer } from "@/types/server";
-import { isValidObjectId } from "mongoose";
+import { Types, isValidObjectId } from "mongoose";
 
 import "server-only";
 
@@ -89,4 +89,27 @@ export function getDefaultChannelId(server: IServer) {
     }
     return minChannelId;
   }
+}
+
+export async function addChannelGroup(serverId: string, groupName: string) {
+  if (!isValidObjectId(serverId)) {
+    return { error: "Invalid server ID" } as const;
+  }
+
+  const server = await Server.findById<IServer>(serverId);
+  if (!server) {
+    return { error: "Invalid server ID" } as const;
+  }
+
+  const channelGroup = {
+    name: groupName,
+    channels: [],
+    uiOrder: server.channelGroups.length,
+    _id: new Types.ObjectId()
+  };
+
+  server.channelGroups.push(channelGroup);
+  await server.save();
+
+  return { channelGroup, server };
 }

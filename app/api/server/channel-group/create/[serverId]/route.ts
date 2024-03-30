@@ -3,9 +3,9 @@ import {
   invalidSession,
   isVerifiedReqSession
 } from "@/lib/auth";
+import { addChannelGroup } from "@/lib/server";
 import Member, { IMember } from "@/models/server/Member";
-import Server, { IServer } from "@/models/server/Server";
-import { Types, isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -35,19 +35,13 @@ export async function POST(req: NextRequest) {
     if (!member || !(member.role === "admin" || member.role === "owner"))
       return invalidSession();
 
-    const server = await Server.findById<IServer>(serverId);
-    if (!server)
-      return NextResponse.json({ message: "Invalid server" }, { status: 400 });
-
-    const channelGroup = {
-      name,
-      channels: [],
-      uiOrder: server.channelGroups.length,
-      _id: new Types.ObjectId()
-    };
-
-    server.channelGroups.push(channelGroup);
-    await server.save();
+    const { channelGroup, server, error } = await addChannelGroup(
+      serverId,
+      name
+    );
+    if (error) {
+      return NextResponse.json({ message: error }, { status: 400 });
+    }
 
     await pusherServer.trigger(
       `private-server-${server.id}`,
