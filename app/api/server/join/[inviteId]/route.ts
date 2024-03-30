@@ -25,7 +25,11 @@ export async function GET(req: NextRequest) {
       "inviteCode.code": inviteId
     });
     if (!server) return joinFailed();
-    if (server.members.some((member) => member.toString() === user.id)) {
+    const existingMember = await Member.findOne<IMember>({
+      user: user.id,
+      server: server.id
+    });
+    if (existingMember) {
       return NextResponse.redirect(
         new URL(`/server/${server.id}`, process.env.BASE_URL)
       );
