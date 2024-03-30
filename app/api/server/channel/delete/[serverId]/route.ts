@@ -1,7 +1,12 @@
 import { getReqSession, invalidSession, serverError } from "@/lib/auth";
+import {
+  addChannel,
+  addChannelGroup,
+  sterilizeClientChannel
+} from "@/lib/server";
 import Channel from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
-import Server from "@/models/server/Server";
+import Server, { IServer } from "@/models/server/Server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
@@ -30,16 +35,65 @@ export async function DELETE(req: NextRequest) {
     if (!member || (member.role !== "admin" && member.role !== "owner"))
       return invalidSession();
 
-    console.log(channelId);
-    await Server.findByIdAndUpdate(serverId, {
-      $pull: {
-        "channelGroups.$[].channels": {
-          channel: channelId
+    const updatedServer = await Server.findByIdAndUpdate<IServer>(
+      serverId,
+      {
+        $pull: {
+          "channelGroups.$[].channels": {
+            channel: channelId
+          }
         }
-      }
-    });
+      },
+      { new: true }
+    );
 
     await Channel.findByIdAndDelete(channelId);
+
+    if (
+      updatedServer?.channelGroups.flatMap((group) => group.channels).length ===
+      0
+    ) {
+      // The only remaining channel was deleted, so one must be added
+      let firstGroupId: string | undefined = updatedServer.channelGroups[0]?.id;
+      if (!firstGroupId) {
+        const { channelGroup, error } = await addChannelGroup(
+          updatedServer.id,
+          "Text Channels"
+        );
+        if (error) {
+          return NextResponse.json({ message: error }, { status: 400 });
+        }
+
+        firstGroupId = channelGroup._id.toString();
+        await pusherServer.trigger(
+          `private-server-${updatedServer.id}`,
+          "channelGroupCreated",
+          { channelGroup: { ...channelGroup, id: channelGroup._id } }
+        );
+      }
+
+      const {
+        channel: newChannel,
+        channelUiOrder: newChannelUiOrder,
+        error
+      } = await addChannel(updatedServer.id, firstGroupId, "public", "text");
+      if (error) {
+        return NextResponse.json({ message: error }, { status: 400 });
+      }
+
+      const clientChannel = sterilizeClientChannel(
+        newChannel,
+        newChannelUiOrder ?? 0
+      );
+      await pusherServer.trigger(
+        `private-server-${updatedServer.id}`,
+        "channelCreated",
+        {
+          channel: clientChannel,
+          groupId: firstGroupId
+        }
+      );
+    }
 
     return NextResponse.json({ message: "Successfully deleted channel" });
   } catch (error) {

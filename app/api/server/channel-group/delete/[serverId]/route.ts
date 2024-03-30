@@ -1,6 +1,11 @@
 import { getReqSession, invalidSession, serverError } from "@/lib/auth";
+import {
+  addChannel,
+  addChannelGroup,
+  sterilizeClientChannel
+} from "@/lib/server";
 import Member, { IMember } from "@/models/server/Member";
-import Server from "@/models/server/Server";
+import Server, { IServer } from "@/models/server/Server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
@@ -29,13 +34,105 @@ export async function DELETE(req: NextRequest) {
     if (!member || (member.role !== "admin" && member.role !== "owner"))
       return invalidSession();
 
-    await Server.findByIdAndUpdate(serverId, {
-      $pull: {
-        channelGroups: {
-          _id: groupId
+    const updatedServer = await Server.findByIdAndUpdate<IServer>(
+      serverId,
+      {
+        $pull: {
+          channelGroups: {
+            _id: groupId
+          }
         }
+      },
+      { new: true }
+    );
+
+    if (updatedServer?.channelGroups.length === 0) {
+      // Create channel new channel group if final one was deleted
+      const {
+        server,
+        channelGroup,
+        error: groupError
+      } = await addChannelGroup(updatedServer.id, "Text Channels");
+      if (groupError) {
+        return NextResponse.json({ message: groupError }, { status: 400 });
       }
-    });
+
+      const {
+        channel,
+        channelUiOrder,
+        error: channelError
+      } = await addChannel(
+        server.id,
+        channelGroup._id.toString(),
+        "public",
+        "text"
+      );
+      if (channelError) {
+        return NextResponse.json({ message: channelError }, { status: 400 });
+      }
+
+      await pusherServer.trigger(
+        `private-server-${server.id}`,
+        "channelGroupCreated",
+        { channelGroup: { ...channelGroup, id: channelGroup._id } }
+      );
+      const clientChannel = sterilizeClientChannel(
+        channel,
+        channelUiOrder ?? 0
+      );
+      await pusherServer.trigger(
+        `private-server-${server.id}`,
+        "channelCreated",
+        {
+          channel: clientChannel,
+          groupId: channelGroup._id
+        }
+      );
+    } else if (
+      updatedServer?.channelGroups.flatMap((group) => group.channels).length ===
+      0
+    ) {
+      // The only remaining channel was deleted, so one must be added
+      let firstGroupId: string | undefined = updatedServer.channelGroups[0]?.id;
+      if (!firstGroupId) {
+        const { channelGroup, error } = await addChannelGroup(
+          updatedServer.id,
+          "Text Channels"
+        );
+        if (error) {
+          return NextResponse.json({ message: error }, { status: 400 });
+        }
+
+        firstGroupId = channelGroup._id.toString();
+        await pusherServer.trigger(
+          `private-server-${updatedServer.id}`,
+          "channelGroupCreated",
+          { channelGroup: { ...channelGroup, id: channelGroup._id } }
+        );
+      }
+
+      const {
+        channel: newChannel,
+        channelUiOrder: newChannelUiOrder,
+        error
+      } = await addChannel(updatedServer.id, firstGroupId, "public", "text");
+      if (error) {
+        return NextResponse.json({ message: error }, { status: 400 });
+      }
+
+      const clientChannel = sterilizeClientChannel(
+        newChannel,
+        newChannelUiOrder ?? 0
+      );
+      await pusherServer.trigger(
+        `private-server-${updatedServer.id}`,
+        "channelCreated",
+        {
+          channel: clientChannel,
+          groupId: firstGroupId
+        }
+      );
+    }
 
     return NextResponse.json({ message: "Successfully deleted channel group" });
   } catch (error) {
