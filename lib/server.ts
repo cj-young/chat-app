@@ -1,8 +1,8 @@
 import { IUser } from "@/models/User";
-import { IChannel } from "@/models/server/Channel";
+import Channel, { IChannel } from "@/models/server/Channel";
 import Member, { IMember } from "@/models/server/Member";
 import Server, { IServer } from "@/models/server/Server";
-import { IClientChannel, IClientServer } from "@/types/server";
+import { IClientChannel, IClientServer, TChannelType } from "@/types/server";
 import { Types, isValidObjectId } from "mongoose";
 
 import "server-only";
@@ -112,4 +112,56 @@ export async function addChannelGroup(serverId: string, groupName: string) {
   await server.save();
 
   return { channelGroup, server };
+}
+
+export async function addChannel(
+  serverId: string,
+  groupId: string,
+  name: string,
+  type: TChannelType
+) {
+  if (!isValidObjectId(serverId)) {
+    return { error: "Invalid server ID" } as const;
+  }
+
+  const server = await Server.findById<IServer>(serverId);
+  if (!server) {
+    return { error: "Invalid server ID" } as const;
+  }
+
+  const channel = (await Channel.create({
+    server: serverId,
+    name,
+    channelType: type
+  })) as IChannel;
+
+  if (!channel) return { error: "Channel creation failed" } as const;
+
+  let channelUiOrder;
+  for (let channelGroup of server.channelGroups) {
+    if (channelGroup.id === groupId) {
+      channelUiOrder = channelGroup.channels.length;
+      channelGroup.channels.push({
+        channel: channel.id,
+        uiOrder: channelUiOrder
+      });
+      break;
+    }
+  }
+
+  await server.save();
+
+  await Member.updateMany(
+    { server: server.id },
+    {
+      $push: {
+        channels: {
+          channel: channel.id,
+          unreadMessage: 0
+        }
+      }
+    }
+  );
+
+  return { channel, server, channelUiOrder };
 }

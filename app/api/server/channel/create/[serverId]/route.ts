@@ -3,10 +3,8 @@ import {
   invalidSession,
   isVerifiedReqSession
 } from "@/lib/auth";
-import { sterilizeClientChannel } from "@/lib/server";
-import Channel, { IChannel } from "@/models/server/Channel";
+import { addChannel, sterilizeClientChannel } from "@/lib/server";
 import Member, { IMember } from "@/models/server/Member";
-import Server, { IServer } from "@/models/server/Server";
 import { TChannelType } from "@/types/server";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -37,46 +35,15 @@ export async function POST(req: NextRequest) {
     if (!member || !(member.role === "admin" || member.role === "owner"))
       return invalidSession();
 
-    const channel = (await Channel.create({
-      server: serverId,
+    const { channel, channelUiOrder, server, error } = await addChannel(
+      serverId,
+      groupId,
       name,
       channelType
-    })) as IChannel;
-
-    if (!channel)
-      return NextResponse.json(
-        { message: "Channel creation failed" },
-        { status: 500 }
-      );
-
-    const server = await Server.findById<IServer>(serverId);
-    if (!server) return NextResponse.json({ message: "Invalid server" });
-
-    let channelUiOrder;
-    for (let channelGroup of server.channelGroups) {
-      if (channelGroup.id === groupId) {
-        channelUiOrder = channelGroup.channels.length;
-        channelGroup.channels.push({
-          channel: channel.id,
-          uiOrder: channelUiOrder
-        });
-        break;
-      }
-    }
-
-    await server.save();
-
-    await Member.updateMany(
-      { server: server.id },
-      {
-        $push: {
-          channels: {
-            channel: channel.id,
-            unreadMessage: 0
-          }
-        }
-      }
     );
+    if (error) {
+      return NextResponse.json({ message: error }, { status: 400 });
+    }
 
     const clientChannel = sterilizeClientChannel(channel, channelUiOrder ?? 0);
     await pusherServer.trigger(
