@@ -8,7 +8,7 @@ This is a chat app built with Next.js, Pusher, MongoDB, and Firebase Cloud Stora
 
 - User Authentication
 - Text, image, video, and audio sharing
-- Realtime voice chat through [WebRTC]("https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+- Realtime voice chat through [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
 - Friend system
 - User-created servers
 - Direct messages
@@ -16,7 +16,7 @@ This is a chat app built with Next.js, Pusher, MongoDB, and Firebase Cloud Stora
 
 ## 👉 Getting Started
 
-Check out the live project [here]("https://chat-app-peach-gamma.vercel.app").
+Check out the live project [here](https://chat-app-peach-gamma.vercel.app).
 
 ### 🛠️ Services Used
 
@@ -26,7 +26,7 @@ This project uses MongoDB to store data. To run it locally, you must have an ava
 
 #### Google Authentication
 
-For Google Authentication to work, you must have a project in your [Google Cloud Console]("http://console.cloud.google.com"). To learn how to set up authentication, read [this guide](https://developers.google.com/identity/protocols/oauth2)
+For Google Authentication to work, you must have a project in your [Google Cloud Console](http://console.cloud.google.com). To learn how to set up authentication, read [this guide](https://developers.google.com/identity/protocols/oauth2)
 
 #### Pusher
 
