@@ -16,7 +16,7 @@ This is a chat app built with Next.js, Pusher, MongoDB, and Firebase Cloud Stora
 
 ## 👉 Getting Started
 
-Currently, this project is not hosted, so you must clone this repository and run the dev server locally.
+Check out the live project [here]("https://chat-app-peach-gamma.vercel.app").
 
 ### 🛠️ Services Used
 
