@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Chat App",
+  title: "Whischat",
   description: "An app that lets you chat"
 };
 
