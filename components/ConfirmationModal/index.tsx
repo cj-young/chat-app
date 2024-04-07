@@ -28,8 +28,12 @@ export default function ConfirmationModal({
   }
 
   return (
-    <div className={styles["modal"]}>
-      <button className={styles["exit-modal"]} onClick={closeModal}>
+    <div className={styles["modal"]} data-testid="confirmation-modal">
+      <button
+        className={styles["exit-modal"]}
+        onClick={closeModal}
+        aria-label="Exit modal"
+      >
         <XIcon />
       </button>
       <h2 className={styles["title"]}>{title}</h2>
