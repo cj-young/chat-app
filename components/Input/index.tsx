@@ -44,6 +44,7 @@ export default function Input({
           className={styles["input"]}
           ref={inputRef}
           {...rest}
+          data-testid="input-element"
         />
         {type === "password" && (
           <button
