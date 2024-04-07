@@ -20,7 +20,7 @@ export default function LoaderButton({
     >
       {children}
       {loading && (
-        <div className={styles["loader-wrapper"]}>
+        <div className={styles["loader-wrapper"]} data-testid="loader-overlay">
           <Loader className={styles["loader"]} />
         </div>
       )}
