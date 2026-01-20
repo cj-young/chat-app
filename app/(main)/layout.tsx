@@ -15,13 +15,14 @@ import PopupMenuDisplay from "./components/PopupMenuDisplay";
 import styles from "./layout.module.scss";
 
 export default async function RootLayout({
-  children
+  children,
 }: {
   children: ReactNode;
 }) {
   const sessionId = cookies().get("session")?.value;
 
   if (!sessionId || sessionId[0] !== "1") {
+    console.log("FIRST FAIL");
     redirect("/login");
   }
   await dbConnect();
@@ -29,15 +30,16 @@ export default async function RootLayout({
   const user = await getSessionUser(sessionId.slice(1));
 
   if (!user) {
+    console.log("Second FAIL");
     redirect("/login");
   }
 
   const profile: IProfile = {
     ...getUserProfile(user),
     onlineStatus:
-      user.preferredOnlineStatus === "invisible"
-        ? "offline"
-        : user.preferredOnlineStatus
+      user.preferredOnlineStatus === "invisible" ?
+        "offline"
+      : user.preferredOnlineStatus,
   };
   const friendRequests = user.friendRequests
     .filter((requester) => requester && requester.id != null)
@@ -49,13 +51,13 @@ export default async function RootLayout({
     .filter((dm) => dm.user1 && dm.user2)
     .map((dm) => sterilizeClientDm(dm, user.id));
   const groupChats = user.groupChats.map((groupChat) =>
-    sterilizeClientGroupChat(groupChat, user.id)
+    sterilizeClientGroupChat(groupChat, user.id),
   );
   const servers = user.servers
     .filter((server) => server != null && server.server != null)
     .map((server) => ({
       uiOrder: server.uiOrder,
-      server: sterilizeClientServer(server.server)
+      server: sterilizeClientServer(server.server),
     }));
   const blockedUsers = user.blockedUsers
     .filter((blockedUser) => !!blockedUser)
