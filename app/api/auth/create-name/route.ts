@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
     await dbConnect();
 
     const session = await SignupSession.findById<ISignupSession>(
-      sessionId.slice(1)
+      sessionId.slice(1),
     );
 
     if (!session || session.isExpired()) {
       return NextResponse.json(
         { message: "Session has expired" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { message: "That username is taken", field: "username" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       displayName,
       password: session.password,
       email: session.email,
-      googleId: session.googleId
+      googleId: session.googleId,
     });
 
     const newSession = await createSession(user);
@@ -57,18 +57,17 @@ export async function POST(req: NextRequest) {
       value: "1" + newSession.id, // Prefix verified user session with "1"
       httpOnly: true,
       expires: new Date(Date.now() + 1000 * SESSION_EXPIRY_SECONDS),
-      sameSite: "lax"
+      sameSite: "lax",
     });
 
-    SignupSession.findByIdAndDelete(sessionId.slice(1));
-    // No need to await deletion, the document will expire anyway if it fails
+    await SignupSession.findByIdAndDelete(sessionId.slice(1));
 
     return res;
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { message: "An error occurred while processing the request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

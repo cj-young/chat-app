@@ -1,7 +1,7 @@
 import {
   getReqSession,
   invalidSession,
-  isVerifiedReqSession
+  isVerifiedReqSession,
 } from "@/lib/auth";
 import { sterilizeClientGroupChat } from "@/lib/groupChat";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const reqSession = await getReqSession(req);
     if (!isVerifiedReqSession(reqSession)) return invalidSession();
     const {
-      session: { user }
+      session: { user },
     } = reqSession;
 
     const { groupChatUsers } = (await req.json()) as {
@@ -27,18 +27,18 @@ export async function POST(req: NextRequest) {
       if (!isValidObjectId(groupChatUser)) {
         return NextResponse.json(
           { message: "Invalid user(s)" },
-          { status: 400 }
+          { status: 400 },
         );
       }
       members.push({ user: groupChatUser, unreadMessages: 0 });
     }
 
     const groupChat = (await GroupChat.create<IGroupChat>({
-      members
+      members,
     })) as IGroupChat;
 
     const populatedGroupChat = (await GroupChat.findById<IGroupChat>(
-      groupChat.id
+      groupChat.id,
     ).populate<{
       members: { user: IUser; unreadMessages: number }[];
     }>("members.user")) as Omit<IGroupChat, "members"> & {
@@ -51,12 +51,12 @@ export async function POST(req: NextRequest) {
     await User.updateMany(
       {
         _id: {
-          $in: populatedGroupChat.members.map((member) => member.user.id)
-        }
+          $in: populatedGroupChat.members.map((member) => member.user.id),
+        },
       },
       {
-        $addToSet: { groupChats: populatedGroupChat.id }
-      }
+        $addToSet: { groupChats: populatedGroupChat.id },
+      },
     );
 
     const pusherPromises = [];
@@ -65,8 +65,8 @@ export async function POST(req: NextRequest) {
         pusherServer.trigger(
           `private-user-${member.user.id}`,
           "groupChatCreated",
-          sterilizeClientGroupChat(populatedGroupChat, member.user.id)
-        )
+          sterilizeClientGroupChat(populatedGroupChat, member.user.id),
+        ),
       );
     }
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

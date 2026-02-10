@@ -14,7 +14,7 @@ export async function createSession(user: IUser): Promise<ISession> {
   await dbConnect();
 
   const session = await Session.create({
-    user: user.id
+    user: user.id,
   });
 
   return session;
@@ -22,7 +22,6 @@ export async function createSession(user: IUser): Promise<ISession> {
 
 export async function getSessionUser(sessionId: string) {
   await dbConnect();
-
   const session = await Session.findById<ISession>(sessionId).populate<{
     user: Omit<
       IUser,
@@ -56,14 +55,14 @@ export async function getSessionUser(sessionId: string) {
       {
         path: "directMessages",
         model: DirectMessage,
-        populate: ["user1", "user2"]
+        populate: ["user1", "user2"],
       },
       {
         path: "groupChats",
         model: GroupChat,
-        populate: ["members.user"]
-      }
-    ]
+        populate: ["members.user"],
+      },
+    ],
   });
 
   return !session || session.isExpired() ? null : session.user;
@@ -86,19 +85,19 @@ export function getUserProfile(
     | "id"
     | "preferredOnlineStatus"
     | "isOnline"
-  >
+  >,
 ): IProfile {
   const onlineStatus =
-    user.isOnline && user.preferredOnlineStatus !== "invisible"
-      ? user.preferredOnlineStatus
-      : "offline";
+    user.isOnline && user.preferredOnlineStatus !== "invisible" ?
+      user.preferredOnlineStatus
+    : "offline";
   return {
     email: user.email,
     username: user.username,
     displayName: user.displayName,
     imageUrl: user.imageUrl,
     id: user.id,
-    onlineStatus
+    onlineStatus,
   };
 }
 
@@ -106,12 +105,12 @@ export function getSession(sessionId: string) {
   if (sessionId[0] === "0") {
     return {
       query: SignupSession.findById<ISignupSession>(sessionId.slice(1)),
-      userType: "signingUp" as const
+      userType: "signingUp" as const,
     };
   } else if (sessionId[0] === "1") {
     return {
       query: Session.findById<ISession>(sessionId.slice(1)),
-      userType: "verified" as const
+      userType: "verified" as const,
     };
   } else {
     throw new Error("Invalid session ID: prefix of '1' or '0' not provided");
@@ -125,7 +124,7 @@ export function invalidSession() {
 export function serverError() {
   return NextResponse.json(
     { message: "Internal server error" },
-    { status: 500 }
+    { status: 500 },
   );
 }
 
@@ -154,7 +153,7 @@ export async function getReqSession(req: NextRequest): Promise<TReqSession> {
     if (!session || session.isExpired()) return null;
     return {
       userType,
-      session
+      session,
     };
   } else if (userType === "signingUp") {
     const session = await query;
@@ -162,7 +161,7 @@ export async function getReqSession(req: NextRequest): Promise<TReqSession> {
     if (!session || session.isExpired()) return null;
     return {
       userType,
-      session
+      session,
     };
   } else {
     return null;
@@ -170,7 +169,7 @@ export async function getReqSession(req: NextRequest): Promise<TReqSession> {
 }
 
 export function isVerifiedReqSession(
-  reqSession: TReqSession
+  reqSession: TReqSession,
 ): reqSession is TVerifiedReqSession {
   return reqSession !== null && reqSession?.userType === "verified";
 }

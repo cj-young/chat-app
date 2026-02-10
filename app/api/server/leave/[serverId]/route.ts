@@ -1,7 +1,7 @@
 import {
   getReqSession,
   invalidSession,
-  isVerifiedReqSession
+  isVerifiedReqSession,
 } from "@/lib/auth";
 import { serverRolePriorities } from "@/lib/clientUtils";
 import User from "@/models/User";
@@ -15,48 +15,49 @@ export async function POST(req: NextRequest) {
     const reqSession = await getReqSession(req);
     if (!isVerifiedReqSession(reqSession)) return invalidSession();
     const {
-      session: { user }
+      session: { user },
     } = reqSession;
     const serverId = req.nextUrl.pathname.slice(
-      req.nextUrl.pathname.lastIndexOf("/") + 1
+      req.nextUrl.pathname.lastIndexOf("/") + 1,
     );
 
     if (!isValidObjectId(serverId))
       return NextResponse.json({ message: "Invalid server ID" });
     const member = await Member.findOneAndDelete<IMember>({
       user: user.id,
-      server: serverId
+      server: serverId,
     });
-    if (!member) return invalidSession();
+    if (!member || !member.value) return invalidSession();
 
     const [server, _user] = await Promise.all([
+      // eslint-disable-next-line testing-library/await-async-queries
       Server.findByIdAndUpdate<IServer>(serverId, {
-        $pull: { members: member.id }
+        $pull: { members: member.value.id },
       }).populate<{ members: IMember[] }>("members"),
-      await User.findByIdAndUpdate(user.id, {
-        $pull: { servers: { server: serverId } }
-      })
+      User.findByIdAndUpdate(user.id, {
+        $pull: { servers: { server: serverId } },
+      }),
     ]);
 
     if (!server)
       return NextResponse.json(
         { message: "Server not found" },
-        { status: 400 }
+        { status: 400 },
       );
     const highestPermissionUser = getHighestPermissionUser(server.members);
     if (highestPermissionUser) {
       await Member.findByIdAndUpdate(highestPermissionUser.id, {
-        role: "owner"
+        role: "owner",
       });
     }
 
     await Promise.all([
       pusherServer.trigger(`private-server-${server.id}`, "userLeft", {
-        memberId: member.id
+        memberId: member.value.id,
       }),
       pusherServer.trigger(`private-user-${user.id}`, "serverRemoved", {
-        serverId: server.id
-      })
+        serverId: server.id,
+      }),
     ]);
 
     return NextResponse.json({ message: "Successfull left server" });
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

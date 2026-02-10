@@ -8,12 +8,12 @@ import { Types, isValidObjectId } from "mongoose";
 import "server-only";
 
 export function sterilizeClientServer(
-  server: Pick<IServer, "id" | "name" | "imageUrl">
+  server: Pick<IServer, "id" | "name" | "imageUrl">,
 ): IClientServer {
   return {
     serverId: server.id,
     name: server.name,
-    imageUrl: server.imageUrl
+    imageUrl: server.imageUrl,
   };
 }
 
@@ -32,7 +32,7 @@ export async function getServer(serverId: string) {
     }
   >([
     { path: "members", model: Member, populate: "user" },
-    "channelGroups.channels.channel"
+    "channelGroups.channels.channel",
   ]);
   if (!server) return null;
   return server;
@@ -46,14 +46,14 @@ export async function getMember(serverId: string, userId: string) {
 
 export function sterilizeClientChannel(
   channel: IChannel,
-  uiOrder: number
+  uiOrder: number,
 ): IClientChannel {
   return {
     channelId: channel.id,
     serverId: channel.server.toString(),
     name: channel.name,
     type: channel.channelType,
-    uiOrder
+    uiOrder,
   };
 }
 
@@ -105,7 +105,7 @@ export async function addChannelGroup(serverId: string, groupName: string) {
     name: groupName,
     channels: [],
     uiOrder: server.channelGroups.length,
-    _id: new Types.ObjectId()
+    _id: new Types.ObjectId(),
   };
 
   server.channelGroups.push(channelGroup);
@@ -118,7 +118,7 @@ export async function addChannel(
   serverId: string,
   groupId: string,
   name: string,
-  type: TChannelType
+  type: TChannelType,
 ) {
   if (!isValidObjectId(serverId)) {
     return { error: "Invalid server ID" } as const;
@@ -132,7 +132,7 @@ export async function addChannel(
   const channel = (await Channel.create({
     server: serverId,
     name,
-    channelType: type
+    channelType: type,
   })) as IChannel;
 
   if (!channel) return { error: "Channel creation failed" } as const;
@@ -143,7 +143,7 @@ export async function addChannel(
       channelUiOrder = channelGroup.channels.length;
       channelGroup.channels.push({
         channel: channel.id,
-        uiOrder: channelUiOrder
+        uiOrder: channelUiOrder,
       });
       break;
     }
@@ -157,10 +157,10 @@ export async function addChannel(
       $push: {
         channels: {
           channel: channel.id,
-          unreadMessage: 0
-        }
-      }
-    }
+          unreadMessage: 0,
+        },
+      },
+    },
   );
 
   return { channel, server, channelUiOrder };

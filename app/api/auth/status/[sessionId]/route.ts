@@ -14,9 +14,8 @@ export async function GET(req: NextRequest) {
     const sessionTag = sessionParam[0];
 
     if (sessionTag === "1") {
-      const session = await Session.findById<ISession>(
-        sessionId
-      ).populate<IUser>("user");
+      const session =
+        await Session.findById<ISession>(sessionId).populate<IUser>("user");
       if (session && !session.isExpired() && session.user) {
         return NextResponse.json({ authStatus: "authenticated" });
       } else {
@@ -24,7 +23,7 @@ export async function GET(req: NextRequest) {
       }
     } else if (sessionTag === "0") {
       const session = (await SignupSession.findById(
-        sessionId
+        sessionId,
       )) as ISignupSession;
       if (session && !session.isExpired()) {
         return NextResponse.json({ authStatus: "signingUp" });
@@ -34,7 +33,7 @@ export async function GET(req: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

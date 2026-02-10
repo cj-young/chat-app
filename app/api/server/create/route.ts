@@ -1,7 +1,7 @@
 import {
   getReqSession,
   invalidSession,
-  isVerifiedReqSession
+  isVerifiedReqSession,
 } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { uploadServerImage } from "@/lib/firebase";
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const reqSession = await getReqSession(req);
     if (!isVerifiedReqSession(reqSession)) return invalidSession();
     const {
-      session: { user }
+      session: { user },
     } = reqSession;
 
     const formData = await req.formData();
@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
     if (!serverName)
       return NextResponse.json(
         { message: "No server name provided" },
-        { status: 400 }
+        { status: 400 },
       );
     const server = (await Server.create({
       name: serverName,
-      imageUrl
+      imageUrl,
     })) as IServer;
 
     const workingUser = await User.findById<IUser>(user.id);
@@ -47,21 +47,21 @@ export async function POST(req: NextRequest) {
     const serverUiOrder = workingUser.servers.length;
     workingUser.servers.push({
       server: server.id,
-      uiOrder: serverUiOrder
+      uiOrder: serverUiOrder,
     });
     await workingUser.save();
 
     const defaultChannel = (await Channel.create({
       server: server.id,
       name: "public",
-      channelType: "text"
+      channelType: "text",
     })) as IChannel;
 
     const member = await Member.create<IMember>({
       user: user.id,
       server: server.id,
       role: "owner",
-      channels: { channel: defaultChannel.id, unreadMessages: 0 }
+      channels: { channel: defaultChannel.id, unreadMessages: 0 },
     });
 
     await Server.findByIdAndUpdate<IServer>(server.id, {
@@ -69,16 +69,16 @@ export async function POST(req: NextRequest) {
         channelGroups: {
           name: "Text Channels",
           channels: [{ channel: defaultChannel.id, uiOrder: 0 }],
-          uiOrder: 0
+          uiOrder: 0,
         },
-        members: member.id
-      }
+        members: member.id,
+      },
     });
 
     const clientServer = sterilizeClientServer(server);
     await pusherServer.trigger(`private-user-${user.id}`, "serverAdded", {
       server: clientServer,
-      uiOrder: serverUiOrder
+      uiOrder: serverUiOrder,
     });
 
     return NextResponse.json({ serverId: server.id });
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

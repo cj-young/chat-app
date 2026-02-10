@@ -2,7 +2,7 @@ import {
   getReqSession,
   getUserProfile,
   invalidSession,
-  isVerifiedReqSession
+  isVerifiedReqSession,
 } from "@/lib/auth";
 import { sterilizeClientGroupChat } from "@/lib/groupChat";
 import GroupChat, { IGroupChat } from "@/models/GroupChat";
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const reqSession = await getReqSession(req);
     if (!isVerifiedReqSession(reqSession)) return invalidSession();
     const {
-      session: { user }
+      session: { user },
     } = reqSession;
 
     const chatId = req.url.slice(req.url.lastIndexOf("/") + 1);
@@ -34,17 +34,17 @@ export async function POST(req: NextRequest) {
           { _id: chatId, "members.user": { $ne: userId } },
           {
             $addToSet: {
-              members: { user: userId, unreadMessages: 0 }
-            }
-          }
-        )
+              members: { user: userId, unreadMessages: 0 },
+            },
+          },
+        ),
       );
       dbPromises.push(
         User.findByIdAndUpdate(userId, {
           $push: {
-            groupChats: chatId
-          }
-        })
+            groupChats: chatId,
+          },
+        }),
       );
       profilePromises.push(User.findById<IUser>(userId));
     }
@@ -54,20 +54,20 @@ export async function POST(req: NextRequest) {
       Promise.all(profilePromises),
       GroupChat.findById<IGroupChat>(chatId).populate<{
         members: { user: IUser; unreadMessages: number }[];
-      }>("members.user")
+      }>("members.user"),
     ]);
     const filteredProfiles = userProfiles.filter(
-      (user) => user !== null
+      (user) => user !== null,
     ) as IUser[];
     const sterilizedProfiles = filteredProfiles.map((user) =>
-      getUserProfile(user)
+      getUserProfile(user),
     );
 
     const pusherTriggers = [];
     pusherTriggers.push(
       pusherServer.trigger(`private-groupChat-${chatId}`, "usersAdded", {
-        users: sterilizedProfiles
-      })
+        users: sterilizedProfiles,
+      }),
     );
     if (groupChat) {
       for (let userId of userIds) {
@@ -75,21 +75,21 @@ export async function POST(req: NextRequest) {
           pusherServer.trigger(
             `private-user-${userId}`,
             "groupChatCreated",
-            sterilizeClientGroupChat(groupChat, userId)
-          )
+            sterilizeClientGroupChat(groupChat, userId),
+          ),
         );
       }
     }
     await Promise.all(pusherTriggers);
 
     return NextResponse.json({
-      message: "Successfully added user to the group chat"
+      message: "Successfully added user to the group chat",
     });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -29,7 +29,7 @@ export default async function DmChat({ params }: Props) {
         .populate<{
           user1: IUser;
         }>("user1")
-        .populate<{ user2: IUser }>("user2")
+        .populate<{ user2: IUser }>("user2"),
     ]);
 
     if (!directMessage || !user) redirect("/");
@@ -45,7 +45,7 @@ export default async function DmChat({ params }: Props) {
     let canSendMessages = true;
     if (
       otherUser.blockedUsers.some(
-        (blockedUser) => blockedUser.toString() === user.id
+        (blockedUser) => blockedUser.toString() === user.id,
       )
     ) {
       canSendMessages = false;
@@ -55,7 +55,7 @@ export default async function DmChat({ params }: Props) {
       <DmChatContainer
         directMessageChat={sterilizeClientDm(
           directMessage,
-          isUser1 ? directMessage.user1.id : directMessage.user2.id
+          isUser1 ? directMessage.user1.id : directMessage.user2.id,
         )}
         canSendMessages={canSendMessages}
       />
