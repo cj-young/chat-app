@@ -10,6 +10,7 @@ import Server from "@/models/server/Server";
 import mongoose from "mongoose";
 
 import "server-only";
+export const runtime = "nodejs";
 
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
@@ -19,7 +20,7 @@ const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI environment variable inside .env.local",
   );
 }
 
@@ -30,18 +31,23 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  console.log("1");
   if (cached.conn) {
+    console.log("2");
     return cached.conn;
   }
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false
+      bufferCommands: false,
     };
+
+    console.log("at least trying");
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;
     });
   }
   try {
+    console.log("4");
     cached.conn = await cached.promise;
 
     if (!cached.conn.models.User) {
@@ -81,6 +87,7 @@ async function dbConnect() {
     }
   } catch (e) {
     cached.promise = null;
+    console.error("This errored :(");
     throw e;
   }
 

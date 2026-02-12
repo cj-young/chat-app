@@ -15,21 +15,20 @@ interface Props {
 export default function Message({ message, isFirst, isTemp }: Props) {
   return (
     <li className={styles["message-item"]}>
-      {isFirst ? (
+      {isFirst ?
         <ProfilePicture
           user={message.sender}
           className={styles["profile-picture"]}
           clickOpensMenu={true}
         />
-      ) : (
-        <span className={styles["sent-at"]}>
+      : <span className={styles["sent-at"]}>
           {message.timestamp.toLocaleTimeString("en-us", {
             hour: "numeric",
-            minute: "numeric"
+            minute: "numeric",
           })}
         </span>
-      )}
-      {isFirst ? (
+      }
+      {isFirst ?
         <div className={styles["first-of-group"]}>
           <div className={styles["info"]}>
             <span className={styles["sender-name"]}>
@@ -42,7 +41,7 @@ export default function Message({ message, isFirst, isTemp }: Props) {
                   minute: "numeric",
                   day: "numeric",
                   month: "numeric",
-                  year: "numeric"
+                  year: "numeric",
                 })
                 .replace(",", "")}
             </span>
@@ -51,7 +50,7 @@ export default function Message({ message, isFirst, isTemp }: Props) {
             as="span"
             className={[
               styles["content"],
-              isTemp ? styles["temp-content"] : ""
+              isTemp ? styles["temp-content"] : "",
             ].join(" ")}
           >
             {message.content}
@@ -60,33 +59,32 @@ export default function Message({ message, isFirst, isTemp }: Props) {
             <>
               <ul className={styles["media-images"]}>
                 {message.media.map((media) =>
-                  media.type === "image" ? (
+                  media.type === "image" ?
                     <MessageImage image={media} key={media.mediaUrl} />
-                  ) : media.type === "video" ? (
+                  : media.type === "video" ?
                     <MessageVideo
                       videoUrl={media.mediaUrl}
                       key={media.mediaUrl}
                     />
-                  ) : null
+                  : null,
                 )}
               </ul>
               <ul className={styles["media-audio"]}>
                 {message.media.map((media) =>
-                  media.type === "audio" ? (
+                  media.type === "audio" ?
                     <AudioPlayer url={media.mediaUrl} key={media.mediaUrl} />
-                  ) : null
+                  : null,
                 )}
               </ul>
             </>
           )}
         </div>
-      ) : (
-        <div className={styles["content-container"]}>
+      : <div className={styles["content-container"]}>
           <Linkify
             as="span"
             className={[
               styles["content"],
-              isTemp ? styles["temp-content"] : ""
+              isTemp ? styles["temp-content"] : "",
             ].join(" ")}
           >
             {message.content}
@@ -95,36 +93,36 @@ export default function Message({ message, isFirst, isTemp }: Props) {
             <>
               {message.media.some(
                 (mediaObject) =>
-                  mediaObject.type === "image" || mediaObject.type === "video"
+                  mediaObject.type === "image" || mediaObject.type === "video",
               ) && (
                 <ul className={styles["media-images"]}>
                   {message.media.map((media) =>
-                    media.type === "image" ? (
+                    media.type === "image" ?
                       <MessageImage image={media} key={media.mediaUrl} />
-                    ) : media.type === "video" ? (
+                    : media.type === "video" ?
                       <MessageVideo
                         videoUrl={media.mediaUrl}
                         key={media.mediaUrl}
                       />
-                    ) : null
+                    : null,
                   )}
                 </ul>
               )}
               {message.media.some(
-                (mediaObject) => mediaObject.type === "audio"
+                (mediaObject) => mediaObject.type === "audio",
               ) && (
                 <ul className={styles["media-audio"]}>
                   {message.media.map((media) =>
-                    media.type === "audio" ? (
+                    media.type === "audio" ?
                       <AudioPlayer url={media.mediaUrl} key={media.mediaUrl} />
-                    ) : null
+                    : null,
                   )}
                 </ul>
               )}
             </>
           )}
         </div>
-      )}
+      }
     </li>
   );
 }
